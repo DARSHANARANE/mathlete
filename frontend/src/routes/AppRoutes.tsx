@@ -4,13 +4,15 @@ import Dashboard from "../pages/admin/Dashboard";
 import AdminLayout from "../layout/AdminLayout";
 import QuestionPaper from "../pages/admin/QuestionPaper";
 import Orders from "../pages/admin/Orders";
+import Home from "../pages/Home";
 
 const AppRoutes = () => {
   return (
     <Routes>
 
       {/* DEFAULT */}
-      <Route path="/" element={<Navigate to="/student" replace />} />
+      <Route path="/" element={<Navigate to="home" replace />} />
+      <Route path="/home" element={<Home />} />
 
       {/* ADMIN LOGIN */}
       <Route path="/admin/login" element={<Login />} />
