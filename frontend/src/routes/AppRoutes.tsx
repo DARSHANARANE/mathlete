@@ -5,6 +5,7 @@ import AdminLayout from "../layout/AdminLayout";
 import QuestionPaper from "../pages/admin/QuestionPaper";
 import Orders from "../pages/admin/Orders";
 import Home from "../pages/Home";
+import ProtectedRoute from "./ProtectedRoute";
 
 const AppRoutes = () => {
   return (
@@ -17,12 +18,19 @@ const AppRoutes = () => {
       {/* ADMIN LOGIN */}
       <Route path="/admin/login" element={<Login />} />
 
-      {/* ADMIN PANEL */}
-      <Route path="/admin" element={<AdminLayout />}>
+      {/* 🔐 ADMIN PANEL (PROTECTED) */}
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <AdminLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
-         <Route path="question-papers" element={<QuestionPaper />} />
-            <Route path="orders" element={<Orders />} />
+        <Route path="question-papers" element={<QuestionPaper />} />
+        <Route path="orders" element={<Orders />} />
       </Route>
 
       {/* 404 */}

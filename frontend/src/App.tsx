@@ -6,9 +6,11 @@ function App() {
     <>
       <Toaster position="top-center" />
       <AppRoutes />
+      
     </>
   );
 }
 
 export default App;
+
 

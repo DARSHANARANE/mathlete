@@ -1,45 +1,81 @@
 import React, { useState, useEffect } from "react";
-import { FaUserShield, FaUser, FaLock, FaSignInAlt, FaArrowLeft, FaShieldAlt, FaCheck, FaTimes, FaSpinner } from "react-icons/fa";
+import {
+  FaUserShield,
+  FaUser,
+  FaLock,
+  FaSignInAlt,
+  FaArrowLeft,
+  FaShieldAlt,
+  FaCheck,
+  FaTimes,
+  FaSpinner,
+} from "react-icons/fa";
 import toast from "react-hot-toast";
+import { useMutation } from "@apollo/client/react";
+import { LOGIN } from "../../graphql/mutations";
+
+// ✅ Types for Apollo
+type LoginResponse = {
+  login: {
+    token: string;
+    user: {
+      name: string;
+      email: string;
+    };
+  };
+};
+
+type LoginVariables = {
+  email: string;
+  password: string;
+};
 
 export default function Login() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState("default"); // default | success | error
+  const [status, setStatus] = useState<"default" | "success" | "error">(
+    "default"
+  );
+
+  const [login, { loading }] = useMutation<LoginResponse, LoginVariables>(
+    LOGIN
+  );
 
   useEffect(() => {
-    if (sessionStorage.getItem("adminLoggedIn") === "true") {
+    const token = localStorage.getItem("token");
+    if (token) {
       window.location.href = "/admin/dashboard";
     }
   }, []);
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
 
-    setTimeout(() => {
-      if (username === "admin" && password === "123456") {
-        sessionStorage.setItem("adminLoggedIn", "true");
-        sessionStorage.setItem("adminUsername", username);
+    try {
+      const { data } = await login({
+        variables: { email, password },
+      });
 
-        setStatus("success");
-        setLoading(false);
-
-        setTimeout(() => {
-          window.location.href = "/admin/dashboard";
-        }, 1000);
-      } else {
-        setStatus("error");
-        setLoading(false);
-
-        setTimeout(() => {
-          setStatus("default");
-        }, 2000);
-
-        toast.error("Invalid credentials!");
+      if (!data) {
+        throw new Error("No response from server");
       }
-    }, 1500);
+
+      localStorage.setItem("token", data.login.token);
+
+      setStatus("success");
+      toast.success("Login successful 🚀");
+
+      setTimeout(() => {
+        window.location.href = "/admin/dashboard";
+      }, 1000);
+    } catch (err: any) {
+      setStatus("error");
+      toast.error(err.message || "Login failed");
+
+      setTimeout(() => {
+        setStatus("default");
+      }, 2000);
+    }
   };
 
   const getButtonStyle = () => {
@@ -49,10 +85,29 @@ export default function Login() {
   };
 
   const getButtonContent = () => {
-    if (loading) return (<><FaSpinner className="animate-spin" /> Authenticating...</>);
-    if (status === "success") return (<><FaCheck /> Success!</>);
-    if (status === "error") return (<><FaTimes /> Invalid Credentials</>);
-    return (<><FaSignInAlt /> Login</>);
+    if (loading)
+      return (
+        <>
+          <FaSpinner className="animate-spin" /> Authenticating...
+        </>
+      );
+    if (status === "success")
+      return (
+        <>
+          <FaCheck /> Success!
+        </>
+      );
+    if (status === "error")
+      return (
+        <>
+          <FaTimes /> Invalid Credentials
+        </>
+      );
+    return (
+      <>
+        <FaSignInAlt /> Login
+      </>
+    );
   };
 
   return (
@@ -62,21 +117,21 @@ export default function Login() {
         <div className="text-center mb-6">
           <FaUserShield className="text-5xl text-blue-600 mx-auto mb-3" />
           <h1 className="text-2xl font-bold">Admin Login</h1>
-          <p className="text-gray-500 text-sm">Access the QuestionHub Admin Panel</p>
+          <p className="text-gray-500 text-sm">Access the Admin Panel</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleLogin}>
           <div className="mb-4">
             <label className="flex items-center gap-2 text-sm font-medium mb-1">
-              <FaUser /> Username
+              <FaUser /> Email
             </label>
             <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter username"
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="admin@mathlete.com"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400"
               required
             />
           </div>
@@ -90,7 +145,7 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter password"
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400"
               required
             />
           </div>
@@ -119,7 +174,7 @@ export default function Login() {
           <p className="flex items-center justify-center gap-1 mb-1">
             <FaShieldAlt /> Secure Admin Access
           </p>
-          <p>All login attempts are monitored and logged</p>
+          <p>All login attempts are monitored</p>
         </div>
       </div>
     </div>

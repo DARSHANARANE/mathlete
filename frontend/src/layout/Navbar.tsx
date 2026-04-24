@@ -3,6 +3,7 @@ import { PiStudentBold } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import useIsMobile from "../hooks/useIsMobile";
+import useAuth from "../hooks/useAuth";
 
 type Props = {
   title?: string;
@@ -20,21 +21,11 @@ const Navbar: React.FC<Props> = ({
   openSidebar,
   showLogout = false,
   rightContent,
-  onLogout,
 }) => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const { logout } = useAuth();
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("adminLoggedIn");
-    sessionStorage.removeItem("adminUsername");
-
-    toast.success("Logged out successfully");
-
-    if (onLogout) onLogout();
-
-    navigate("/admin/login");
-  };
 
   return (
     <header className="flex items-center justify-between bg-white shadow-sm px-4 md:px-6 h-16">
@@ -91,7 +82,7 @@ const Navbar: React.FC<Props> = ({
 
             {/* Logout */}
             <button
-              onClick={handleLogout}
+              onClick={logout}
               className="flex items-center gap-2 text-gray-600 hover:text-red-500 transition"
             >
               <FaSignOutAlt />

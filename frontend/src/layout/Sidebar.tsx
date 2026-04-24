@@ -8,7 +8,7 @@ import {
 
 import { NavLink, useNavigate } from "react-router-dom";
 import useIsMobile from "../hooks/useIsMobile";
-import toast from "react-hot-toast";
+import useAuth from "../hooks/useAuth";
 
 type Props = {
   isOpen: boolean;
@@ -23,11 +23,7 @@ const Sidebar: React.FC<Props> = ({ isOpen, closeSidebar }) => {
     `flex items-center gap-3 px-4 py-3 rounded-lg transition
      ${isActive ? "bg-indigo-500" : "hover:bg-indigo-500"}`;
 
-  const handleLogout = () => {
-    sessionStorage.clear();
-    toast.success("Logged out");
-    navigate("/admin/login");
-  };
+  const { logout } = useAuth();
 
   return (
     <>
@@ -99,7 +95,7 @@ const Sidebar: React.FC<Props> = ({ isOpen, closeSidebar }) => {
         {/* Footer (Logout fixed properly) */}
         <div className="p-4 border-t border-indigo-500">
           <button
-            onClick={handleLogout}
+            onClick={logout}
             className="flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-indigo-500 transition"
           >
             <FaSignOutAlt />

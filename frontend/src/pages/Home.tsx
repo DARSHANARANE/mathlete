@@ -1,9 +1,37 @@
-import React from 'react'
+import { Link } from "react-router-dom";
+import {
+  FaSearch,
+  FaStar,
+  FaCheckCircle,
+  FaDownload,
+  FaShieldAlt,
+  FaCalculator,
+  FaAtom,
+  FaFlask,
+  FaLaptopCode,
+  FaDna,
+  FaBook,
+  FaLandmark,
+  FaChartLine,
+  FaRocket
+} from "react-icons/fa";
+import Footer from "../components/student/Footer";
 
-function Home() {
+
+
+
+
+
+const StudentHome = () => {
   return (
-    <div>Home</div>
-  )
-}
+    <div className="bg-gray-50 min-h-screen">
 
-export default Home
+   
+
+
+       <Footer />
+    </div>
+  );
+};
+
+export default StudentHome;
