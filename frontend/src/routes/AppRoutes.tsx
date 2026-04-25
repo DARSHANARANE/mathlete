@@ -4,8 +4,9 @@ import Dashboard from "../pages/admin/Dashboard";
 import AdminLayout from "../layout/AdminLayout";
 import QuestionPaper from "../pages/admin/QuestionPaper";
 import Orders from "../pages/admin/Orders";
-import Home from "../pages/Home";
 import ProtectedRoute from "./ProtectedRoute";
+import Home from "../pages/web/Home";
+import Contact from "../pages/web/Contact";
 
 const AppRoutes = () => {
   return (
@@ -14,7 +15,7 @@ const AppRoutes = () => {
       {/* DEFAULT */}
       <Route path="/" element={<Navigate to="home" replace />} />
       <Route path="/home" element={<Home />} />
-
+      <Route path="/contact" element={<Contact />} />
       {/* ADMIN LOGIN */}
       <Route path="/admin/login" element={<Login />} />
 
