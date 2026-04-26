@@ -4,8 +4,9 @@ import HeroSection from "../../components/common/homepage/HeroSection";
 
 const Home = () => {
   return (
+     <>
+     <Navbar />
     <div className="min-h-screen bg-bg text-text">
-      <Navbar />
       <HeroSection/>
 
       {/* Test Section */}
@@ -19,6 +20,7 @@ const Home = () => {
         </button>
       </div>
     </div>
+    </>
   );
 };
 

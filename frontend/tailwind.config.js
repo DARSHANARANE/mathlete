@@ -9,6 +9,10 @@ export default {
       fontFamily: {
         sans: ["Inter", "sans-serif"],
       },
+      colors: {
+        bg: "var(--bg)",
+        text: "var(--text)",
+      },
     },
   },
   plugins: [],

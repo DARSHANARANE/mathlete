@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import GlobalFilter from "../../components/common/GlobalFilter";
+
 import Table from "../../components/common/table/tablelayout";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
@@ -24,7 +24,7 @@ const QuestionPaper: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [editData, setEditData] = useState<Paper | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-
+  const [paperUploadModal, setPaperUploadModal] = useState(false);
   const [papers, setPapers] = useState<Paper[]>([
     {
       id: "MATH301",
@@ -128,32 +128,7 @@ const QuestionPaper: React.FC = () => {
       <div className="p-2 space-y-4">
 
         {/* ✅ FILTER */}
-        <GlobalFilter
-          title="Question Papers"
-          showSearch
-          showStatus
-          showDate={false}
-          showAddButton
-
-          searchPlaceholder="Search papers..."
-
-          statusOptions={[
-            { label: "All", value: "all" },
-            { label: "Published", value: "Published" },
-            { label: "Draft", value: "Draft" }
-          ]}
-
-          searchValue={search}
-          statusValue={status}
-
-          onSearch={setSearch}
-          onStatusChange={setStatus}
-
-          onAddClick={() => {
-            setEditData(null);
-            setShowModal(true);
-          }}
-        />
+ 
 
         {/* ✅ TABLE CARD UI */}
         <div className="overflow-x-auto">

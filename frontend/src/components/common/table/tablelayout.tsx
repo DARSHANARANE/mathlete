@@ -1,10 +1,11 @@
 import React from "react";
 import useIsMobile from "../../../hooks/useIsMobile";
 
-type Column<T> = {
+// ✅ Export this (VERY IMPORTANT)
+export type Column<T> = {
   header: string;
   accessor: keyof T;
-  render?: (value: any, row: T) => React.ReactNode;
+  render?: (value: T[keyof T], row: T) => React.ReactNode;
 };
 
 type Props<T> = {
@@ -14,7 +15,7 @@ type Props<T> = {
   actionButton?: React.ReactNode;
 };
 
-function Table<T extends { id: number }>({
+function Table<T extends { id: string | number }>({
   title,
   data,
   columns,
@@ -26,10 +27,12 @@ function Table<T extends { id: number }>({
     <div className="bg-white rounded-2xl shadow-md p-4 md:p-5">
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-        <h2 className="text-lg font-semibold text-black">
-          {title}
-        </h2>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3">
+        {title && (
+          <h2 className="text-lg font-semibold text-black">
+            {title}
+          </h2>
+        )}
         {actionButton}
       </div>
 
@@ -43,7 +46,7 @@ function Table<T extends { id: number }>({
           ) : (
             data.map((row) => (
               <div
-                key={row.id}
+                key={String(row.id)}
                 className="bg-gray-50 rounded-xl p-4 shadow-sm space-y-2"
               >
                 {columns.map((col, i) => {
@@ -85,7 +88,7 @@ function Table<T extends { id: number }>({
                 <tr>
                   <td
                     colSpan={columns.length}
-                    className="text-center py-6 text-gray-400 "
+                    className="text-center py-6 text-gray-400"
                   >
                     No data found
                   </td>
@@ -93,7 +96,7 @@ function Table<T extends { id: number }>({
               ) : (
                 data.map((row) => (
                   <tr
-                    key={row.id}
+                    key={String(row.id)}
                     className="bg-gray-50 hover:bg-gray-100 transition rounded-xl shadow-sm"
                   >
                     {columns.map((col, i) => {

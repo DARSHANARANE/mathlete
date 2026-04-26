@@ -5,8 +5,10 @@ import AdminLayout from "../layout/AdminLayout";
 import QuestionPaper from "../pages/admin/QuestionPaper";
 import Orders from "../pages/admin/Orders";
 import ProtectedRoute from "./ProtectedRoute";
-import Home from "../pages/web/Home";
-import Contact from "../pages/web/Contact";
+import Home from "../pages/student/Home";
+import Contact from "../pages/student/Contact";
+import StudentResults from "../pages/student/StudentResults";
+import ResultsUpload from "../pages/admin/ResultsUpload";
 
 const AppRoutes = () => {
   return (
@@ -16,6 +18,7 @@ const AppRoutes = () => {
       <Route path="/" element={<Navigate to="home" replace />} />
       <Route path="/home" element={<Home />} />
       <Route path="/contact" element={<Contact />} />
+      <Route path="/results" element={<StudentResults />} />
       {/* ADMIN LOGIN */}
       <Route path="/admin/login" element={<Login />} />
 
@@ -32,6 +35,7 @@ const AppRoutes = () => {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="question-papers" element={<QuestionPaper />} />
         <Route path="orders" element={<Orders />} />
+        <Route path="results-upload" element={<ResultsUpload />} />
       </Route>
 
       {/* 404 */}

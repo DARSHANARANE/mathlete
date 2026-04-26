@@ -11,3 +11,9 @@ export const LOGIN = gql`
     }
   }
 `;
+
+export const DELETE_RESULT_FILE = gql`
+  mutation DeleteResultFile($id: ID!) {
+    deleteResultFile(id: $id)
+  }
+`;

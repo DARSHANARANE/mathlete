@@ -13,13 +13,44 @@ const typeDefs = gql`
     user: User!
   }
 
+  # ✅ UPDATED
+  type ResultFile {
+    id: ID!
+    fileName: String!
+    filePath: String
+    year: String!
+    className: String      # ✅ NEW
+    heading: String        # ✅ NEW
+    uploadedAt: String
+  }
+
+  type StudentResult {
+    id: ID!
+    studentName: String!
+    rollNumber: String!
+    class: String!
+    schoolName: String!
+    score: Int!
+    rank: Int!
+    meritTitle: String!
+    year: String!
+  }
+
   type Query {
     hello: String
     adminData: String
+
+    getResultFiles: [ResultFile]
+    getStudentResults(class: String, year: String): [StudentResult]
+
+    getYears: [String]
+    getClasses(year: String): [String]
   }
 
+  # ✅ MERGED PROPERLY
   type Mutation {
     login(email: String!, password: String!): AuthResponse
+    deleteResultFile(id: ID!): Boolean
   }
 `;
 
