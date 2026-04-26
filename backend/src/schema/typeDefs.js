@@ -13,41 +13,32 @@ const typeDefs = gql`
     user: User!
   }
 
-  # ✅ UPDATED
+  # ✅ Result File (Main Data Source)
   type ResultFile {
     id: ID!
     fileName: String!
     filePath: String
     year: String!
-    className: String      # ✅ NEW
-    heading: String        # ✅ NEW
+    className: String
+    heading: String
     uploadedAt: String
-  }
-
-  type StudentResult {
-    id: ID!
-    studentName: String!
-    rollNumber: String!
-    class: String!
-    schoolName: String!
-    score: Int!
-    rank: Int!
-    meritTitle: String!
-    year: String!
   }
 
   type Query {
     hello: String
     adminData: String
 
+    # Admin
     getResultFiles: [ResultFile]
-    getStudentResults(class: String, year: String): [StudentResult]
 
+    # Student Flow
     getYears: [String]
     getClasses(year: String): [String]
+
+    # ✅ NEW (MOST IMPORTANT)
+    getResultFileByClass(year: String!, className: String!): ResultFile
   }
 
-  # ✅ MERGED PROPERLY
   type Mutation {
     login(email: String!, password: String!): AuthResponse
     deleteResultFile(id: ID!): Boolean

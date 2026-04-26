@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-dotenv.config(); // ✅ MUST BE FIRST
+dotenv.config();
 
 import express from "express";
 import cors from "cors";
@@ -13,16 +13,28 @@ import resolvers from "./schema/resolvers.js";
 import authMiddleware from "./middleware/auth.js";
 import uploadRoute from "./routes/upload.js";
 
+import path from "path";
+import { fileURLToPath } from "url";
+
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
 
-// 🔥 CONNECT DB AFTER ENV LOAD
+// ✅ CONNECT DB
 await connectDB();
 
-app.use("/upload", uploadRoute);
+// ✅ FIX PATH (VERY IMPORTANT)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+// ✅ SERVE FILES
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
+// ✅ UPLOAD ROUTE (FINAL)
+app.use("/api/upload", uploadRoute);
+
+// ✅ GRAPHQL
 const server = new ApolloServer({
   typeDefs,
   resolvers,

@@ -3,6 +3,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import ResultFile from "../models/ResultFile.js";
+import { fileURLToPath } from "url";
 
 const router = express.Router();
 
@@ -11,11 +12,13 @@ const router = express.Router();
 // =====================
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-     const uploadDir = path.join(process.cwd(), "uploads", "result");
+   const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
 
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir);
-    }
+   const uploadDir = path.join(process.cwd(), "uploads", "result");
+
+    // ✅ safe folder creation
+    fs.mkdirSync(uploadDir, { recursive: true });
 
     cb(null, uploadDir);
   },
@@ -25,7 +28,24 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+// =====================
+// FILE FILTER (ONLY EXCEL)
+// =====================
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = [
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/vnd.ms-excel",
+    ];
+
+    if (!allowedTypes.includes(file.mimetype)) {
+      return cb(new Error("Only Excel files are allowed"));
+    }
+
+    cb(null, true);
+  },
+});
 
 // =====================
 // POST /upload
@@ -39,19 +59,22 @@ router.post("/", upload.single("file"), async (req, res) => {
       return res.status(400).json({ error: "No file uploaded" });
     }
 
-    // 🔥 normalize className (avoid "1st" vs "1")
-    className = className.replace(/(st|nd|rd|th)/, "");
+    if (!year || !className) {
+      return res.status(400).json({ error: "Year and Class are required" });
+    }
 
-    // 🔥 relative path (cleaner for frontend use)
+    // ✅ normalize className
+    className = className.replace(/(st|nd|rd|th)/g, "");
+
     const filePath = `/uploads/result/${file.filename}`;
 
     // =====================
-    // CHECK EXISTING (year + class)
+    // CHECK EXISTING
     // =====================
     const existing = await ResultFile.findOne({ year, className });
 
     if (existing) {
-      // 🔥 delete old file from disk
+      // delete old file
       if (existing.filePath) {
         const oldPath = path.join(process.cwd(), existing.filePath);
 
@@ -60,7 +83,6 @@ router.post("/", upload.single("file"), async (req, res) => {
         }
       }
 
-      // 🔥 update existing record
       existing.fileName = file.originalname;
       existing.filePath = filePath;
       existing.heading = heading;
@@ -93,9 +115,8 @@ router.post("/", upload.single("file"), async (req, res) => {
 
   } catch (err) {
     console.error("UPLOAD ERROR:", err);
-    return res.status(500).json({ error: "Upload failed" });
+    return res.status(500).json({ error: err.message || "Upload failed" });
   }
 });
-
 
 export default router;

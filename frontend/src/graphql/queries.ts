@@ -1,28 +1,40 @@
 import { gql } from "@apollo/client";
 
 // ==============================
-// STUDENT RESULTS (FRONT SIDE)
+// STUDENT FLOW
 // ==============================
-export const GET_STUDENT_RESULTS = gql`
-  query GetStudentResults($class: String, $year: String) {
-    getStudentResults(class: $class, year: $year) {
-      id
-      studentName
-      rollNumber
-      class
-      schoolName
-      score
-      rank
-      meritTitle
+
+// Step 1: Get Years
+export const GET_YEARS = gql`
+  query GetYears {
+    getYears
+  }
+`;
+
+// Step 2: Get Classes
+export const GET_CLASSES = gql`
+  query GetClasses($year: String!) {
+    getClasses(year: $year)
+  }
+`;
+
+// Step 3: Get File (MAIN)
+export const GET_RESULT_FILE = gql`
+  query GetResultFile($year: String!, $className: String!) {
+    getResultFileByClass(year: $year, className: $className) {
+      fileName
+      filePath
       year
+      className
+      heading
     }
   }
 `;
 
+// ==============================
+// ADMIN SIDE
+// ==============================
 
-// ==============================
-// RESULT FILES (ADMIN SIDE)
-// ==============================
 export const GET_RESULT_FILES = gql`
   query GetResultFiles {
     getResultFiles {
@@ -34,17 +46,5 @@ export const GET_RESULT_FILES = gql`
       heading
       uploadedAt
     }
-  }
-`;
-
-export const GET_YEARS = gql`
-  query GetYears {
-    getYears
-  }
-`;
-
-export const GET_CLASSES = gql`
-  query GetClasses($year: String) {
-    getClasses(year: $year)
   }
 `;

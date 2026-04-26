@@ -14,7 +14,7 @@ export const useFileUpload = () => {
 
     const token = localStorage.getItem("token");
 
-    const res = await fetch("http://localhost:5000/upload", {
+    const res = await fetch("http://localhost:5000/api/upload", {
       method: "POST",
       body: formData,
       headers: {
