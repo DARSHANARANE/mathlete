@@ -1,6 +1,9 @@
 import { gql } from "graphql-tag";
 
 const typeDefs = gql`
+  # ✅ REQUIRED FOR FILE UPLOAD
+  scalar Upload
+
   type User {
     id: ID!
     name: String!
@@ -13,7 +16,9 @@ const typeDefs = gql`
     user: User!
   }
 
-  # ✅ Result File (Main Data Source)
+  # =========================
+  # RESULT FILE
+  # =========================
   type ResultFile {
     id: ID!
     fileName: String!
@@ -21,6 +26,21 @@ const typeDefs = gql`
     year: String!
     className: String
     heading: String
+    uploadedAt: String
+  }
+
+  # =========================
+  # PDF (NEW FEATURE)
+  # =========================
+  type Pdf {
+    id: ID!
+    fileName: String!
+    filePath: String!
+    title: String
+    className: String
+    year: String
+    pages: Int
+    price: Float
     uploadedAt: String
   }
 
@@ -35,13 +55,30 @@ const typeDefs = gql`
     getYears: [String]
     getClasses(year: String): [String]
 
-    # ✅ NEW (MOST IMPORTANT)
     getResultFileByClass(year: String!, className: String!): ResultFile
+
+    # ✅ PDF
+    getPdfs: [Pdf]
+    getPdf(id: ID!): Pdf
   }
 
   type Mutation {
     login(email: String!, password: String!): AuthResponse
+
     deleteResultFile(id: ID!): Boolean
+
+    # ✅ PDF Upload
+    uploadPdf(
+      file: Upload!
+      title: String
+      className: String
+      year: String
+      pages: Int
+      price: Float!
+    ): Pdf
+
+    # ✅ ADD THIS (IMPORTANT)
+    deletePdf(id: ID!): Boolean
   }
 `;
 

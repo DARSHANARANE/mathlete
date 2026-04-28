@@ -1,36 +1,36 @@
+console.log("✅ Upload routes loaded");
+
 import express from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+
 import ResultFile from "../models/ResultFile.js";
-import { fileURLToPath } from "url";
+import Pdf from "../models/Pdf.js";
+
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+
+// ✅ FIX: use CommonJS package safely
+const pdfParse = require("pdf-parse");
 
 const router = express.Router();
 
+
 // =====================
-// STORAGE CONFIG
+// EXCEL STORAGE
 // =====================
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-   const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-
-   const uploadDir = path.join(process.cwd(), "uploads", "result");
-
-    // ✅ safe folder creation
+    const uploadDir = path.join(process.cwd(), "uploads", "result");
     fs.mkdirSync(uploadDir, { recursive: true });
-
     cb(null, uploadDir);
   },
-
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
 
-// =====================
-// FILE FILTER (ONLY EXCEL)
-// =====================
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
@@ -40,47 +40,34 @@ const upload = multer({
     ];
 
     if (!allowedTypes.includes(file.mimetype)) {
-      return cb(new Error("Only Excel files are allowed"));
+      return cb(new Error("Only Excel files allowed"));
     }
 
     cb(null, true);
   },
 });
 
+
 // =====================
-// POST /upload
+// RESULT UPLOAD
 // =====================
 router.post("/", upload.single("file"), async (req, res) => {
   try {
     let { year, className, heading } = req.body;
     const file = req.file;
 
-    if (!file) {
-      return res.status(400).json({ error: "No file uploaded" });
-    }
+    if (!file) return res.status(400).json({ error: "No file" });
 
-    if (!year || !className) {
-      return res.status(400).json({ error: "Year and Class are required" });
-    }
-
-    // ✅ normalize className
     className = className.replace(/(st|nd|rd|th)/g, "");
 
     const filePath = `/uploads/result/${file.filename}`;
 
-    // =====================
-    // CHECK EXISTING
-    // =====================
     const existing = await ResultFile.findOne({ year, className });
 
     if (existing) {
-      // delete old file
       if (existing.filePath) {
         const oldPath = path.join(process.cwd(), existing.filePath);
-
-        if (fs.existsSync(oldPath)) {
-          fs.unlinkSync(oldPath);
-        }
+        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
       }
 
       existing.fileName = file.originalname;
@@ -90,15 +77,9 @@ router.post("/", upload.single("file"), async (req, res) => {
 
       await existing.save();
 
-      return res.json({
-        message: "File replaced successfully",
-        data: existing,
-      });
+      return res.json({ message: "Replaced", data: existing });
     }
 
-    // =====================
-    // CREATE NEW
-    // =====================
     const saved = await ResultFile.create({
       fileName: file.originalname,
       filePath,
@@ -108,15 +89,134 @@ router.post("/", upload.single("file"), async (req, res) => {
       uploadedAt: new Date(),
     });
 
-    return res.json({
-      message: "File uploaded successfully",
+    res.json({ message: "Uploaded", data: saved });
+
+  } catch (err) {
+    console.error("RESULT UPLOAD ERROR:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// =====================
+// PDF STORAGE
+// =====================
+const pdfStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = path.join(process.cwd(), "uploads", "pdfs");
+    fs.mkdirSync(uploadDir, { recursive: true });
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const uploadPdf = multer({
+  storage: pdfStorage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === "application/pdf") {
+      cb(null, true);
+    } else {
+      cb(new Error("Only PDF allowed"));
+    }
+  },
+});
+
+
+// =====================
+// PDF UPLOAD
+// =====================
+router.post("/pdf", uploadPdf.single("file"), async (req, res) => {
+  try {
+    const { title, className, year, price } = req.body;
+    const file = req.file;
+
+    if (!file) return res.status(400).json({ error: "No PDF" });
+    if (!price) return res.status(400).json({ error: "Price required" });
+
+    // ✅ AUTO PAGE DETECTION
+    const buffer = fs.readFileSync(file.path);
+    const data = await pdfParse(buffer);
+    const pages = data.numpages;
+
+    const filePath = `/uploads/pdfs/${file.filename}`;
+
+    const saved = await Pdf.create({
+      fileName: file.originalname,
+      filePath,
+      title,
+      className,
+      year,
+      pages,
+      price,
+      uploadedAt: new Date(),
+    });
+
+    res.json({
+      message: "PDF uploaded successfully",
       data: saved,
     });
 
   } catch (err) {
-    console.error("UPLOAD ERROR:", err);
-    return res.status(500).json({ error: err.message || "Upload failed" });
+    console.error("PDF UPLOAD ERROR:", err);
+    res.status(500).json({ error: err.message });
   }
 });
+
+
+// =====================
+// DELETE PDF
+// =====================
+router.delete("/pdf/:id", async (req, res) => {
+  try {
+    const file = await Pdf.findById(req.params.id);
+
+    if (!file) return res.status(404).json({ error: "PDF not found" });
+
+    if (file.filePath) {
+      const fullPath = path.join(process.cwd(), file.filePath);
+      if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
+    }
+
+    await Pdf.findByIdAndDelete(req.params.id);
+
+    res.json({ message: "PDF deleted successfully" });
+
+  } catch (err) {
+    console.error("DELETE ERROR:", err);
+    res.status(500).json({ error: "Delete failed" });
+  }
+});
+
+
+// =====================
+// UPDATE PDF
+// =====================
+router.put("/pdf/:id", async (req, res) => {
+  try {
+    const { title, price } = req.body;
+
+    const updated = await Pdf.findByIdAndUpdate(
+      req.params.id,
+      { title, price },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ error: "PDF not found" });
+    }
+
+    res.json({
+      message: "PDF updated successfully",
+      data: updated,
+    });
+
+  } catch (err) {
+    console.error("UPDATE ERROR:", err);
+    res.status(500).json({ error: "Update failed" });
+  }
+});
+
 
 export default router;

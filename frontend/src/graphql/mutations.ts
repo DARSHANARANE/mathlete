@@ -17,3 +17,35 @@ export const DELETE_RESULT_FILE = gql`
     deleteResultFile(id: $id)
   }
 `;
+
+export const UPLOAD_PDF = gql`
+  mutation UploadPdf(
+    $file: Upload!
+    $title: String
+    $className: String
+    $year: String
+    $pages: Int
+    $price: Float!
+  ) {
+    uploadPdf(
+      file: $file
+      title: $title
+      className: $className
+      year: $year
+      pages: $pages
+      price: $price
+    ) {
+      id
+      fileName
+      pages
+      price
+      title
+    }
+  }
+`;
+
+export const DELETE_PDF = gql`
+  mutation DeletePdf($id: ID!) {
+    deletePdf(id: $id)
+  }
+`;

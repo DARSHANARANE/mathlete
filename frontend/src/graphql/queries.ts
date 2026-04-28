@@ -48,3 +48,18 @@ export const GET_RESULT_FILES = gql`
     }
   }
 `;
+
+export const GET_PDFS = gql`
+  query GetPdfs {
+    getPdfs {
+      id
+      fileName
+      title
+      className
+      year
+      pages
+      price
+      uploadedAt
+    }
+  }
+`;

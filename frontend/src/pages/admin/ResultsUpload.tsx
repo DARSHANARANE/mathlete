@@ -139,6 +139,7 @@ const filtered = React.useMemo(() => {
       statusOptions={yearOptions}
       statusValue={year}
       onStatusChange={setYear}
+       searchPlaceholder="Search by File Name or Heading"
     />
 
       {/* TABLE */}

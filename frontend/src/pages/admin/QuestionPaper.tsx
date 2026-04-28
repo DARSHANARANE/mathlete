@@ -1,119 +1,171 @@
 import React, { useState } from "react";
-
+import GlobalFilter from "../../components/common/GlobalFilter";
 import Table from "../../components/common/table/tablelayout";
-import { FaEdit, FaTrash } from "react-icons/fa";
-
-import CrudModal from "../../components/common/Modal/CrudModal";
+import type { Column } from "../../components/common/table/tablelayout";
 import DeleteModal from "../../components/common/Modal/DeleteModal";
+import { useQuery } from "@apollo/client/react";
+import { GET_PDFS, GET_YEARS } from "../../graphql/queries";
+import { usePdfActions } from "../../hooks/usePdfActions";
+import PdfUploadModal from "../../components/common/Modal/PdfUploadModal";
+import { FaTrash, FaEdit } from "react-icons/fa";
 
-type Paper = {
+// =======================
+// TYPES
+// =======================
+type Pdf = {
   id: string;
+  fileName: string;
   title: string;
-  subject: string;
-  university: string;
-  year: number;
-  price: number;
+  className: string;
+  year: string;
   pages: number;
-  status: string;
+  price: number;
+  uploadedAt: string;
 };
 
-const QuestionPaper: React.FC = () => {
+type QueryData = {
+  getPdfs: Pdf[];
+};
 
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("all"); // ✅ FIXED
-  const [showModal, setShowModal] = useState(false);
-  const [editData, setEditData] = useState<Paper | null>(null);
+type YearsData = {
+  getYears: string[];
+};
+
+// =======================
+// COMPONENT
+// =======================
+const QuestionPaPer: React.FC = () => {
+  const [year, setYear] = useState("all");
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [paperUploadModal, setPaperUploadModal] = useState(false);
-  const [papers, setPapers] = useState<Paper[]>([
-    {
-      id: "MATH301",
-      title: "Advanced Mathematics Final Exam",
-      subject: "Mathematics",
-      university: "Pune University",
-      year: 2025,
-      price: 199,
-      pages: 45,
-      status: "Popular",
-    },
-    {
-      id: "PHYS401",
-      title: "Quantum Physics Midterm",
-      subject: "Physics",
-      university: "Mumbai University",
-      year: 2024,
-      price: 149,
-      pages: 30,
-      status: "Regular",
-    },
-  ]);
+  const [editData, setEditData] = useState<Pdf | null>(null);
+  const [openUploadModal, setOpenUploadModal] = useState(false);
+  const [search, setSearch] = useState("");
 
-  // ✅ FIXED FILTER (Search + Status)
-  const filtered = papers.filter((p) => {
-    const matchSearch =
-      p.title.toLowerCase().includes(search.toLowerCase()) ||
-      p.subject.toLowerCase().includes(search.toLowerCase());
+  // =======================
+  // GRAPHQL
+  // =======================
+  const { data, loading, refetch } = useQuery<QueryData>(GET_PDFS);
+  const files = data?.getPdfs || [];
 
-    const matchStatus =
-      status === "all" || p.status === status;
+  const { uploadPdf, deletePdf, updatePdf } = usePdfActions();
 
-    return matchSearch && matchStatus;
-  });
+  const { data: yearsData } = useQuery<YearsData>(GET_YEARS);
 
-  const handleEdit = (row: Paper) => {
-    setEditData(row);
-    setShowModal(true);
+  const yearOptions = [
+    { label: "All Years", value: "all" },
+    ...(yearsData?.getYears || []).map((y: string) => ({
+      label: y,
+      value: y,
+    })),
+  ];
+
+  // =======================
+  // SEARCH + FILTER
+  // =======================
+  const filtered = React.useMemo(() => {
+    const normalizedSearch = search.trim().toLowerCase();
+
+    return files.filter((item) => {
+      const matchYear = year === "all" || item.year === year;
+
+      if (!normalizedSearch) return matchYear;
+
+      return (
+        matchYear &&
+        [item.fileName, item.title]
+          .join(" ")
+          .toLowerCase()
+          .includes(normalizedSearch)
+      );
+    });
+  }, [files, year, search]);
+
+  // =======================
+  // CREATE + EDIT HANDLER
+  // =======================
+  const handleUpload = async (formData: any) => {
+    try {
+      if (editData) {
+        // ✏️ EDIT
+        await updatePdf(editData.id, {
+          title: formData.title,
+          price: Number(formData.price),
+        });
+      } else {
+        // ➕ CREATE
+        await uploadPdf({
+          file: formData.file,
+          title: formData.title,
+          className: formData.className,
+          year: formData.year,
+          pages: Number(formData.pages),
+          price: Number(formData.price),
+        });
+      }
+
+      await refetch();
+      setOpenUploadModal(false);
+      setEditData(null);
+
+    } catch (err) {
+      console.error("UPLOAD/UPDATE ERROR:", err);
+    }
   };
 
-  const confirmDelete = () => {
-    if (!deleteId) return;
-    setPapers((prev) => prev.filter((p) => p.id !== deleteId));
-    setDeleteId(null);
-  };
+  // =======================
+  // TABLE COLUMNS
+  // =======================
+  const columns: Column<Pdf>[] = [
+    { header: "File Name", accessor: "fileName" },
 
-  const columns = [
-    { header: "Code", accessor: "id" },
-    { header: "Title", accessor: "title" },
-    { header: "Subject", accessor: "subject" },
-    { header: "University", accessor: "university" },
+    {
+      header: "Class",
+      accessor: "className",
+      render: (value) => `Class ${value}`,
+    },
+
     { header: "Year", accessor: "year" },
+
+    { header: "Title", accessor: "title" },
+
     {
-      header: "Price",
+      header: "Pages",
+      accessor: "pages",
+    },
+
+    {
+      header: "Price (₹)",
       accessor: "price",
-      render: (value: number) => (
-        <span className="text-green-600 font-medium">₹{value}</span>
-      ),
+      render: (value) => `₹${value}`,
     },
-    { header: "Pages", accessor: "pages" },
+
     {
-      header: "Status",
-      accessor: "status",
-      render: (value: string) => (
-        <span
-          className={`px-2 py-1 text-xs rounded-full ${value === "Popular"
-              ? "bg-green-100 text-green-600"
-              : "bg-yellow-100 text-yellow-600"
-            }`}
-        >
-          {value}
-        </span>
-      ),
+      header: "Uploaded Date",
+      accessor: "uploadedAt",
+      render: (value) =>
+        value ? new Date(Number(value)).toLocaleDateString() : "N/A",
     },
+
     {
       header: "Actions",
       accessor: "id",
-      render: (_: unknown, row: Paper) => (
+      render: (_, row) => (
         <div className="flex gap-2">
+          {/* ✏️ EDIT */}
           <button
-            onClick={() => handleEdit(row)}
-            className="p-2 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100"
+            onClick={() => {
+              setEditData(row);
+              setOpenUploadModal(true);
+            }}
+            className="p-2 bg-blue-50 text-blue-500 rounded-md"
           >
             <FaEdit />
           </button>
 
+          {/* 🗑 DELETE */}
           <button
             onClick={() => setDeleteId(row.id)}
-            className="p-2 bg-red-50 text-red-500 rounded-md hover:bg-red-100"
+            className="p-2 bg-red-50 text-red-500 rounded-md"
           >
             <FaTrash />
           </button>
@@ -123,53 +175,75 @@ const QuestionPaper: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col  bg-gray-100">
+    <div className="p-2 space-y-4">
+      {/* FILTER */}
+      <GlobalFilter
+        title="Question Papers"
+        searchValue={search}
+        onSearch={setSearch}
+        showStatus
+        showAddButton
+        addLabel="Upload PDF"
+        onAddClick={() => {
+          setEditData(null); // ✅ reset edit
+          setOpenUploadModal(true);
+        }}
+        statusOptions={yearOptions}
+        statusValue={year}
+        onStatusChange={setYear}
+        searchPlaceholder="Search by File Name or Title"
+      />
 
-      <div className="p-2 space-y-4">
-
-        {/* ✅ FILTER */}
- 
-
-        {/* ✅ TABLE CARD UI */}
-        <div className="overflow-x-auto">
-          <Table className="min-w-full" data={filtered} columns={columns} />
-        </div>
+      {/* TABLE */}
+      <div className="overflow-x-auto">
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <Table data={filtered} columns={columns} />
+        )}
       </div>
 
-      {/* MODALS */}
-      <CrudModal<Paper>
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        title={editData ? "Edit Paper" : "Add Paper"}
-        initialData={editData || {}}
-        fields={[
-          { name: "title", label: "Title", required: true },
-          { name: "subject", label: "Subject", required: true },
-          { name: "university", label: "University", required: true },
-          { name: "year", label: "Year", type: "number", required: true },
-          { name: "price", label: "Price", type: "number", required: true },
-          { name: "pages", label: "Pages", type: "number", required: true },
-          {
-            name: "status",
-            label: "Status",
-            type: "select",
-            required: true,
-            options: [
-              { label: "Draft", value: "Draft" },
-              { label: "Published", value: "Published" },
-            ],
-          },
-        ]}
+      {/* ✅ UPLOAD / EDIT MODAL */}
+      <PdfUploadModal
+        open={openUploadModal}
+        onClose={() => {
+          setOpenUploadModal(false);
+          setEditData(null);
+        }}
+        onUpload={handleUpload}
+        initialData={
+          editData
+            ? {
+                file: null,
+                title: editData.title,
+                className: editData.className,
+                year: editData.year,
+                pages: String(editData.pages),
+                price: String(editData.price),
+              }
+            : null
+        }
       />
 
+      {/* DELETE MODAL */}
       <DeleteModal
-        isOpen={Boolean(deleteId)}
+        isOpen={!!deleteId}
         onClose={() => setDeleteId(null)}
-        onDelete={confirmDelete}
-      />
+        onDelete={async () => {
+          if (!deleteId) return;
 
+          try {
+            await deletePdf(deleteId);
+            await refetch();
+          } catch (err) {
+            console.error("DELETE ERROR:", err);
+          } finally {
+            setDeleteId(null);
+          }
+        }}
+      />
     </div>
   );
 };
 
-export default QuestionPaper;
+export default QuestionPaPer;

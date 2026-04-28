@@ -81,7 +81,14 @@ const Sidebar: React.FC<Props> = ({ isOpen, closeSidebar }) => {
             <FaFileAlt />
             Question Papers
           </NavLink>
-
+          <NavLink
+            to="/admin/results-upload"
+            onClick={isMobile ? closeSidebar : undefined}
+            className={linkStyle}
+          >
+            <FaFileAlt />
+            Results Upload
+          </NavLink>
           <NavLink
             to="/admin/orders"
             onClick={isMobile ? closeSidebar : undefined}
@@ -90,14 +97,7 @@ const Sidebar: React.FC<Props> = ({ isOpen, closeSidebar }) => {
             <FaShoppingCart />
             Orders
           </NavLink>
-                <NavLink
-            to="/admin/results-upload"
-            onClick={isMobile ? closeSidebar : undefined}
-            className={linkStyle}
-          >
-            <FaFileAlt />
-            Results Upload
-          </NavLink>
+
         </nav>
 
         {/* Footer (Logout fixed properly) */}

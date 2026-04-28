@@ -56,7 +56,7 @@ const GlobalFilter: React.FC<Props> = ({
   showExportButton = false,
 
   exportData = [],
-  searchPlaceholder = "Search by File Name or Heading",
+  searchPlaceholder = "",
   statusOptions = [{ label: "All", value: "all" }],
 
   searchValue = "",

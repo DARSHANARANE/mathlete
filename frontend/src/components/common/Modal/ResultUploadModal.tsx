@@ -29,27 +29,30 @@ const ResultUploadModal: React.FC<Props> = ({
       title="Upload Result File"
       footer={
         <>
-          <button onClick={onClose} className="px-4 py-2 border rounded">
+          <button onClick={onClose} className="px-4 py-2 border rounded-md">
             Cancel
           </button>
 
           <button
             onClick={() => onUpload(file, year, className, heading)}
-            className="px-4 py-2 bg-blue-500 text-white rounded"
+            className="px-4 py-2 bg-blue-600 text-white rounded-md"
           >
             Upload
           </button>
         </>
       }
     >
-      <div className="space-y-3">
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm mb-1">Upload Excel</label>
+          <input
+            type="file"
+            onChange={(e) => setFile(e.target.files?.[0] || null)}
+          />
+        </div>
 
-        <input
-          type="file"
-          onChange={(e) => setFile(e.target.files?.[0] || null)}
-        />
 
-        <select value={className} onChange={(e) => setClassName(e.target.value)}>
+        <select value={className} onChange={(e) => setClassName(e.target.value)} className="w-full border p-2 rounded">
           {[...Array(10)].map((_, i) => (
             <option key={i} value={`${i + 1}`}>
               Class {i + 1}
@@ -61,12 +64,14 @@ const ResultUploadModal: React.FC<Props> = ({
           placeholder="Year"
           value={year}
           onChange={(e) => setYear(e.target.value)}
+          className="w-full border p-2 rounded"
         />
 
         <input
           placeholder="Heading (optional)"
           value={heading}
           onChange={(e) => setHeading(e.target.value)}
+          className="w-full border p-2 rounded"
         />
       </div>
     </BaseModal>
