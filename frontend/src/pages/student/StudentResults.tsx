@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
-import { useLazyQuery } from "@apollo/client/react";
+import { useLazyQuery, useQuery } from "@apollo/client/react";
 
 import GlobalFilter from "../../components/common/GlobalFilter";
 import Table from "../../components/common/table/tablelayout";
@@ -8,8 +8,9 @@ import type { Column } from "../../components/common/table/tablelayout";
 
 import Navbar from "../../components/common/homepage/Navbar";
 import IllustrationSection from "../../components/common/IllustrationSection";
-
-import { GET_RESULT_FILE } from "../../graphql/queries";
+import { GET_YEARS, GET_RESULT_FILE } from "../../graphql/queries";
+import SearchBox from "../../components/common/SearchBox";
+import { FiCalendar, FiBook, FiLoader, FiAlertCircle, FiInbox } from "react-icons/fi";
 
 // ================= TYPES =================
 type StudentRow = {
@@ -32,6 +33,10 @@ type ResultFileVars = {
   className: string;
 };
 
+type YearsData = {
+  getYears: string[];
+};
+
 const StudentResults: React.FC = () => {
   const [year, setYear] = useState("all");
   const [className, setClassName] = useState("all");
@@ -42,19 +47,29 @@ const StudentResults: React.FC = () => {
 
   const [loadingExcel, setLoadingExcel] = useState(false);
   const [error, setError] = useState("");
+
   const BASE_URL = "http://localhost:5000";
+
   // ================= GRAPHQL =================
   const [getFile, { data, loading }] = useLazyQuery<
     ResultFileResponse,
     ResultFileVars
   >(GET_RESULT_FILE);
-  
+
+  const { data: yearsData } = useQuery<YearsData>(GET_YEARS);
+
+  const yearOptions = [
+    { label: "All Years", value: "all" },
+    ...(yearsData?.getYears || []).map((y: string) => ({
+      label: y,
+      value: y,
+    })),
+  ];
+
   // ================= FETCH FILE =================
   useEffect(() => {
     if (year !== "all" && className !== "all") {
-      getFile({
-        variables: { year, className },
-      });
+      getFile({ variables: { year, className } });
     }
   }, [year, className, getFile]);
 
@@ -75,22 +90,18 @@ const StudentResults: React.FC = () => {
         setLoadingExcel(true);
         setError("");
 
-       const res = await fetch(`${BASE_URL}${fileUrl}`);
-
-console.log("Fetching file from URL:", `${BASE_URL}${fileUrl}`, "Status:", res.status);
+        const res = await fetch(`${BASE_URL}${fileUrl}`);
         const blob = await res.blob();
 
         const reader = new FileReader();
 
         reader.onload = (e) => {
           const arrayBuffer = e.target?.result as ArrayBuffer;
-          const data = new Uint8Array(arrayBuffer);
-
-          const workbook = XLSX.read(data, { type: "array" });
+          const excelData = new Uint8Array(arrayBuffer);
+          const workbook = XLSX.read(excelData, { type: "array" });
           const sheet = workbook.Sheets[workbook.SheetNames[0]];
 
           const rawData = XLSX.utils.sheet_to_json<Record<string, any>>(sheet);
-
           const jsonData: StudentRow[] = rawData.map((row, index) => ({
             id:
               row["ROLL NO"] ||
@@ -116,24 +127,21 @@ console.log("Fetching file from URL:", `${BASE_URL}${fileUrl}`, "Status:", res.s
     fetchExcel();
   }, [data]);
 
-  // ================= SEARCH =================
-  const getRoll = (row: StudentRow) => {
-    const key = Object.keys(row).find((k) =>
-      k.toLowerCase().includes("roll")
-    );
-    return key ? row[key] : "";
-  };
-
+  // ================= SEARCH (UPDATED) =================
   useEffect(() => {
-    if (!search) {
+    const normalizedSearch = search.trim().toLowerCase();
+
+    if (!normalizedSearch) {
       setFilteredData(tableData);
       return;
     }
 
     const filtered = tableData.filter((row) =>
-      String(getRoll(row))
-        .toLowerCase()
-        .includes(search.toLowerCase())
+      Object.entries(row).some(
+        ([key, value]) =>
+          key !== "id" &&
+          String(value).toLowerCase().includes(normalizedSearch)
+      )
     );
 
     setFilteredData(filtered);
@@ -143,18 +151,17 @@ console.log("Fetching file from URL:", `${BASE_URL}${fileUrl}`, "Status:", res.s
   const columns: Column<StudentRow>[] =
     tableData.length > 0
       ? Object.keys(tableData[0])
-          .filter((key) => key !== "id") // ❌ hide id column
-          .map((key) => ({
-            header: key,
-            accessor: key,
-            render: (value, row) => {
-              // 🥇 Highlight rank 1 (optional)
-              if (key.toLowerCase() === "rank" && value === 1) {
-                return "🥇 " + value;
-              }
-              return value;
-            },
-          }))
+        .filter((key) => key !== "id")
+        .map((key) => ({
+          header: key,
+          accessor: key,
+          render: (value) => {
+            if (key.toLowerCase() === "rank" && value === 1) {
+              return "🥇 " + value;
+            }
+            return value;
+          },
+        }))
       : [];
 
   // ================= UI =================
@@ -162,80 +169,87 @@ console.log("Fetching file from URL:", `${BASE_URL}${fileUrl}`, "Status:", res.s
     <>
       <Navbar />
 
-      <div className="min-h-screen bg-bg text-text">
+      <div className="min-h-screen bg-gray-100 text-text">
         <IllustrationSection />
+        <div className="p-4 space-y-4">
+          {/* YEAR FILTER */}
+          <GlobalFilter
+            showSearch={false}
+            showStatus
+            showClass={year !== "all"}   // ✅ condition here
 
-        {/* YEAR FILTER */}
-        <GlobalFilter
-          title="Student Results"
-          showSearch={false}
-          showStatus
-          showDate={false}
-          showAddButton={false}
-          statusOptions={[
-            { label: "All Years", value: "all" },
-            { label: "2024-25", value: "2024-25" },
-            { label: "2023-24", value: "2023-24" },
-          ]}
-          statusValue={year}
-          onStatusChange={(val) => {
-            setYear(val);
-            setClassName("all");
-            setTableData([]);
-            setFilteredData([]);
-            setSearch("");
-            setError("");
-          }}
-        />
+            statusOptions={yearOptions}
+            statusValue={year}
+            onStatusChange={(val) => {
+              setYear(val);
+              setClassName("all");
+            }}
 
-        {/* CLASS SELECT */}
-        {year !== "all" && (
-          <div className="px-4 mb-4">
-            <select
-              value={className}
-              onChange={(e) => setClassName(e.target.value)}
-              className="border p-2 rounded"
-            >
-              <option value="all">Select Class</option>
-              {[...Array(10)].map((_, i) => (
-                <option key={i} value={`${i + 1}`}>
-                  Class {i + 1}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+            classOptions={[...Array(10)].map((_, i) => ({
+              label: `Class ${i + 1}`,
+              value: `${i + 1}`,
+            }))}
 
-        {/* SEARCH */}
-        {tableData.length > 0 && (
-          <div className="px-4 mb-4">
-            <input
-              type="text"
-              placeholder="Search by Roll Number"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="border p-2 rounded w-full max-w-sm"
-            />
-          </div>
-        )}
+            classValue={className}
+            onClassChange={setClassName}
+          />
 
-        {/* TABLE */}
-        <div className="px-4">
-          {year === "all" ? (
-            <p className="text-gray-500">
-              Please select a year to view results
-            </p>
-          ) : className === "all" ? (
-            <p className="text-gray-500">Please select a class</p>
-          ) : loading || loadingExcel ? (
-            <p className="text-blue-500">Fetching results, please wait...</p>
-          ) : error ? (
-            <p className="text-red-500">{error}</p>
-          ) : filteredData.length === 0 ? (
-            <p>No results found</p>
-          ) : (
-            <Table data={filteredData} columns={columns} />
+          {/* HEADER + SEARCH */}
+          {tableData.length > 0 && (
+            <div className="px-4 flex items-center justify-between mb-4 bg-white p-4 rounded-xl shadow-sm border">
+
+              <>
+                <h2 className="text-xl font-bold">
+                  {data?.getResultFileByClass?.heading || "Student Results"}
+                </h2>
+
+                <SearchBox
+                  value={search}
+                  onChange={setSearch}
+                  placeholder="Search student by name, roll no, etc."
+                />
+              </>
+
+            </div>
           )}
+
+          {/* TABLE */}
+     <div className="mb-4">
+  {year === "all" ? (
+    <div className="flex items-center gap-3 p-4 bg-white border rounded-lg text-gray-600">
+      <FiCalendar size={20} />
+      <p>Please select a year to view results</p>
+    </div>
+
+  ) : className === "all" ? (
+    <div className="flex items-center gap-3 p-4 bg-white border rounded-lg text-gray-600">
+      <FiBook size={20} />
+      <p>Please select a class</p>
+    </div>
+
+  ) : loading || loadingExcel ? (
+    <div className="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-600">
+      <FiLoader className="animate-spin" size={20} />
+      <p>Fetching results, please wait...</p>
+    </div>
+
+  ) : error ? (
+    <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
+      <FiAlertCircle size={20} />
+      <p>{error}</p>
+    </div>
+
+  ) : filteredData.length === 0 ? (
+<div className="flex flex-col items-center justify-center p-8 bg-gray-50 border rounded-lg text-gray-500">
+  <FiInbox size={32} className="mb-2" />
+  <p className="font-medium">No results found</p>
+  <p className="text-sm">Try changing filters or search</p>
+</div>
+
+  ) : (
+    <Table data={filteredData} columns={columns} />
+  )}
+</div>
         </div>
       </div>
     </>

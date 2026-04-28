@@ -1,8 +1,9 @@
 import React from "react";
 import { IoMdAddCircle } from "react-icons/io";
-import { FiSearch, FiDownload } from "react-icons/fi";
+import { FiDownload } from "react-icons/fi";
 import useIsMobile from "../../hooks/useIsMobile";
 import useExportToExcel from "../../hooks/useExportToExcel";
+import SearchBox from "./SearchBox";
 
 type Option = {
   label: string;
@@ -27,7 +28,6 @@ type Props = {
   // config
   searchPlaceholder?: string;
   statusOptions?: Option[];
-
   // controlled values
   searchValue?: string;
   statusValue?: string;
@@ -42,6 +42,10 @@ type Props = {
   onAddClick?: () => void;
 
   addLabel?: string;
+   showClass?: boolean;
+  classOptions?: Option[];
+  classValue?: string;
+  onClassChange?: (val: string) => void;
 };
 
 const GlobalFilter: React.FC<Props> = ({
@@ -52,7 +56,7 @@ const GlobalFilter: React.FC<Props> = ({
   showExportButton = false,
 
   exportData = [],
-  searchPlaceholder = "Search...",
+  searchPlaceholder = "Search by File Name or Heading",
   statusOptions = [{ label: "All", value: "all" }],
 
   searchValue = "",
@@ -65,6 +69,10 @@ const GlobalFilter: React.FC<Props> = ({
   onAddClick,
 
   addLabel = "Add",
+  showClass = false,
+  classOptions = [],
+  classValue = "all",
+  onClassChange,
 }) => {
   const isMobile = useIsMobile();
   const { exportToExcel } = useExportToExcel();
@@ -75,19 +83,15 @@ const GlobalFilter: React.FC<Props> = ({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 
         {/* FILTERS */}
-        <div className={`grid gap-3 ${isMobile ? "grid-cols-2" : "grid-cols-3"}`}>
+       <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 
-          {showSearch && (
-            <div className="relative">
-              <FiSearch className="absolute left-3 top-2.5 text-gray-400" />
-              <input
+           {showSearch && onSearch && (
+              <SearchBox
                 value={searchValue}
+                onChange={onSearch}
                 placeholder={searchPlaceholder}
-                onChange={(e) => onSearch?.(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 text-sm border rounded-md"
               />
-            </div>
-          )}
+            )}
 
           {showStatus && (
             <select
@@ -113,6 +117,20 @@ const GlobalFilter: React.FC<Props> = ({
               <option value="today">Today</option>
               <option value="7days">Last 7 Days</option>
               <option value="30days">Last 30 Days</option>
+            </select>
+          )}
+          {showClass && (
+            <select
+              value={classValue}
+              onChange={(e) => onClassChange?.(e.target.value)}
+              className="w-full px-3 py-2 text-sm border rounded-md"
+            >
+              <option value="all">All Classes</option>
+              {classOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
             </select>
           )}
         </div>

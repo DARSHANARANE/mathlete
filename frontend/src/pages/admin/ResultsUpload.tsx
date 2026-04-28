@@ -14,6 +14,7 @@ import { DELETE_RESULT_FILE } from "../../graphql/mutations";
 import { useFileUpload } from "../../hooks/useFileUpload";
 import { GET_YEARS } from "../../graphql/queries";
 
+
 type ResultFile = {
   id: string;
   fileName: string;
@@ -38,7 +39,8 @@ const ResultsUpload: React.FC = () => {
   const { data, loading, refetch } = useQuery<QueryData>(GET_RESULT_FILES);
   const [deleteFile] = useMutation(DELETE_RESULT_FILE);
   const { uploadFile } = useFileUpload();
-
+const [search, setSearch] = useState("");
+const searchKeys: (keyof ResultFile)[] = ["fileName", "heading"];
   const files = data?.getResultFiles || [];
   const { data: yearsData } = useQuery<YearsData>(GET_YEARS);
   const yearOptions = [
@@ -48,9 +50,6 @@ const ResultsUpload: React.FC = () => {
       value: y,
     })),
   ];
-  const filtered = files.filter((f) =>
-    year === "all" ? true : f.year === year
-  );
 
   // ✅ FIXED: match modal signature
   const handleUpload = async (
@@ -105,13 +104,34 @@ const ResultsUpload: React.FC = () => {
       ),
     },
   ];
+
+const filtered = React.useMemo(() => {
+  const normalizedSearch = search.trim().toLowerCase();
+
+  return files.filter((item) => {
+    const matchYear = year === "all" || item.year === year;
+
+    if (!normalizedSearch) return matchYear;
+
+    const matchSearch = searchKeys.some((key) =>
+      (item[key] || "")
+        .toString()
+        .toLowerCase()
+        .includes(normalizedSearch)
+    );
+
+    return matchYear && matchSearch;
+  });
+}, [files, year, search]);
+
   return (
     <div className="p-2 space-y-4">
 
       {/* FILTER */}
      <GlobalFilter
       title="Result Files"
-      showSearch={false}
+      searchValue={search}
+      onSearch={setSearch} 
       showStatus
       showAddButton
       addLabel={uploading ? "Uploading..." : "Upload Result"}
