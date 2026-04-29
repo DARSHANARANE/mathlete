@@ -4,17 +4,11 @@
 
 /* Theme Variables */
 :root {
-   --bg: #ffffff;
+  --bg: #ffff;
   --text: #1f2937;
-  --primary: #3D348B;
-  --accent: #F7B801;
-}
-
-.dark {
-  --bg: #111827;
-  --text: #f9fafb;
-  --primary: #3D348B;
-  --accent: #F7B801;
+  --primary: #4f46e5;
+  --accent: #6366f1;
+  --litebg: #d6ddfe;
 }
 
 /* Apply theme globally */
@@ -22,6 +16,8 @@ body {
   @apply bg-bg text-text transition-colors duration-300;
   font-family: 'Inter', sans-serif;
 }
+
+/* Blob animation */
 @keyframes blob {
   0% {
     transform: translate(0px, 0px) scale(1);

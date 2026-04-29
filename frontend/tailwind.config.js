@@ -12,9 +12,11 @@ export default {
       colors: {
         bg: "var(--bg)",
         text: "var(--text)",
+        primary: "var(--primary)",   // ✅ added
+        accent: "var(--accent)",
+        litebg: "var(--litebg)",     // ✅ added
       },
     },
   },
   plugins: [],
-
 };

@@ -1,6 +1,8 @@
 import Navbar from "../../components/common/homepage/Navbar";
 import HeroSection from "../../components/common/homepage/HeroSection";
-
+import About from "../../components/common/homepage/About";
+import Features from "../../components/common/homepage/Features";
+import Footer from "../../components/common/homepage/Footer";
 
 const Home = () => {
   return (
@@ -8,19 +10,12 @@ const Home = () => {
      <Navbar />
     <div className="min-h-screen bg-bg text-text">
       <HeroSection/>
-
-      {/* Test Section */}
-      <div className="p-6">
-        <h1 className="text-primary text-3xl font-bold">
-          Theme Working Test
-        </h1>
-
-        <button className="mt-4 bg-primary text-white dark:text-black px-4 py-2 rounded">
-          Button Test
-        </button>
-      </div>
+      <About />
+      <Features />
     </div>
+    <Footer />
     </>
+    
   );
 };
 
