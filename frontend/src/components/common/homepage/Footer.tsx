@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Logo from "../../../assets/mathlete_logo.png"
 import {
   FaGraduationCap,
   FaFacebook,
@@ -17,7 +18,7 @@ const Footer = () => {
         {/* Brand */}
         <div>
           <h3 className="text-white text-lg font-semibold flex items-center gap-2 mb-3">
-            <FaGraduationCap /> QuestionHub
+            <img src={Logo} alt="logo" className="h-6 w-auto" /> MATHELETE
           </h3>
 
           <p className="text-sm text-gray-400">
@@ -70,9 +71,9 @@ const Footer = () => {
 
       {/* Bottom */}
       <div className="border-t border-gray-700 text-center py-4 text-sm text-gray-400">
-        © 2026 QuestionHub. All rights reserved.{" "}
+        © 2026 MATHLETE. All rights reserved.{" "}
         <span className="font-semibold text-gray-300">
-          Demo Prototype - No real transactions
+          Developed by Team MiniAn
         </span>
       </div>
 
