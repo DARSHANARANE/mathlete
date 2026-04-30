@@ -7,6 +7,7 @@ import QuestionPaper from "../pages/admin/QuestionPaper";
 import Orders from "../pages/admin/Orders";
 import ProtectedRoute from "./ProtectedRoute";
 import Home from "../pages/student/Home";
+import About from "../pages/student/About";
 import Contact from "../pages/student/Contact";
 import StudentResults from "../pages/student/StudentResults";
 import ResultsUpload from "../pages/admin/ResultsUpload";
@@ -22,6 +23,7 @@ const AppRoutes = () => {
 
       {/* STUDENT ROUTES */}
       <Route path="/home" element={<Home />} />
+      <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/results" element={<StudentResults />} />
       <Route path="/gallery" element={<Gallery />} />
