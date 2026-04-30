@@ -10,11 +10,12 @@ export default {
         sans: ["Inter", "sans-serif"],
       },
       colors: {
+        primary: "var(--primary)",
+        secondary: "var(--secondary)",
+        accent: "var(--accent)",
+        highlight: "var(--highlight)",
         bg: "var(--bg)",
         text: "var(--text)",
-        primary: "var(--primary)",   // ✅ added
-        accent: "var(--accent)",
-        litebg: "var(--litebg)",     // ✅ added
       },
     },
   },

@@ -4,11 +4,12 @@
 
 /* Theme Variables */
 :root {
-  --bg: #ffff;
-  --text: #1f2937;
-  --primary: #4f46e5;
-  --accent: #6366f1;
-  --litebg: #d6ddfe;
+  --primary: #2f3e6f;     /* Main brand (dark blue) */
+  --secondary: #8ecae6;   /* Wave / light blue */
+  --accent: #facc15;      /* Yellow CTA */
+  --highlight: #f472b6;   /* Pink highlight */
+  --bg: #ffffff;          /* White background */
+  --text: #1f2937;        /* Main text */
 }
 
 /* Apply theme globally */
@@ -39,4 +40,20 @@ body {
 
 .animation-delay-2000 {
   animation-delay: 2s;
+}
+
+@keyframes floatCloud {
+  0% {
+    transform: translateX(0px) translateY(0px);
+  }
+  50% {
+    transform: translateX(30px) translateY(-10px);
+  }
+  100% {
+    transform: translateX(0px) translateY(0px);
+  }
+}
+
+.animate-cloud {
+  animation: floatCloud 8s ease-in-out infinite;
 }
