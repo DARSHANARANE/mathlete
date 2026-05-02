@@ -173,83 +173,109 @@ const StudentResults: React.FC = () => {
         <IllustrationSection />
         <div className="p-4 space-y-4">
           {/* YEAR FILTER */}
-          <GlobalFilter
-            showSearch={false}
-            showStatus
-            showClass={year !== "all"}   // ✅ condition here
+          <div  className="bg-gray-100 px-4 flex items-center justify-between mb-4 bg-white p-4 rounded-xl shadow-sm border">
+            {tableData.length > 0 && (
+              <div className="flex  w-full">
 
-            statusOptions={yearOptions}
-            statusValue={year}
-            onStatusChange={(val) => {
-              setYear(val);
-              setClassName("all");
-            }}
-
-            classOptions={[...Array(10)].map((_, i) => ({
-              label: `Class ${i + 1}`,
-              value: `${i + 1}`,
-            }))}
-
-            classValue={className}
-            onClassChange={setClassName}
-          />
-
-          {/* HEADER + SEARCH */}
-          {tableData.length > 0 && (
-            <div className="px-4 flex items-center justify-between mb-4 bg-white p-4 rounded-xl shadow-sm border">
-
-              <>
                 <h2 className="text-xl font-bold">
                   {data?.getResultFileByClass?.heading || "Student Results"}
                 </h2>
 
+              </div>
+            )}
+            <div className="flex justify-end w-full gap-3">
+              <GlobalFilter
+                align="left"
+                showSearch={false}
+                showStatus
+                showClass={year !== "all"}   // ✅ condition here
+
+                statusOptions={yearOptions}
+                statusValue={year}
+                onStatusChange={(val) => {
+                  setYear(val);
+                  setClassName("all");
+                }}
+
+                classOptions={[...Array(10)].map((_, i) => ({
+                  label: `Class ${i + 1}`,
+                  value: `${i + 1}`,
+                }))}
+
+                classValue={className}
+                onClassChange={setClassName}
+              />
+
+              {/* HEADER + SEARCH */}
+              {tableData.length > 0 && (
                 <SearchBox
                   value={search}
                   onChange={setSearch}
                   placeholder="Search student by name, roll no, etc."
                 />
-              </>
+              )}
 
             </div>
-          )}
 
+          </div>
           {/* TABLE */}
-     <div className="mb-4">
-  {year === "all" ? (
-    <div className="flex items-center gap-3 p-4 bg-white border rounded-lg text-gray-600">
-      <FiCalendar size={20} />
-      <p>Please select a year to view results</p>
-    </div>
+          <div className="mb-4">
+            {year === "all" ? (
+              <div className="flex items-center justify-center gap-4 min-h-[200px] p-5 bg-white/70 backdrop-blur border rounded-xl shadow-sm text-gray-700">
+                <div className="p-3 bg-gradient-to-br from-indigo-500 to-blue-500 text-white rounded-lg shadow">
+                  <FiCalendar size={22} />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold">Select Year</p>
+                  <p className="text-xs text-gray-500">
+                    Choose a year to view student results
+                  </p>
+                </div>
+              </div>
 
-  ) : className === "all" ? (
-    <div className="flex items-center gap-3 p-4 bg-white border rounded-lg text-gray-600">
-      <FiBook size={20} />
-      <p>Please select a class</p>
-    </div>
+            ) : className === "all" ? (
+                <div className="flex items-center justify-center gap-4 min-h-[200px] p-5 bg-white/70 backdrop-blur border rounded-xl shadow-sm text-gray-700">
 
-  ) : loading || loadingExcel ? (
-    <div className="flex items-center gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-600">
-      <FiLoader className="animate-spin" size={20} />
-      <p>Fetching results, please wait...</p>
-    </div>
+                  <div className="p-3 bg-gradient-to-br from-indigo-500 to-blue-500 text-white rounded-lg shadow">
+                    <FiBook size={22} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold">No Class Selected</p>
+                    <p className="text-xs text-gray-500">Choose a class to see data</p>
+                  </div>
+                </div>
 
-  ) : error ? (
-    <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-600">
-      <FiAlertCircle size={20} />
-      <p>{error}</p>
-    </div>
+            ) : loading || loadingExcel ? (
+              <div className="flex items-center justify-center gap-4 min-h-[200px] p-5 bg-white/70 backdrop-blur border rounded-xl shadow-sm text-gray-700">
+                    <div className="p-3 bg-gradient-to-br from-indigo-500 to-blue-500 text-white rounded-lg shadow">
+                        <FiLoader className="animate-spin" size={22} />
+                  </div>
+                <p>Fetching results, please wait...</p>
+              </div>
 
-  ) : filteredData.length === 0 ? (
-<div className="flex flex-col items-center justify-center p-8 bg-gray-50 border rounded-lg text-gray-500">
-  <FiInbox size={32} className="mb-2" />
-  <p className="font-medium">No results found</p>
-  <p className="text-sm">Try changing filters or search</p>
-</div>
+            ) : error ? (
+             <div className="flex items-center justify-center gap-4 min-h-[200px] p-5 bg-white/70 backdrop-blur border rounded-xl shadow-sm text-gray-700">
+                <div className="p-3 bg-gradient-to-br from-orange-300 to-red-600 text-white rounded-lg shadow">
+                <FiAlertCircle size={22} />
+                </div>
+                <p>{error}</p>
+              </div>
 
-  ) : (
-    <Table data={filteredData} columns={columns} />
-  )}
-</div>
+            ) : filteredData.length === 0 ? (
+                      <div className="flex items-center justify-center gap-4 min-h-[200px] p-5 bg-white/70 backdrop-blur border rounded-xl shadow-sm text-gray-700">
+                        <div className="p-3 bg-gradient-to-br from-orange-300 to-red-600 text-white rounded-lg shadow">
+                          <FiInbox size={22} />
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold">No results found</p>
+                          <p className="text-xs text-gray-500">Try changing filters or search</p>
+                        </div>
+                      </div>
+
+            ) : (
+              <Table data={filteredData} columns={columns} />
+            )}
+          </div>
         </div>
       </div>
     </>
