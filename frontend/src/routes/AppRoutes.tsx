@@ -13,6 +13,7 @@ import StudentResults from "../pages/student/StudentResults";
 import ResultsUpload from "../pages/admin/ResultsUpload";
 import Gallery from "../pages/student/Gallery";
 import Page404 from "../pages/Page404";
+import StudentQuestionPaper from "../pages/student/StudentQuestionPaper";
 
 const AppRoutes = () => {
   return (
@@ -26,6 +27,7 @@ const AppRoutes = () => {
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/results" element={<StudentResults />} />
+      <Route path="/papers" element={<StudentQuestionPaper />} />
       <Route path="/gallery" element={<Gallery />} />
       {/* ADMIN LOGIN */}
       <Route path="/admin/login" element={<Login />} />
