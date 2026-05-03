@@ -129,7 +129,7 @@ const PdfUploadModal: React.FC<Props> = ({
         <input
           className="w-full border p-2 rounded"
           placeholder="Class (e.g. 2)"
-         value={isEdit ? `class ${form.className}` : ""}
+           value={isEdit ? `class ${form.className}` : `${form.className}`}
           disabled={isEdit}
           onChange={(e) => handleChange("className", e.target.value)}
         />

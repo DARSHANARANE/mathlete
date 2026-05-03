@@ -1,21 +1,19 @@
-console.log("✅ Upload routes loaded");
-
 import express from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import * as pdfParseModule from "pdf-parse";
 
 import ResultFile from "../models/ResultFile.js";
 import Pdf from "../models/Pdf.js";
 
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
+const pdfParse =
+  typeof pdfParseModule === "function"
+    ? pdfParseModule
+    : pdfParseModule.default || pdfParseModule.pdfParse || pdfParseModule;
 
-// ✅ FIX: use CommonJS package safely
-const pdfParse = require("pdf-parse");
 
 const router = express.Router();
-
 
 // =====================
 // EXCEL STORAGE
@@ -47,7 +45,6 @@ const upload = multer({
   },
 });
 
-
 // =====================
 // RESULT UPLOAD
 // =====================
@@ -56,7 +53,9 @@ router.post("/", upload.single("file"), async (req, res) => {
     let { year, className, heading } = req.body;
     const file = req.file;
 
-    if (!file) return res.status(400).json({ error: "No file" });
+    if (!file) {
+      return res.status(400).json({ error: "No file" });
+    }
 
     className = className.replace(/(st|nd|rd|th)/g, "");
 
@@ -67,7 +66,10 @@ router.post("/", upload.single("file"), async (req, res) => {
     if (existing) {
       if (existing.filePath) {
         const oldPath = path.join(process.cwd(), existing.filePath);
-        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+
+        if (fs.existsSync(oldPath)) {
+          fs.unlinkSync(oldPath);
+        }
       }
 
       existing.fileName = file.originalname;
@@ -77,7 +79,10 @@ router.post("/", upload.single("file"), async (req, res) => {
 
       await existing.save();
 
-      return res.json({ message: "Replaced", data: existing });
+      return res.json({
+        message: "Replaced",
+        data: existing,
+      });
     }
 
     const saved = await ResultFile.create({
@@ -89,14 +94,15 @@ router.post("/", upload.single("file"), async (req, res) => {
       uploadedAt: new Date(),
     });
 
-    res.json({ message: "Uploaded", data: saved });
-
+    res.json({
+      message: "Uploaded",
+      data: saved,
+    });
   } catch (err) {
     console.error("RESULT UPLOAD ERROR:", err);
     res.status(500).json({ error: err.message });
   }
 });
-
 
 // =====================
 // PDF STORAGE
@@ -123,7 +129,6 @@ const uploadPdf = multer({
   },
 });
 
-
 // =====================
 // PDF UPLOAD
 // =====================
@@ -132,13 +137,23 @@ router.post("/pdf", uploadPdf.single("file"), async (req, res) => {
     const { title, className, year, price } = req.body;
     const file = req.file;
 
-    if (!file) return res.status(400).json({ error: "No PDF" });
-    if (!price) return res.status(400).json({ error: "Price required" });
+    if (!file) {
+      return res.status(400).json({ error: "No PDF" });
+    }
 
-    // ✅ AUTO PAGE DETECTION
-    const buffer = fs.readFileSync(file.path);
-    const data = await pdfParse(buffer);
-    const pages = data.numpages;
+    if (!price) {
+      return res.status(400).json({ error: "Price required" });
+    }
+
+    let pages = 0;
+
+    try {
+      const buffer = fs.readFileSync(file.path);
+      const data = await pdfParse(buffer);
+      pages = data.numpages || 0;
+    } catch (parseErr) {
+      console.error("PDF PARSE ERROR:", parseErr);
+    }
 
     const filePath = `/uploads/pdfs/${file.filename}`;
 
@@ -157,13 +172,11 @@ router.post("/pdf", uploadPdf.single("file"), async (req, res) => {
       message: "PDF uploaded successfully",
       data: saved,
     });
-
   } catch (err) {
     console.error("PDF UPLOAD ERROR:", err);
     res.status(500).json({ error: err.message });
   }
 });
-
 
 // =====================
 // DELETE PDF
@@ -172,23 +185,28 @@ router.delete("/pdf/:id", async (req, res) => {
   try {
     const file = await Pdf.findById(req.params.id);
 
-    if (!file) return res.status(404).json({ error: "PDF not found" });
+    if (!file) {
+      return res.status(404).json({ error: "PDF not found" });
+    }
 
     if (file.filePath) {
       const fullPath = path.join(process.cwd(), file.filePath);
-      if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
+
+      if (fs.existsSync(fullPath)) {
+        fs.unlinkSync(fullPath);
+      }
     }
 
     await Pdf.findByIdAndDelete(req.params.id);
 
-    res.json({ message: "PDF deleted successfully" });
-
+    res.json({
+      message: "PDF deleted successfully",
+    });
   } catch (err) {
     console.error("DELETE ERROR:", err);
     res.status(500).json({ error: "Delete failed" });
   }
 });
-
 
 // =====================
 // UPDATE PDF
@@ -211,12 +229,10 @@ router.put("/pdf/:id", async (req, res) => {
       message: "PDF updated successfully",
       data: updated,
     });
-
   } catch (err) {
     console.error("UPDATE ERROR:", err);
     res.status(500).json({ error: "Update failed" });
   }
 });
-
 
 export default router;
