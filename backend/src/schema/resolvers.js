@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import ResultFile from "../models/ResultFile.js";
 import Pdf from "../models/Pdf.js"; // ✅ NEW
+import Order from "../models/Order.js"; // ✅ NEW
 import generateToken from "../utils/generateToken.js";
 import fs from "fs";
 import path from "path";
@@ -102,6 +103,19 @@ const resolvers = {
         ...file._doc,
       };
     },
+  getOrders: async () => {
+    const orders = await Order.find().sort({ createdAt: -1 });
+
+    return orders.map((item) => ({
+      id: item._id.toString(),
+      amount: item.amount,
+      razorpayOrderId: item.razorpayOrderId,
+      razorpayPaymentId: item.razorpayPaymentId,
+      createdAt: item.createdAt?.toISOString(),
+      fileUrl: item.fileUrl,
+      status: item.status,
+    }));
+  },
   },
 
   Mutation: {
@@ -218,6 +232,9 @@ const resolvers = {
 };
 
 export default resolvers;
+    // =========================
+     // Order 
+    // =========================
 
     // =========================
      // contact 

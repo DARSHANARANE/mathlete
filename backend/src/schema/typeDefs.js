@@ -80,6 +80,20 @@ const typeDefs = gql`
     # ✅ ADD THIS (IMPORTANT)
     deletePdf(id: ID!): Boolean
   }
+
+    type Order {
+    id: ID!
+    amount: Float
+    razorpayOrderId: String
+    razorpayPaymentId: String
+    createdAt: String
+    fileUrl: String
+    status: String
+  }
+
+  type Query {
+    getOrders: [Order]
+  }
 `;
 
 export default typeDefs;
