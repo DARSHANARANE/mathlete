@@ -3,21 +3,40 @@ import ActiveState from "../../components/common/ActiveState";
 import { SlCalender } from "react-icons/sl";
 import { RiLoader2Line } from "react-icons/ri";
 import { FaUserGraduate } from "react-icons/fa";
-
+import { useQuery } from "@apollo/client/react";
+import { GET_Orders } from "../../graphql/queries";
+type OrderItem = {
+  id: string;
+  amount: number;
+  razorpayOrderId: string;
+  razorpayPaymentId: string;
+  status: string;
+  createdAt: string;
+  fileUrl: string;
+};
+type GetOrdersResponse = {
+  getOrders: OrderItem[];
+};
 const Dashboard: React.FC = () => {
+const { data } = useQuery<GetOrdersResponse>(GET_Orders);
 
+const totalOrders = data?.getOrders?.length || 0;
+const totalRevenue =
+  data?.getOrders
+    ?.filter((order) => order.status === "paid")
+    .reduce((sum, order) => sum + Number(order.amount || 0), 0) || 0;
   const cards = [
     {
       title: "Total Orders",
-      value: 120,
+      value: totalOrders,
       icon: <SlCalender />,
       bgColor: "bg-blue-500"
     },
     {
       title: "Revenue",
-      value: "₹ 2,500",
+      value: `₹ ${totalRevenue}`,
       icon: <RiLoader2Line />,
-      bgColor: "bg-green-500"
+      bgColor: "bg-green-500",
     },
     {
       title: "Students",

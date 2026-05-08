@@ -81,14 +81,8 @@ export default function StudentQuestionPaperPage() {
                             <GlobalFilter
                                 align="left"
                                 showSearch={false}
-                                showStatus
-                                showClass={year !== "all"}
-                                statusOptions={yearOptions}
-                                statusValue={year}
-                                onStatusChange={(val) => {
-                                    setYear(val);
-                                    setClassName("all");
-                                }}
+                               showStatus={false}
+                                showClass
                                 classOptions={[...Array(12)].map((_, i) => ({
                                     label: `Class ${i + 1}`,
                                     value: `${i + 1}`,

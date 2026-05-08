@@ -1,11 +1,15 @@
+
 import express from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
 import * as pdfParseModule from "pdf-parse";
+import Razorpay from "razorpay";
+import crypto from "crypto";
 
 import ResultFile from "../models/ResultFile.js";
 import Pdf from "../models/Pdf.js";
+import Order from "../models/Order.js";
 
 const pdfParse =
   typeof pdfParseModule === "function"
@@ -235,4 +239,142 @@ router.put("/pdf/:id", async (req, res) => {
   }
 });
 
+// =====================
+// CREATE ORDER
+// =====================
+router.post("/payment/create-order", async (req, res) => {
+  try {
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+      return res.status(500).json({
+        error: "Razorpay keys missing in .env",
+      });
+    }
+
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
+    });
+
+    const { pdfId } = req.body;
+
+    const pdf = await Pdf.findById(pdfId);
+
+    if (!pdf) {
+      return res.status(404).json({ error: "PDF not found" });
+    }
+
+    const order = await razorpay.orders.create({
+      amount: Math.round(Number(pdf.price) * 100),
+      currency: "INR",
+      receipt: `pdf_${pdf._id}`,
+    });
+
+    res.json({
+      orderId: order.id,
+      amount: order.amount,
+      key: process.env.RAZORPAY_KEY_ID,
+      pdf,
+    });
+  } catch (err) {
+    console.error("CREATE ORDER ERROR:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// =====================
+// VERIFY PAYMENT
+// =====================
+router.post("/payment/verify", async (req, res) => {
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      pdfId,
+    } = req.body;
+
+    const body = `${razorpay_order_id}|${razorpay_payment_id}`;
+
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(body)
+      .digest("hex");
+
+    const isValid = expectedSignature === razorpay_signature;
+
+    if (!isValid) {
+      return res.status(400).json({ success: false });
+    }
+
+    const pdf = await Pdf.findById(pdfId);
+
+    if (!pdf) {
+      return res.status(404).json({ error: "PDF not found" });
+    }
+
+    // ✅ save order in database
+      const savedOrder = await Order.create({
+        razorpayOrderId: razorpay_order_id,
+        razorpayPaymentId: razorpay_payment_id,
+        pdfId: pdf._id,
+        title: pdf.title,
+        amount: pdf.price,
+        fileUrl: `http://localhost:5000${pdf.filePath}`,
+      });
+
+    res.json({
+      success: true,
+        order: {
+          id: savedOrder._id,
+          pdfId: savedOrder.pdfId,
+          amount: savedOrder.amount,
+          razorpayOrderId: savedOrder.razorpayOrderId,
+          razorpayPaymentId: savedOrder.razorpayPaymentId,
+          createdAt: savedOrder.createdAt,
+        },
+      pdf,
+      fileUrl: `http://localhost:5000${pdf.filePath}`,
+    });
+  } catch (err) {
+    console.error("VERIFY PAYMENT ERROR:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// =====================
+// SECURE PDF DOWNLOAD
+// =====================
+router.get("/payment/download/:orderId", async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    if (order.status !== "paid") {
+      return res.status(403).json({ error: "Payment not verified" });
+    }
+
+    const pdf = await Pdf.findById(order.pdfId);
+
+    if (!pdf) {
+      return res.status(404).json({ error: "PDF not found" });
+    }
+
+    const filePath = path.join(process.cwd(), pdf.filePath);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: "File missing" });
+    }
+
+    res.download(filePath, pdf.fileName);
+  } catch (err) {
+    console.error("DOWNLOAD ERROR:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
 export default router;

@@ -21,20 +21,23 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// ✅ CONNECT DB
+// connect db
 await connectDB();
 
-// ✅ FIX PATH (VERY IMPORTANT)
+// path fix
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ SERVE FILES
-app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+// serve uploaded files
+app.use(
+  "/uploads/result",
+  express.static(path.join(__dirname, "../uploads/result"))
+);
 
-// ✅ UPLOAD ROUTE (FINAL)
+// upload routes
 app.use("/api/upload", uploadRoute);
 
-// ✅ GRAPHQL
+// graphql
 const server = new ApolloServer({
   typeDefs,
   resolvers,
