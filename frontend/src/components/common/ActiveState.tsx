@@ -41,7 +41,7 @@ const DashboardCards: React.FC = () => {
       cardBg: "bg-gradient-to-br from-purple-100 to-purple-50"
     },
     {
-      title: "Total Students",
+      title: "Students Results",
       value: "240",
       icon: <FaUserGraduate />,
       color: "text-orange-700",

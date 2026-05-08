@@ -218,3 +218,8 @@ const resolvers = {
 };
 
 export default resolvers;
+
+    // =========================
+     // contact 
+    // =========================
+    

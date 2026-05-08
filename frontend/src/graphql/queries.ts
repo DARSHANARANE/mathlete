@@ -63,3 +63,17 @@ export const GET_PDFS = gql`
     }
   }
 `;
+
+export const GET_Orders = gql`
+  query GetOrders {
+    getOrders {
+      id
+      amount
+      razorpayOrderId
+      razorpayPaymentId
+      createdAt
+      fileUrl
+      status
+}
+}
+`;
