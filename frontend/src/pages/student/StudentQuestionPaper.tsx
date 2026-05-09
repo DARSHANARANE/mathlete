@@ -67,37 +67,56 @@ export default function StudentQuestionPaperPage() {
             <div className="min-h-screen bg-gray-100 text-text">
                 <div className="p-4 space-y-4">
                     {/* Header */}
-                    <div className="bg-white p-4 rounded-xl shadow-sm border flex items-center justify-between">
-                        <div>
-                            <h1 className="text-3xl font-bold text-slate-900">
-                                Question Papers
-                            </h1>
-                            <p className="mt-1 text-sm text-slate-500">
-                                Browse uploaded papers and download instantly.
-                            </p>
-                        </div>
+                  <div className="rounded-[26px] bg-white p-5 shadow-[0_14px_30px_rgba(40,20,90,0.05)]">
+  <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+    {/* left */}
+    <div className="flex items-start gap-4">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f4f0ff]">
+        <span className="text-2xl">📘</span>
+      </div>
 
-                         <div className="flex justify-end w-full gap-3">
-                            <GlobalFilter
-                                align="left"
-                                showSearch={false}
-                               showStatus={false}
-                                showClass
-                                classOptions={[...Array(12)].map((_, i) => ({
-                                    label: `Class ${i + 1}`,
-                                    value: `${i + 1}`,
-                                }))}
-                                classValue={className}
-                                onClassChange={setClassName}
-                            />
+      <div>
+        <div className="flex flex-wrap items-center gap-2">
+          <h1 className="text-3xl font-black text-[#1b1444]">
+            Question Papers
+          </h1>
 
-                            <SearchBox
-                                value={search}
-                                onChange={setSearch}
-                                placeholder="Search papers..."
-                            />
-                        </div>
-                    </div>
+          <span className="rounded-full bg-[#eefbf4] px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-[#19B27B]">
+            Practice
+          </span>
+        </div>
+
+        <p className="mt-2 text-sm text-[#6d6886]">
+          Browse uploaded papers and download instantly.
+        </p>
+      </div>
+    </div>
+
+    {/* right */}
+    <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
+      <GlobalFilter
+        align="left"
+        showSearch={false}
+        showStatus={false}
+        showClass
+        classOptions={[...Array(12)].map((_, i) => ({
+          label: `Class ${i + 1}`,
+          value: `${i + 1}`,
+        }))}
+        classValue={className}
+        onClassChange={setClassName}
+      />
+
+      <div className="min-w-[240px]">
+        <SearchBox
+          value={search}
+          onChange={setSearch}
+          placeholder="Search papers..."
+        />
+      </div>
+    </div>
+  </div>
+</div>
 
                     {/* Cards */}
                     {loading ? (

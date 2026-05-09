@@ -89,7 +89,7 @@ const searchKeys: (keyof ResultFile)[] = ["fileName", "heading"];
       header: "Uploaded Date",
       accessor: "uploadedAt",
       render: (value) =>
-        value ? new Date(Number(value)).toLocaleDateString() : "N/A",
+        value ? new Date(Number(value)).toLocaleDateString("en-GB") : "N/A",
     },
     {
       header: "Actions",

@@ -39,12 +39,26 @@ const Orders: React.FC = () => {
       razorpayOrderId: item.razorpayOrderId || "-",
       razorpayPaymentId: item.razorpayPaymentId || "-",
       status: item.status || "-",
-      createdAt: item.createdAt
-        ? new Date(item.createdAt).toLocaleString()
-        : "-",
+     createdAt: item.createdAt
+  ? new Date(item.createdAt).toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  : "-",
       fileUrl: item.fileUrl || "",
     })) || [];
+  const filteredOrders = orders.filter((item) => {
+    const keyword = search.toLowerCase();
 
+    return (
+      item.id.toLowerCase().includes(keyword) ||
+      item.razorpayOrderId.toLowerCase().includes(keyword) ||
+      item.razorpayPaymentId.toLowerCase().includes(keyword)
+    );
+  });
   const columns = [
     {
       header: "Order ID",
@@ -122,7 +136,7 @@ const Orders: React.FC = () => {
             Loading orders...
           </div>
         ) : (
-          <Table<OrderRow> data={orders} columns={columns} />
+       <Table<OrderRow> data={filteredOrders} columns={columns} />
         )}
       </div>
     </div>

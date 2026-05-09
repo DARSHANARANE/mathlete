@@ -30,12 +30,13 @@ const variants = {
 const baseStyles = `
   inline-flex items-center justify-center
   rounded-full
-  px-10 py-3
+   px-7 py-3
   text-sm
-  font-medium
+  font-semibold
   tracking-[0.05em]
   transition-all duration-300
-  hover:-translate-y-[1px]
+ transition hover:-translate-y-0.5
+   shadow-lg
 `;
 
 const UIButton = ({

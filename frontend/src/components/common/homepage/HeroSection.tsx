@@ -1,44 +1,40 @@
 import kidImg from "../../../assets/hero-5.png";
 import UIButton from "../../ui/Button";
 import { motion } from "framer-motion";
-const stats = [
-  { title: "Papers", value: "+100", cta: "Explore" },
-  { title: "Students", value: "+2k", cta: "Join Now" },
-  { title: "Solved", value: "+200k", cta: "Start" },
-];
-
 const Hero = () => {
   return (
-    <section className="relative overflow-hidden bg-[#f3eef8] pt-2 pb-20">
+    <section className="relative overflow-hidden bg-[#f3eef8] pt-2 pb-8">
+      {/* decorative shapes */}
 
       {/* abstract shapes */}
       <motion.div
         animate={{ y: [0, -12, 0] }}
         transition={{ repeat: Infinity, duration: 5 }}
-        className="absolute z-20 right-[20%] top-14 h-28 w-28 rounded-full bg-blue-200 to bg-blue-500" />
-      
+        className="absolute z-20 right-[20%] top-5 h-28 w-28 rounded-full bg-blue-200 to bg-blue-500" />
+
       <div className="absolute  z-20 right-0 top-0 h-28 w-28 rounded-bl-[80px] bg-orange-300 to bg-orange-500" />
       <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-6 md:grid-cols-2">
         {/* LEFT */}
         <div className="pt-10">
-<h1 className="max-w-xl text-[52px] font-black leading-[1.02] tracking-[-0.03em] text-[#1b1444] md:text-[68px]">
-  Build
-  <br />
-  <span className="relative inline-block">
-    Confidence 
-    <span className="absolute bottom-2 left-0 -z-10 h-5 w-full rounded-full bg-[#ffe0e4]" />
-  </span> in Math
- Through{" "}
-  <span className="relative inline-block text-[#E3344A]">
-    Practice
-    <span className="absolute -bottom-2 left-0 h-3 w-full rounded-full bg-[#ffd7dd] -z-10" />
-  </span>
-</h1>
 
-<p className="mt-6 max-w-lg text-sm leading-7 text-[#6d6886] md:text-base">
-  Mathlete helps children strengthen tables, sharpen speed, and
-  master elementary mathematics through fun, structured practice.
-</p>
+          <h1 className="max-w-xl text-[52px] font-black leading-[1.02] tracking-[-0.03em] text-[#1b1444] md:text-[68px]">
+            Build
+            <br />
+            <span className="relative inline-block">
+              Confidence
+              <span className="absolute bottom-2 left-0 -z-10 h-5 w-full rounded-full bg-[#ffe0e4]" />
+            </span> in Math
+            Through{" "}
+            <span className="relative inline-block text-[#E3344A]">
+              Practice
+              <span className="absolute -bottom-2 left-0 h-3 w-full rounded-full bg-[#ffd7dd] -z-10" />
+            </span>
+          </h1>
+
+          <p className="mt-6 max-w-lg text-sm leading-7 text-[#6d6886] md:text-base">
+            Mathlete helps children strengthen tables, sharpen speed, and
+            master elementary mathematics through fun, structured practice.
+          </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-5">
             <UIButton >Download Papers</UIButton>
@@ -49,24 +45,6 @@ const Hero = () => {
               </span>
               Watch Introduction
             </button>
-          </div>
-
-          {/* Stats */}
-          <div className=" mt-12 grid max-w-xl grid-cols-3 gap-4 rounded-3xl bg-white p-5 shadow-[0_15px_35px_rgba(40,20,90,0.08)]">
-            {stats.map((item) => (
-              <div key={item.title} className="text-center">
-                <p className="text-xs font-semibold text-[#8b87a3]">
-                  {item.title}
-                </p>
-                <h3 className="mt-1 text-4xl font-black  text-[#E3344A]">
-                  {item.value}
-                </h3>
-
-                <button className="mt-3 rounded-full bg-[#E3344A] px-4 py-1.5 text-xs font-medium text-white hover:bg-[#d92d42] transition">
-                  {item.cta}
-                </button>
-              </div>
-            ))}
           </div>
         </div>
 
@@ -102,7 +80,7 @@ const Hero = () => {
         </div>
       </div>
     </section>
-    
+
   );
 };
 

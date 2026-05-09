@@ -43,7 +43,15 @@ const typeDefs = gql`
     price: Float
     uploadedAt: String
   }
-
+  type Contact {
+    id: ID!
+    name: String!
+    email: String!
+    subject: String
+    message: String!
+    status: String
+    createdAt: String
+  }
   type Query {
     hello: String
     adminData: String
@@ -60,6 +68,9 @@ const typeDefs = gql`
     # ✅ PDF
     getPdfs: [Pdf]
     getPdf(id: ID!): Pdf
+
+    getOrders: [Order]
+    getContacts: [Contact]
   }
 
   type Mutation {
@@ -79,6 +90,13 @@ const typeDefs = gql`
 
     # ✅ ADD THIS (IMPORTANT)
     deletePdf(id: ID!): Boolean
+    
+    createContact(
+      name: String!
+      email: String!
+      subject: String
+      message: String!
+    ): Contact
   }
 
     type Order {
@@ -91,9 +109,6 @@ const typeDefs = gql`
     status: String
   }
 
-  type Query {
-    getOrders: [Order]
-  }
 `;
 
 export default typeDefs;

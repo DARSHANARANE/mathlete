@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import Img1 from "../../assets/img-1.jpg";
 import Img2 from "../../assets/img-2.jpg";
@@ -7,88 +6,88 @@ import Navbar from "../../components/common/homepage/Navbar";
 import Footer from "../../components/common/homepage/Footer";
 
 const images = [
-  { id: 1, src: Img1, category: "Events" },
-  { id: 2, src: Img2, category: "Campus" },
-  { id: 3, src: Img3, category: "Events" },
-//   { id: 4, src: Img4, category: "Students" },
-//   { id: 5, src: Img5, category: "Campus" },
-//   { id: 6, src: "/images/img6.jpg", category: "Students" },
+  {
+    id: 1,
+    src: Img1,
+    title: "Mathlete Moments",
+    desc: "Students learning through fun and practice.",
+    span: "md:col-span-2 md:row-span-2",
+    height: "h-[420px]",
+    rotate: "-rotate-1",
+  },
+  {
+    id: 2,
+    src: Img2,
+    title: "School Activities",
+    desc: "Exploring mathematics together.",
+    span: "",
+    height: "h-[200px]",
+    rotate: "rotate-1",
+  },
+  {
+    id: 3,
+    src: Img3,
+    title: "Classroom Joy",
+    desc: "Confidence grows with every step.",
+    span: "",
+    height: "h-[200px]",
+    rotate: "-rotate-2",
+  },
 ];
 
-const categories = ["All", "Events", "Campus", "Students"];
-
 const Gallery = () => {
-  const [active, setActive] = useState("All");
-
-  const filteredImages =
-    active === "All"
-      ? images
-      : images.filter((img) => img.category === active);
-
   return (
     <>
-    <Navbar />
-    <section className="min-h-screen bg-white text-text py-16 px-6">
-      
-      {/* 🔥 Heading */}
-      <div className="text-center mb-12">
-        <h2 className="text-4xl font-bold bg-gradient-to-r from-indigo-400 to-indigo-600 bg-clip-text text-transparent">
-          Our Gallery
-        </h2>
-        <p className="text-gray-400 mt-2">
-          Explore moments from our journey
-        </p>
-      </div>
+      <Navbar />
+      <section className="relative overflow-hidden bg-[#fffdf8] py-20">
+        {/* decorative shapes */}
+        <div className="absolute left-10 top-10 h-20 w-20 rounded-full bg-pink-100" />
+        <div className="absolute right-12 top-20 h-24 w-24 rounded-full bg-blue-100" />
+        <div className="absolute bottom-12 left-1/3 h-16 w-16 rounded-full bg-yellow-100" />
 
-      {/* 🎯 Filters */}
-      <div className="flex justify-center gap-4 mb-10 flex-wrap">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActive(cat)}
-            className={`px-5 py-2 rounded-full border transition ${
-              active === cat
-                ? "bg-indigo-500 border-indigo-500"
-                : "border-gray-600 hover:border-indigo-400"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
+        <div className="relative z-10 mx-auto max-w-6xl px-6">
+          {/* heading */}
+          <div className="mb-14 text-center">
+            <h2 className="text-4xl font-black text-[#1b1444] md:text-5xl">
+              Our Gallery
+            </h2>
 
-      {/* 🖼️ Gallery Grid */}
-      <motion.div
-        layout
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
-        >
-        {filteredImages.map((img) => (
-            <motion.div
-            key={img.id}
-            layout
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            whileHover={{ scale: 1.05 }}
-            className="relative overflow-hidden rounded-xl group cursor-pointer bg-gray-100 flex items-center justify-center"
-            >
-            {/* ✅ FIXED IMAGE */}
-            <img
-                src={img.src}
-                alt="gallery"
-                className="w-full h-64 object-contain p-2"
-            />
+            <p className="mt-3 text-[#6d6886]">
+              Explore moments from our learning journey
+            </p>
+          </div>
 
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                <p className="text-lg font-semibold text-indigo-400">
-                {img.category}
-                </p>
-            </div>
-            </motion.div>
-        ))}
-        </motion.div> 
-    </section>
-    <Footer />
+          {/* collage */}
+          <div className="grid auto-rows-[200px] gap-6 md:grid-cols-3">
+            {images.map((img, i) => (
+              <motion.div
+                key={img.id}
+                initial={{ opacity: 0, y: 35 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ y: -8, rotate: 0 }}
+                className={`group relative overflow-hidden rounded-[30px] bg-white p-3 shadow-[0_18px_35px_rgba(40,20,90,0.06)] ${img.span} ${img.rotate}`}
+              >
+                <div className={`overflow-hidden rounded-[24px] ${img.height}`}>
+                  <img
+                    src={img.src}
+                    alt={img.title}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
+                </div>
+
+                {/* overlay content */}
+                <div className="absolute inset-x-5 bottom-5 rounded-2xl bg-white/90 p-4 backdrop-blur-md">
+                  <h3 className="font-bold text-[#1b1444]">{img.title}</h3>
+                  <p className="mt-1 text-sm text-[#6d6886]">{img.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <Footer />
     </>
   );
 };
