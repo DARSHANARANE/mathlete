@@ -1,5 +1,9 @@
 import { Download, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Button from "../ui/Button";
+
+// IMPORT BACKGROUNDS
+import redBg from "../../assets/red_bg_theme.png";
 
 type PdfItem = {
   id: string;
@@ -16,6 +20,38 @@ type Props = {
   pdf: PdfItem;
 };
 
+const classThemes: Record<string, any> = {
+  "1": {
+    bg: redBg,
+    btn: "bg-red-500 hover:bg-red-600",
+    badge: "bg-red-50 text-red-600",
+  },
+
+  "2": {
+    bg: redBg,
+    btn: "bg-violet-500 hover:bg-violet-600",
+    badge: "bg-violet-50 text-violet-600",
+  },
+
+  "3": {
+    bg: redBg,
+    btn: "bg-green-500 hover:bg-green-600",
+    badge: "bg-green-50 text-green-600",
+  },
+
+  "4": {
+    bg: redBg,
+    btn: "bg-sky-500 hover:bg-sky-600",
+    badge: "bg-sky-50 text-sky-600",
+  },
+
+  "5": {
+    bg: redBg,
+    btn: "bg-pink-500 hover:bg-pink-600",
+    badge: "bg-pink-50 text-pink-600",
+  },
+};
+
 export default function QuestionPaperCard({ pdf }: Props) {
   const navigate = useNavigate();
 
@@ -25,85 +61,94 @@ export default function QuestionPaperCard({ pdf }: Props) {
     });
   };
 
+  const theme =
+    classThemes[pdf.className || "1"] || classThemes["1"];
+
   return (
-    <div className="group relative pt-5">
-      {/* back paper 1 */}
-      <div className="absolute inset-x-4 top-2 h-full rounded-[28px] bg-[#ece7fa] transition duration-300 group-hover:translate-y-1" />
+    <div className="group w-full max-w-[270px]">
+      <div className="overflow-hidden rounded-[22px] bg-white shadow-[0_10px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)]">
 
-      {/* back paper 2 */}
-      <div className="absolute inset-x-2 top-1 h-full rounded-[28px] bg-[#f4f0ff] transition duration-300 group-hover:translate-y-0.5" />
+        {/* TOP HEADER */}
+        <div className="relative h-20 z-20 w-full overflow-hidden rounded-t-[22px]">
+          {/* bg image */}
+          <img
+            src={theme.bg}
+            alt="theme"
+            className="absolute inset-0 h-full w-full object-cover opacity-60"
+          />
 
-      {/* main paper */}
-      <div className="relative rounded-[28px] bg-white p-4 shadow-[0_18px_40px_rgba(40,20,90,0.08)] transition duration-300 group-hover:-translate-y-2 group-hover:shadow-[0_28px_55px_rgba(40,20,90,0.12)]">
-        {/* decorative corner */}
-        <div className="absolute right-0 top-0 h-16 w-16 rounded-bl-[28px] rounded-tr-[28px] bg-[#ffe8ec]" />
+          {/* overlay */}
+          <div className="absolute inset-0 bg-black/20" />
 
-        {/* cover */}
-        <div className="relative overflow-hidden rounded-[22px] bg-[#faf7ff]">
-          {/* side strip */}
-          <div className="absolute left-0 top-0 h-full w-4 bg-[#e8def7]" />
+          {/* curve */}
+          <div className="absolute bottom-0 left-0 h-7 w-full rounded-t-[100%] bg-white" />
 
-          {/* punch holes */}
-          <div className="absolute left-[4px] top-6 flex flex-col gap-4">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <span key={i} className="h-1.5 w-1.5 rounded-full bg-white" />
-            ))}
-          </div>
-
-    <div className="flex h-36 flex-col items-center justify-center px-8 text-center">
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-white shadow-md">
-              <FileText className="h-8 w-8 text-[#E3344A]" />
-            </div>
-
-            <span className="rounded-full bg-[#eefbf4] px-3  text-[11px] font-semibold uppercase tracking-wide text-[#19B27B]">
-              Question Paper
-            </span>
-
-            <h3 className="mt-4 min-h-[64px] text-[1.1rem] font-black leading-snug text-[#1b1444] px-2">
-              {pdf.title || pdf.fileName}
-            </h3>
+          {/* title */}
+          <div className="relative z-10 flex h-full flex-col items-center justify-center text-white">
+            <p className="text-[10px] font-black uppercase tracking-[0.25em]">
+              Mathlete
+            </p>
           </div>
         </div>
 
-        {/* meta */}
-        <div className="mt-5 px-1">
-         <div className="mt-5 flex flex-wrap gap-2">
-            {pdf.className && (
-              <span className="rounded-full bg-[#eef4ff] px-3 py-1 text-xs font-bold text-[#4A67FF]">
-                Class {pdf.className}
-              </span>
-            )}
-
+        {/* COVER AREA */}
+        <div className="relative top-[-20px] flex items-center justify-center w-full flex z-10">
+          <div className="relative flex  py-1 w-full gap-2 flex-col justify-center overflow-hidden rounded-2xl shadow-[0_10px_20px_rgba(0,0,0,0.05)]">
+            <div className="relative z-10 w-full flex h-20 w-20 items-center justify-center rounded-3xl border border-white/20 bg-white/15 backdrop-blur-md">
+              <FileText className="h-12 w-12 text-red-500" />
+            </div>
+            <div className="flex items-center leading-snug w-full justify-center">
             {pdf.year && (
-              <span className="rounded-full bg-[#fff3e8] px-3 py-1 text-xs font-bold text-[#ff7a00]">
+              <span
+                className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase ${theme.badge}`}
+              >
                 {pdf.year}
               </span>
             )}
-
-            {pdf.pages && (
-          <span className="rounded-full bg-[#fff6e8] px-3 py-1 text-xs font-bold text-[#a16207]">
-  {pdf.pages ?? 0} Pages
-</span>
-            )}
           </div>
+          </div>
+        </div>
 
-          {/* footer */}
-          <div className="mt-5 flex items-center justify-between border-t border-[#f0ebfa] pt-4">
+        {/* CONTENT */}
+        <div className="px-5 pb-5 pt-4 top-[-20px] relative">
+          <h3 className=" mt-2 text-lg font-black leading-snug text-black">
+            {pdf.title || pdf.fileName}
+          </h3>
+          {/* PRICE */}
+          <div className="flex items-end justify-between">
             <div>
-              <p className="text-xs font-medium text-[#8b87a3]">Price</p>
-         <p className="text-3xl font-black text-[#E3344A]">
-  ₹{pdf.price ?? 0}
-</p>
+
+
+              <h2 className="mt-1 text-3xl font-black text-slate-900">
+                ₹{pdf.price ?? 0}
+              </h2>
             </div>
 
-            <button
-              onClick={handleCheckout}
-             className="inline-flex items-center gap-2 rounded-full bg-[#E3344A] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#d92d42]"
-            >
-              <Download size={15} />
-              Download
-            </button>
+            {/* META */}
+            <div className="mt-5 flex flex-wrap items-center gap-2">
+              {pdf.className && (
+                <span className="rounded-md bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-700">
+                  Class {pdf.className}
+                </span>
+              )}
+
+
+              <span className="rounded-md bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-700">
+                30 Pages
+              </span>
+            </div>
+
           </div>
+
+
+          {/* BUTTON */}
+          <Button
+            onClick={handleCheckout}
+            className={`mt-5 gap-2 `}
+          >
+            <Download size={15} />
+            Download Paper
+          </Button>
         </div>
       </div>
     </div>

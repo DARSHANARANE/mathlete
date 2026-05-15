@@ -6,12 +6,6 @@ const Hero = () => {
     <section className="relative overflow-hidden bg-[#f3eef8] pt-2 pb-8">
       {/* decorative shapes */}
 
-      {/* abstract shapes */}
-      <motion.div
-        animate={{ y: [0, -12, 0] }}
-        transition={{ repeat: Infinity, duration: 5 }}
-        className="absolute z-20 right-[20%] top-5 h-28 w-28 rounded-full bg-blue-200 to bg-blue-500" />
-
       <div className="absolute  z-20 right-0 top-0 h-28 w-28 rounded-bl-[80px] bg-orange-300 to bg-orange-500" />
       <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-6 md:grid-cols-2">
         {/* LEFT */}
@@ -37,7 +31,7 @@ const Hero = () => {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-5">
-            <UIButton >Download Papers</UIButton>
+            <UIButton>Download Papers</UIButton>
 
             <button className="flex items-center gap-3 text-sm font-medium text-[#2c255d]">
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-400 text-white">
