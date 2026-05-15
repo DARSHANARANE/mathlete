@@ -16,6 +16,7 @@ import Page404 from "../pages/Page404";
 import StudentQuestionPaper from "../pages/student/StudentQuestionPaper";
 import QuestionPaperCheckoutPage from "../pages/student/QuestionPaperCheckoutPage";
 import OrderSuccessPage from "../pages/student/OrderSuccessPage";
+import ContactPage from "../pages/admin/ContactPage";
 
 const AppRoutes = () => {
   return (
@@ -55,6 +56,7 @@ const AppRoutes = () => {
         <Route path="question-papers" element={<QuestionPaper />} />
         <Route path="orders" element={<Orders />} />
         <Route path="results-upload" element={<ResultsUpload />} />
+        <Route path="contacts" element={<ContactPage />} />
      
       </Route>
 

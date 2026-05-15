@@ -77,3 +77,15 @@ export const GET_Orders = gql`
 }
 }
 `;
+export const GET_CONTACTS = gql`
+  query GetContacts {
+    getContacts {
+      id
+      name
+      email
+      subject
+      message
+      createdAt
+    }
+  }
+`;

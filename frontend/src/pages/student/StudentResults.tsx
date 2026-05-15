@@ -7,10 +7,10 @@ import Table from "../../components/common/table/tablelayout";
 import type { Column } from "../../components/common/table/tablelayout";
 
 import Navbar from "../../components/common/homepage/Navbar";
-import IllustrationSection from "../../components/common/IllustrationSection";
 import { GET_YEARS, GET_RESULT_FILE } from "../../graphql/queries";
 import SearchBox from "../../components/common/SearchBox";
 import { FiCalendar, FiBook, FiLoader, FiAlertCircle, FiInbox } from "react-icons/fi";
+import PageBanner from "../../components/common/PageBanner";
 
 // ================= TYPES =================
 type StudentRow = {
@@ -170,7 +170,12 @@ const StudentResults: React.FC = () => {
       <Navbar />
 
       <div className="min-h-screen bg-gray-100 text-text">
-        <IllustrationSection />
+       <PageBanner
+          title="Student Results"
+          subtitle="Track performance, celebrate progress, and grow with confidence"
+          icon="🏆"
+          variant="results"
+        />
         <div className="p-4 space-y-4">
           {/* YEAR FILTER */}
           <div  className="bg-gray-100 px-4 flex items-center justify-between mb-4 bg-white p-4 rounded-xl shadow-sm border">

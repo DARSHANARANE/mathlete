@@ -97,7 +97,14 @@ const Sidebar: React.FC<Props> = ({ isOpen, closeSidebar }) => {
             <FaShoppingCart />
             Orders
           </NavLink>
-
+          <NavLink
+                  to="/admin/contacts"
+                  onClick={isMobile ? closeSidebar : undefined}
+                  className={linkStyle}
+                >
+                  <FaFileAlt />
+                  Contacts
+                </NavLink>
         </nav>
 
         {/* Footer (Logout fixed properly) */}

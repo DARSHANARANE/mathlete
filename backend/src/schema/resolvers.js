@@ -2,7 +2,9 @@ import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import ResultFile from "../models/ResultFile.js";
 import Pdf from "../models/Pdf.js"; // ✅ NEW
+import Order from "../models/Order.js"; // ✅ NEW
 import generateToken from "../utils/generateToken.js";
+import Contact from "../models/Contact.js";
 import fs from "fs";
 import path from "path";
 
@@ -101,6 +103,32 @@ const resolvers = {
         id: file._id.toString(),
         ...file._doc,
       };
+    },
+    getOrders: async () => {
+      const orders = await Order.find().sort({ createdAt: -1 });
+
+      return orders.map((item) => ({
+        id: item._id.toString(),
+        amount: item.amount,
+        razorpayOrderId: item.razorpayOrderId,
+        razorpayPaymentId: item.razorpayPaymentId,
+        createdAt: item.createdAt?.toISOString(),
+        fileUrl: item.fileUrl,
+        status: item.status,
+      }));
+    },
+    getContacts: async () => {
+      const contacts = await Contact.find().sort({ createdAt: -1 });
+
+      return contacts.map((item) => ({
+        id: item._id.toString(),
+        name: item.name,
+        email: item.email,
+        subject: item.subject,
+        message: item.message,
+        status: item.status,
+        createdAt: item.createdAt.toISOString(),
+      }));
     },
   },
 
@@ -214,10 +242,34 @@ const resolvers = {
 
       return true;
     },
+    // =========================
+    // ✅ CONTACT US
+    // =========================
+createContact: async (_, { name, email, subject, message }) => {
+  const contact = await Contact.create({
+    name,
+    email,
+    subject,
+    message,
+  });
+
+  return {
+    id: contact._id.toString(),
+    name: contact.name,
+    email: contact.email,
+    subject: contact.subject,
+    message: contact.message,
+    status: contact.status,
+    createdAt: contact.createdAt.toISOString(),
+  };
+},
   },
 };
 
 export default resolvers;
+    // =========================
+     // Order 
+    // =========================
 
     // =========================
      // contact 

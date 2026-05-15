@@ -39,10 +39,15 @@ const navLink = (path: string, label: string) => (
 
         {/* CTA */}
         <div className="hidden md:block">
-      
-      <Button variant="secondary" to="/papers">
-        Download Papers
-      </Button>
+          <Link
+            to="/contact"
+            className="px-5 py-2 rounded-full text-sm font-semibold
+       border border-red-300 text-red-400
+hover:bg-red-400 hover:text-white
+transition duration-300"
+          >
+            Contact Us
+          </Link>
         </div>
 
         {/* Mobile Toggle */}

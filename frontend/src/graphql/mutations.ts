@@ -49,3 +49,21 @@ export const DELETE_PDF = gql`
     deletePdf(id: $id)
   }
 `;
+
+export const CREATE_CONTACT = gql`
+  mutation CreateContact(
+    $name: String!
+    $email: String!
+    $subject: String
+    $message: String!
+  ) {
+    createContact(
+      name: $name
+      email: $email
+      subject: $subject
+      message: $message
+    ) {
+      id
+    }
+  }
+`;
