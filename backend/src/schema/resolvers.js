@@ -1,12 +1,10 @@
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import ResultFile from "../models/ResultFile.js";
-import Pdf from "../models/Pdf.js"; // ✅ NEW
-import Order from "../models/Order.js"; // ✅ NEW
-import generateToken from "../utils/generateToken.js";
+import Pdf from "../models/Pdf.js";
+import Order from "../models/Order.js";
 import Contact from "../models/Contact.js";
-import fs from "fs";
-import path from "path";
+import generateToken from "../utils/generateToken.js";
 
 // ======================
 // ADMIN CHECK
@@ -26,7 +24,9 @@ const resolvers = {
       return "Secret Admin Data 🔐";
     },
 
-    // ✅ Get all result files (Admin panel)
+    // ======================
+    // RESULT FILES
+    // ======================
     getResultFiles: async () => {
       const files = await ResultFile.find().sort({ uploadedAt: -1 });
 
@@ -41,14 +41,19 @@ const resolvers = {
       }));
     },
 
-    // ✅ STEP 1: Get Years
+    // ======================
+    // GET YEARS
+    // ======================
     getYears: async () => {
       return await ResultFile.distinct("year");
     },
 
-    // ✅ STEP 2: Get Classes by Year
+    // ======================
+    // GET CLASSES BY YEAR
+    // ======================
     getClasses: async (_, { year }) => {
       const filter = {};
+
       if (year && year !== "all") {
         filter.year = year;
       }
@@ -56,9 +61,14 @@ const resolvers = {
       return await ResultFile.distinct("className", filter);
     },
 
-    // ✅ STEP 3: Get File by Year + Class
+    // ======================
+    // GET FILE BY CLASS
+    // ======================
     getResultFileByClass: async (_, { year, className }) => {
-      const file = await ResultFile.findOne({ year, className });
+      const file = await ResultFile.findOne({
+        year,
+        className,
+      });
 
       if (!file) return null;
 
@@ -73,11 +83,13 @@ const resolvers = {
       };
     },
 
-    // =========================
-    // ✅ NEW: GET ALL PDFS
-    // =========================
+    // ======================
+    // GET ALL PDFS
+    // ======================
     getPdfs: async () => {
-      const pdfs = await Pdf.find().sort({ uploadedAt: -1 });
+      const pdfs = await Pdf.find().sort({
+        uploadedAt: -1,
+      });
 
       return pdfs.map((file) => ({
         id: file._id.toString(),
@@ -92,11 +104,12 @@ const resolvers = {
       }));
     },
 
-    // =========================
-    // ✅ NEW: GET SINGLE PDF
-    // =========================
+    // ======================
+    // GET SINGLE PDF
+    // ======================
     getPdf: async (_, { id }) => {
       const file = await Pdf.findById(id);
+
       if (!file) return null;
 
       return {
@@ -104,8 +117,14 @@ const resolvers = {
         ...file._doc,
       };
     },
+
+    // ======================
+    // GET ORDERS
+    // ======================
     getOrders: async () => {
-      const orders = await Order.find().sort({ createdAt: -1 });
+      const orders = await Order.find().sort({
+        createdAt: -1,
+      });
 
       return orders.map((item) => ({
         id: item._id.toString(),
@@ -117,8 +136,14 @@ const resolvers = {
         status: item.status,
       }));
     },
+
+    // ======================
+    // GET CONTACTS
+    // ======================
     getContacts: async () => {
-      const contacts = await Contact.find().sort({ createdAt: -1 });
+      const contacts = await Contact.find().sort({
+        createdAt: -1,
+      });
 
       return contacts.map((item) => ({
         id: item._id.toString(),
@@ -133,72 +158,36 @@ const resolvers = {
   },
 
   Mutation: {
-    // ✅ LOGIN
+    // ======================
+    // LOGIN
+    // ======================
     login: async (_, { email, password }) => {
       const user = await User.findOne({ email });
 
-      if (!user) throw new Error("Invalid credentials");
+      if (!user) {
+        throw new Error("Invalid credentials");
+      }
 
-      const isMatch = await bcrypt.compare(password, user.password);
+      const isMatch = await bcrypt.compare(
+        password,
+        user.password
+      );
 
-      if (!isMatch) throw new Error("Invalid credentials");
+      if (!isMatch) {
+        throw new Error("Invalid credentials");
+      }
 
       const token = generateToken(user);
 
-      return { token, user };
-    },
-
-    // =========================
-    // ✅ NEW: UPLOAD PDF (GRAPHQL)
-    // =========================
-    uploadPdf: async (
-      _,
-      { file, title, className, year, pages, price },
-      { user }
-    ) => {
-      isAdmin(user); // 🔐 only admin
-
-      const { createReadStream, filename } = await file;
-
-      const stream = createReadStream();
-
-      const uploadDir = "uploads/pdfs/";
-      const filePath = `${uploadDir}${Date.now()}-${filename}`;
-
-      // ensure folder exists
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
-
-      // save file
-      await new Promise((resolve, reject) => {
-        const writeStream = fs.createWriteStream(filePath);
-        stream.pipe(writeStream);
-        writeStream.on("finish", resolve);
-        writeStream.on("error", reject);
-      });
-
-      const newPdf = new Pdf({
-        fileName: filename,
-        filePath,
-        title,
-        className,
-        year,
-        pages,
-        price,
-      });
-
-      await newPdf.save();
-
       return {
-        id: newPdf._id.toString(),
-        ...newPdf._doc,
+        token,
+        user,
       };
     },
 
-    // =========================
-    // ✅ DELETE RESULT FILE
-    // =========================
+    // ======================
+    // DELETE RESULT FILE
+    // ======================
     deleteResultFile: async (_, { id }) => {
       const file = await ResultFile.findById(id);
 
@@ -206,72 +195,54 @@ const resolvers = {
         throw new Error("File not found");
       }
 
-      if (file.filePath) {
-        const fullPath = path.join(process.cwd(), file.filePath);
-
-        if (fs.existsSync(fullPath)) {
-          fs.unlinkSync(fullPath);
-          console.log("File deleted:", fullPath);
-        }
-      }
-
       await ResultFile.findByIdAndDelete(id);
 
       return true;
     },
 
-    // =========================
-    // ✅ NEW: DELETE PDF
-    // =========================
+    // ======================
+    // DELETE PDF
+    // ======================
     deletePdf: async (_, { id }, { user }) => {
       isAdmin(user);
 
       const file = await Pdf.findById(id);
 
-      if (!file) throw new Error("PDF not found");
-
-      if (file.filePath) {
-        const fullPath = path.join(process.cwd(), file.filePath);
-
-        if (fs.existsSync(fullPath)) {
-          fs.unlinkSync(fullPath);
-        }
+      if (!file) {
+        throw new Error("PDF not found");
       }
 
       await Pdf.findByIdAndDelete(id);
 
       return true;
     },
-    // =========================
-    // ✅ CONTACT US
-    // =========================
-createContact: async (_, { name, email, subject, message }) => {
-  const contact = await Contact.create({
-    name,
-    email,
-    subject,
-    message,
-  });
 
-  return {
-    id: contact._id.toString(),
-    name: contact.name,
-    email: contact.email,
-    subject: contact.subject,
-    message: contact.message,
-    status: contact.status,
-    createdAt: contact.createdAt.toISOString(),
-  };
-},
+    // ======================
+    // CONTACT US
+    // ======================
+    createContact: async (
+      _,
+      { name, email, subject, message }
+    ) => {
+      const contact = await Contact.create({
+        name,
+        email,
+        subject,
+        message,
+      });
+
+      return {
+        id: contact._id.toString(),
+        name: contact.name,
+        email: contact.email,
+        subject: contact.subject,
+        message: contact.message,
+        status: contact.status,
+        createdAt:
+          contact.createdAt.toISOString(),
+      };
+    },
   },
 };
 
 export default resolvers;
-    // =========================
-     // Order 
-    // =========================
-
-    // =========================
-     // contact 
-    // =========================
-    

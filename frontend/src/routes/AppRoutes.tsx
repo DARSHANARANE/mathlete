@@ -17,6 +17,7 @@ import StudentQuestionPaper from "../pages/student/StudentQuestionPaper";
 import QuestionPaperCheckoutPage from "../pages/student/QuestionPaperCheckoutPage";
 import OrderSuccessPage from "../pages/student/OrderSuccessPage";
 import ContactPage from "../pages/admin/ContactPage";
+import StudentBooks from "../pages/student/StudentBooks";
 
 const AppRoutes = () => {
   return (
@@ -31,6 +32,7 @@ const AppRoutes = () => {
       <Route path="/contact" element={<Contact />} />
       <Route path="/results" element={<StudentResults />} />
       <Route path="/papers" element={<StudentQuestionPaper />} />
+      <Route path="/books" element={<StudentBooks />} />
       <Route path="/gallery" element={<Gallery />} />
          <Route
           path="/papers/checkout/:id"

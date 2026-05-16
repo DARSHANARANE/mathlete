@@ -6,7 +6,7 @@ import GlobalFilter from "../../components/common/GlobalFilter";
 import SearchBox from "../../components/common/SearchBox";
 
 import { GET_PDFS, GET_YEARS } from "../../graphql/queries";
-import QuestionPaperCard from "../../components/common/QuestionPaperCardProps";
+import  { BuyBookCard } from "../../components/common/QuestionPaperCardProps";
 
 type YearsData = {
   getYears: string[];
@@ -27,7 +27,7 @@ type PdfData = {
   getPdfs: PdfItem[];
 };
 
-export default function StudentQuestionPaperPage() {
+export default function studentBooks() {
   const [search, setSearch] = useState("");
   const [year, setYear] = useState("all");
   const [className, setClassName] = useState("all");
@@ -74,21 +74,12 @@ export default function StudentQuestionPaperPage() {
                   <span className="text-2xl">📘</span>
                 </div>
 
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
+               
+                  <div className="flex items-center">
                     <h1 className="text-3xl font-black text-[#1b1444]">
-                      Question Papers
+                      Books
                     </h1>
-
-                    <span className="rounded-full bg-[#eefbf4] px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-[#19B27B]">
-                      Practice
-                    </span>
                   </div>
-
-                  <p className="mt-2 text-sm text-[#6d6886]">
-                    Browse uploaded papers and download instantly.
-                  </p>
-                </div>
               </div>
 
               {/* right */}
@@ -117,7 +108,7 @@ export default function StudentQuestionPaperPage() {
                   <SearchBox
                     value={search}
                     onChange={setSearch}
-                    placeholder="Search papers..."
+                    placeholder="Search Books..."
                   />
                 </div>
               </div>
@@ -126,13 +117,13 @@ export default function StudentQuestionPaperPage() {
 
           {/* Cards */}
           {loading ? (
-            <p className="text-gray-500">Loading question papers...</p>
+            <p className="text-gray-500">Loading books...</p>
           ) : filteredPdfs.length === 0 ? (
-            <p className="text-gray-500">No question papers found.</p>
+            <p className="text-gray-500">No books found.</p>
           ) : (
             <div className="grid gap-6 sm:grid-cols-4 lg:grid-cols-5">
               {filteredPdfs.map((pdf) => (
-                <QuestionPaperCard key={pdf.id} pdf={pdf} />
+                <BuyBookCard  />
               ))}
             </div>
           )}

@@ -42,10 +42,15 @@ type Props = {
   onAddClick?: () => void;
 
   addLabel?: string;
-   showClass?: boolean;
+  showClass?: boolean;
   classOptions?: Option[];
   classValue?: string;
   onClassChange?: (val: string) => void;
+
+  showLevel?: boolean;
+  levelOptions?: Option[];
+  levelValue?: string;
+  onLevelChange?: (val: string) => void;
 };
 
 const GlobalFilter: React.FC<Props> = ({
@@ -73,41 +78,43 @@ const GlobalFilter: React.FC<Props> = ({
   classOptions = [],
   classValue = "all",
   onClassChange,
-  align
+  align,
+
+  showLevel = false,
+  levelOptions = [],
+  levelValue = "all",
+  onLevelChange,
+
 }) => {
   const isMobile = useIsMobile();
   const { exportToExcel } = useExportToExcel();
 
   return (
-        <div
-        className={` ${
-          align === "left" ? "" : "bg-white p-4 rounded-xl shadow-sm border space-y-4"
+    <div
+      className={` ${align === "left" ? "" : "bg-white p-4 rounded-xl shadow-sm border space-y-4"
         }`}
-      >
+    >
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 
         {/* FILTERS */}
-       <div 
-         className={` ${
-          align === "left" ? "flex flex-wrap gap-3" : "grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-        }`}>
+        <div
+          className={` ${align === "left" ? "flex flex-wrap gap-3" : "grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+            }`}>
 
-           {showSearch && onSearch && (
-              <SearchBox
-                value={searchValue}
-                onChange={onSearch}
-                placeholder={searchPlaceholder}
-              />
-            )}
-
+          {showSearch && onSearch && (
+            <SearchBox
+              value={searchValue}
+              onChange={onSearch}
+              placeholder={searchPlaceholder}
+            />
+          )}
           {showStatus && (
             <select
               value={statusValue}
               onChange={(e) => onStatusChange?.(e.target.value)}
-              className={` border px-3 py-2  text-sm rounded-md ${
-                align === "left" ? "min-w-[100px] flex-1 " : "w-full"
-              }`}>
+              className={` border px-3 py-2  text-sm rounded-md ${align === "left" ? "min-w-[100px] flex-1 " : "w-full"
+                }`}>
               {statusOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}
@@ -115,30 +122,30 @@ const GlobalFilter: React.FC<Props> = ({
               ))}
             </select>
           )}
-
-          {showDate && (
-            <select
-              value={dateValue}
-              onChange={(e) => onDateChange?.(e.target.value)}
-             className={` border px-3 py-2  text-sm rounded-md ${
-                align === "left" ? "min-w-[100px] flex-1 " : "w-full"
-              }`}>
-            
-              <option value="all">All Time</option>
-              <option value="today">Today</option>
-              <option value="7days">Last 7 Days</option>
-              <option value="30days">Last 30 Days</option>
-            </select>
-          )}
           {showClass && (
             <select
               value={classValue}
               onChange={(e) => onClassChange?.(e.target.value)}
-                 className={` border px-3 py-2  text-sm rounded-md ${
-                align === "left" ? "min-w-[100px] flex-1 " : "w-full"
-              }`}>
+              className={` border px-3 py-2  text-sm rounded-md ${align === "left" ? "min-w-[100px] flex-1 " : "w-full"
+                }`}>
               <option value="all">All Classes</option>
               {classOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          )}
+          {showLevel && (
+            <select
+              value={levelValue}
+              onChange={(e) => onLevelChange?.(e.target.value)}
+              className={`border px-3 py-2 text-sm rounded-md ${align === "left" ? "min-w-[100px] flex-1" : "w-full"
+                }`}
+            >
+              <option value="all">All Levels</option>
+
+              {levelOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}
                 </option>
@@ -148,7 +155,7 @@ const GlobalFilter: React.FC<Props> = ({
         </div>
 
         {/* ACTIONS */}
-       <div className={`flex gap-2 ${!showAddButton && !showExportButton ? "hidden" : ""}`}>
+        <div className={`flex gap-2 ${!showAddButton && !showExportButton ? "hidden" : ""}`}>
 
           {showAddButton && (
             <button

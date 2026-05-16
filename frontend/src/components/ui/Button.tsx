@@ -12,38 +12,36 @@ type UIButtonProps = {
 
 const variants = {
   primary: `
-    bg-gradient-to-r from-[#D90621] via-[#EE3344] to-[#ff6b81]
+    bg-gradient-to-r from-[#E3344A] to-[#ff4d6d]
     text-white
-    hover:from-[#cf2e43]
-    hover:via-[#e43d61]
-    hover:to-[#ff5c75]
-    shadow-[0_12px_28px_rgba(227,52,74,0.30)]
+    hover:from-[#d92d42]
+    hover:to-[#f43f5e]
+    shadow-[0_10px_25px_rgba(227,52,74,0.28)]
   `,
 
-  secondary: `
-    border border-[#E3344A]
-    bg-white
-    text-[#E3344A]
-    hover:bg-gradient-to-r
-    hover:from-[#D90621]
-    hover:via-[#EE3344]
-    hover:to-[#ff6b81]
-    hover:text-white
-    shadow-[0_8px_20px_rgba(227,52,74,0.10)]
-  `,
+secondary: `
+  border border-[#E3344A]
+  bg-white
+  text-[#E3344A]
+  hover:bg-[#E3344A]
+  hover:text-white
+  transition-all duration-300
+  shadow-[0_8px_20px_rgba(227,52,74,0.10)]
+`,
 };
 
 const baseStyles = `
   inline-flex items-center justify-center
-  rounded-full
-  px-7 py-3
+  rounded-[5px]
+  px-4 py-2
   text-sm
   font-semibold
-  tracking-[0.04em]
+  tracking-[0.05em]
   transition-all duration-300
   hover:-translate-y-0.5
   hover:shadow-xl
   active:scale-[0.98]
+  gap-2
 `;
 
 const UIButton = ({
