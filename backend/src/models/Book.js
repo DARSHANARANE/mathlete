@@ -1,0 +1,32 @@
+import mongoose from "mongoose";
+
+const bookSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+
+    description: {
+      type: String,
+    },
+   className: {
+      type: String,
+      required: true,
+    },
+    level: {
+      type: String,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const Book = mongoose.model("Book", bookSchema);
+
+export default Book;

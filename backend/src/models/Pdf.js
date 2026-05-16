@@ -26,7 +26,9 @@ const pdfSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
+  level: {
+      type: String,
+    },
   year: {
     type: String,
     required: true,

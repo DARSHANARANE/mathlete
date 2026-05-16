@@ -5,6 +5,8 @@ import Pdf from "../models/Pdf.js";
 import Order from "../models/Order.js";
 import Contact from "../models/Contact.js";
 import generateToken from "../utils/generateToken.js";
+import Book from "../models/Book.js";
+import BookOrder from "../models/BookOrder.js";
 
 // ======================
 // ADMIN CHECK
@@ -97,6 +99,7 @@ const resolvers = {
         filePath: file.filePath,
         title: file.title,
         className: file.className,
+        level: file.level,
         year: file.year,
         pages: file.pages,
         price: file.price,
@@ -153,6 +156,53 @@ const resolvers = {
         message: item.message,
         status: item.status,
         createdAt: item.createdAt.toISOString(),
+      }));
+    },
+
+        // ======================
+    // GET BOOKS
+    // ======================
+    getBooks: async () => {
+      const books = await Book.find().sort({
+        createdAt: -1,
+      });
+
+      return books.map((item) => ({
+        id: item._id.toString(),
+        title: item.title,
+        description: item.description,
+        className: item.className,
+        level: item.level,
+        price: item.price,
+        createdAt:
+          item.createdAt.toISOString(),
+      }));
+    },
+
+    // ======================
+    // GET BOOK ORDERS
+    // ======================
+    getBookOrders: async () => {
+      const orders = await BookOrder.find()
+        .populate("bookId")
+        .sort({
+          createdAt: -1,
+        });
+
+      return orders.map((item) => ({
+        id: item._id.toString(),
+        studentName: item.studentName,
+        mobile: item.mobile,
+        email: item.email,
+        address: item.address,
+        pincode: item.pincode,
+        amount: item.amount,
+        status: item.status,
+        razorpayPaymentId:
+          item.razorpayPaymentId,
+        createdAt:
+          item.createdAt.toISOString(),
+        book: item.bookId,
       }));
     },
   },
@@ -242,6 +292,87 @@ const resolvers = {
           contact.createdAt.toISOString(),
       };
     },
+
+        // ======================
+    // CREATE BOOK
+    // ======================
+    createBook: async (
+      _,
+      {
+        title,
+        description,
+        className,
+        level,
+        price,
+      },
+      { user }
+    ) => {
+      isAdmin(user);
+
+      const book = await Book.create({
+        title,
+        description,
+        className,
+        level,
+        price,
+      });
+
+      return {
+        id: book._id.toString(),
+        title: book.title,
+        description: book.description,
+        className: book.className,
+        level: book.level,
+        price: book.price,
+        createdAt:
+          book.createdAt.toISOString(),
+      };
+    },
+
+        // ======================
+    // CREATE BOOK ORDER
+    // ======================
+    createBookOrder: async (
+      _,
+      {
+        bookId,
+        studentName,
+        mobile,
+        email,
+        address,
+        pincode,
+        amount,
+        razorpayPaymentId,
+      }
+    ) => {
+      const order = await BookOrder.create({
+        bookId,
+        studentName,
+        mobile,
+        email,
+        address,
+        pincode,
+        amount,
+        razorpayPaymentId,
+        status: "Paid",
+      });
+
+      return {
+        id: order._id.toString(),
+        studentName: order.studentName,
+        mobile: order.mobile,
+        email: order.email,
+        address: order.address,
+        pincode: order.pincode,
+        amount: order.amount,
+        status: order.status,
+        razorpayPaymentId:
+          order.razorpayPaymentId,
+        createdAt:
+          order.createdAt.toISOString(),
+      };
+    },
+
   },
 };
 

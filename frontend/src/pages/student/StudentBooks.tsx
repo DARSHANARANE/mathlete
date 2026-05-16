@@ -1,3 +1,5 @@
+// src/pages/student/studentBooks.tsx
+
 import { useMemo, useState } from "react";
 import { useQuery } from "@apollo/client/react/compiled";
 
@@ -5,102 +7,139 @@ import Navbar from "../../components/common/homepage/Navbar";
 import GlobalFilter from "../../components/common/GlobalFilter";
 import SearchBox from "../../components/common/SearchBox";
 
-import { GET_PDFS, GET_YEARS } from "../../graphql/queries";
-import  { BuyBookCard } from "../../components/common/QuestionPaperCardProps";
+import {
+  GET_BOOKS,
+  GET_YEARS,
+} from "../../graphql/queries";
+
+import { BuyBookCard } from "../../components/common/QuestionPaperCardProps";
 
 type YearsData = {
   getYears: string[];
 };
 
-type PdfItem = {
+type BookItem = {
   id: string;
-  fileName: string;
-  filePath: string;
-  title?: string;
+  title: string;
+  description?: string;
   className?: string;
-  year?: string;
-  pages?: number;
+  level?: string;
   price?: number;
 };
 
-type PdfData = {
-  getPdfs: PdfItem[];
+type BookData = {
+  getBooks: BookItem[];
 };
 
-export default function studentBooks() {
+export default function StudentBooks() {
   const [search, setSearch] = useState("");
-  const [year, setYear] = useState("all");
-  const [className, setClassName] = useState("all");
-  const [level, setLevel] = useState("all");
-  const { data: yearsData } = useQuery<YearsData>(GET_YEARS);
-  const { data, loading } = useQuery<PdfData>(GET_PDFS);
+  const [className, setClassName] =
+    useState("all");
 
-  const yearOptions = [
-    { label: "All Years", value: "all" },
-    ...(yearsData?.getYears || []).map((y) => ({
-      label: y,
-      value: y,
-    })),
-  ];
+  const [level, setLevel] =
+    useState("all");
 
-  const filteredPdfs = useMemo(() => {
-    return (data?.getPdfs || []).filter((pdf) => {
+  const { data: yearsData } =
+    useQuery<YearsData>(GET_YEARS);
+
+  const { data, loading } =
+    useQuery<BookData>(GET_BOOKS);
+
+  const filteredBooks = useMemo(() => {
+    return (
+      data?.getBooks || []
+    ).filter((book) => {
       const matchSearch =
         !search ||
-        pdf.title?.toLowerCase().includes(search.toLowerCase()) ||
-        pdf.fileName?.toLowerCase().includes(search.toLowerCase());
-
-      const matchYear = year === "all" || pdf.year === year;
+        book.title
+          ?.toLowerCase()
+          .includes(search.toLowerCase());
 
       const matchClass =
-        className === "all" || pdf.className === className;
+        className === "all" ||
+        book.className === className;
 
-      return matchSearch && matchYear && matchClass;
+      const matchLevel =
+        level === "all" ||
+        book.level === level;
+
+      return (
+        matchSearch &&
+        matchClass &&
+        matchLevel
+      );
     });
-  }, [data, search, year, className]);
+  }, [
+    data,
+    search,
+    className,
+    level,
+  ]);
 
   return (
     <>
       <Navbar />
 
-      <div className=" relative min-h-screen bg-gray-100 text-text">
-        <div className="p-4 space-y-4 z-20  relative">
-          {/* Header */}
+      <div className="relative min-h-screen bg-gray-100 text-text">
+        <div className="relative z-20 space-y-4 p-4">
+
+          {/* HEADER */}
           <div className="rounded-[26px] bg-white p-5 shadow-[0_14px_30px_rgba(40,20,90,0.05)]">
+
             <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-              {/* left */}
+
+              {/* LEFT */}
               <div className="flex items-start gap-4">
+
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f4f0ff]">
-                  <span className="text-2xl">📘</span>
+                  <span className="text-2xl">
+                    📘
+                  </span>
                 </div>
 
-               
-                  <div className="flex items-center">
-                    <h1 className="text-3xl font-black text-[#1b1444]">
-                      Books
-                    </h1>
-                  </div>
+                <div className="flex items-center">
+                  <h1 className="text-3xl font-black text-[#1b1444]">
+                    Books
+                  </h1>
+                </div>
               </div>
 
-              {/* right */}
+              {/* RIGHT */}
               <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
+
                 <GlobalFilter
                   align="left"
                   showSearch={false}
                   showStatus={false}
+
                   showClass
-                  classOptions={[...Array(7)].map((_, i) => ({
-                    label: `Class ${i + 1}`,
-                    value: `${i + 1}`,
-                  }))}
+                  classOptions={[
+                    ...[...Array(10)].map(
+                      (_, i) => ({
+                        label: `Class ${i + 1}`,
+                        value: `${i + 1}`,
+                      })
+                    ),
+                  ]}
+
                   classValue={className}
                   onClassChange={setClassName}
+
                   showLevel
                   levelValue={level}
                   onLevelChange={setLevel}
+
                   levelOptions={[
-                    { label: "Level 1", value: "level1" },
-                    { label: "Level 2", value: "level2" },
+
+                    {
+                      label: "Level 1",
+                      value: "Level 1",
+                    },
+
+                    {
+                      label: "Level 2",
+                      value: "Level 2",
+                    },
                   ]}
                 />
 
@@ -115,15 +154,26 @@ export default function studentBooks() {
             </div>
           </div>
 
-          {/* Cards */}
+          {/* BOOKS */}
           {loading ? (
-            <p className="text-gray-500">Loading books...</p>
-          ) : filteredPdfs.length === 0 ? (
-            <p className="text-gray-500">No books found.</p>
+            <p className="text-gray-500">
+              Loading books...
+            </p>
+          ) : filteredBooks.length === 0 ? (
+            <p className="text-gray-500">
+              No books found.
+            </p>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-4 lg:grid-cols-5">
-              {filteredPdfs.map((pdf) => (
-                <BuyBookCard  />
+            <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+              {filteredBooks.map((book) => (
+                <BuyBookCard
+                  key={book.id}
+                  title={book.title}
+                  description={book.description}
+                  className={book.className}
+                  level={book.level}
+                  price={book.price}
+                />
               ))}
             </div>
           )}

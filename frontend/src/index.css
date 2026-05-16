@@ -57,3 +57,25 @@ body {
 .animate-cloud {
   animation: floatCloud 8s ease-in-out infinite;
 }
+/* Total width of the scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Design for the track (background) */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+  border-radius: 10px;
+}
+
+/* Design for the thumb (the moving part) */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 10px;
+  border: 2px solid #f1f1f1; /* Creates a "padding" effect around the thumb */
+}
+
+/* Change color when hovering over the thumb */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
