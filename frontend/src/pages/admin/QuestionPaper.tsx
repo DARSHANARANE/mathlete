@@ -98,7 +98,6 @@ const QuestionPaPer: React.FC = () => {
           title: formData.title,
           className: formData.className,
           year: formData.year,
-          pages: Number(formData.pages),
           price: Number(formData.price),
         });
       }

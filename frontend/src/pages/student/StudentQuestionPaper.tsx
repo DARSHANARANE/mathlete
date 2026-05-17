@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@apollo/client/react/compiled";
-import { Download, FileText } from "lucide-react";
 
 import Navbar from "../../components/common/homepage/Navbar";
 import GlobalFilter from "../../components/common/GlobalFilter";
@@ -32,7 +31,7 @@ export default function StudentQuestionPaperPage() {
   const [search, setSearch] = useState("");
   const [year, setYear] = useState("all");
   const [className, setClassName] = useState("all");
-
+  const [level, setLevel] = useState("all");
   const { data: yearsData } = useQuery<YearsData>(GET_YEARS);
   const { data, loading } = useQuery<PdfData>(GET_PDFS);
 
@@ -65,12 +64,6 @@ export default function StudentQuestionPaperPage() {
       <Navbar />
 
       <div className=" relative min-h-screen bg-gray-100 text-text">
-        <div className="absolute top-0 left-0 w-full z-10">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-  <path fill="#F7CCD3" fill-opacity="1" d="M0,32L48,53.3C96,75,192,117,288,112C384,107,480,53,576,37.3C672,21,768,43,864,80C960,117,1056,171,1152,202.7C1248,235,1344,245,1392,250.7L1440,256L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path>
-</svg>
-        </div>
-   
         <div className="p-4 space-y-4 z-20  relative">
           {/* Header */}
           <div className="rounded-[26px] bg-white p-5 shadow-[0_14px_30px_rgba(40,20,90,0.05)]">
@@ -105,12 +98,19 @@ export default function StudentQuestionPaperPage() {
                   showSearch={false}
                   showStatus={false}
                   showClass
-                  classOptions={[...Array(12)].map((_, i) => ({
+                  classOptions={[...Array(7)].map((_, i) => ({
                     label: `Class ${i + 1}`,
                     value: `${i + 1}`,
                   }))}
                   classValue={className}
                   onClassChange={setClassName}
+                  showLevel
+                  levelValue={level}
+                  onLevelChange={setLevel}
+                  levelOptions={[
+                    { label: "Level 1", value: "level1" },
+                    { label: "Level 2", value: "level2" },
+                  ]}
                 />
 
                 <div className="min-w-[240px]">

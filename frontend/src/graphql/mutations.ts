@@ -23,6 +23,7 @@ export const UPLOAD_PDF = gql`
     $file: Upload!
     $title: String
     $className: String
+    $level: String
     $year: String
     $pages: Int
     $price: Float!
@@ -31,6 +32,7 @@ export const UPLOAD_PDF = gql`
       file: $file
       title: $title
       className: $className
+      level: $level
       year: $year
       pages: $pages
       price: $price
@@ -40,6 +42,7 @@ export const UPLOAD_PDF = gql`
       pages
       price
       title
+      level
     }
   }
 `;

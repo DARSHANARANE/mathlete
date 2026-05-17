@@ -3,7 +3,11 @@ import mongoose from "mongoose";
 const resultFileSchema = new mongoose.Schema(
   {
     fileName: String,
+
     filePath: String,
+
+    // ✅ IMPORTANT
+    publicId: String,
 
     className: {
       type: String,
@@ -27,7 +31,13 @@ const resultFileSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// 🔥 Prevent duplicate class + year
-resultFileSchema.index({ className: 1, year: 1 }, { unique: true });
+// Prevent duplicate class + year
+resultFileSchema.index(
+  { className: 1, year: 1 },
+  { unique: true }
+);
 
-export default mongoose.model("ResultFile", resultFileSchema);
+export default mongoose.model(
+  "ResultFile",
+  resultFileSchema
+);

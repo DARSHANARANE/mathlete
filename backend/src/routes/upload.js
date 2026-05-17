@@ -1,40 +1,65 @@
+// routes/uploadRoutes.js
 
 import express from "express";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
-import * as pdfParseModule from "pdf-parse";
-import Razorpay from "razorpay";
-import crypto from "crypto";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import cloudinary from "../config/cloudinary.js";
 
 import ResultFile from "../models/ResultFile.js";
 import Pdf from "../models/Pdf.js";
-import Order from "../models/Order.js";
-
-const pdfParse =
-  typeof pdfParseModule === "function"
-    ? pdfParseModule
-    : pdfParseModule.default || pdfParseModule.pdfParse || pdfParseModule;
-
 
 const router = express.Router();
 
-// =====================
-// EXCEL STORAGE
-// =====================
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = path.join(process.cwd(), "uploads", "result");
-    fs.mkdirSync(uploadDir, { recursive: true });
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
+// ======================
+// RESULT STORAGE
+// ======================
+
+const storage = new CloudinaryStorage({
+  cloudinary,
+
+  params: async (req, file) => {
+    return {
+      folder: "student-management/results",
+      resource_type: "raw",
+      format: file.originalname.split(".").pop(),
+
+      public_id: `${Date.now()}-${file.originalname}`,
+    };
   },
 });
 
+// ======================
+// PDF STORAGE
+// ======================
+
+const pdfStorage = new CloudinaryStorage({
+  cloudinary,
+
+  params: async (req, file) => {
+    return {
+      folder: "student-management/pdfs",
+      resource_type: "raw",
+      format: "pdf",
+
+      public_id: `${Date.now()}-${file.originalname.replace(
+        /\.[^/.]+$/,
+        ""
+      )}`,
+    };
+  },
+});
+
+// ======================
+// RESULT MULTER
+// ======================
+
 const upload = multer({
   storage,
+
+  limits: {
+    fileSize: 20 * 1024 * 1024,
+  },
+
   fileFilter: (req, file, cb) => {
     const allowedTypes = [
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -49,126 +74,264 @@ const upload = multer({
   },
 });
 
-// =====================
+// ======================
+// PDF MULTER
+// ======================
+
+const uploadPdfMiddleware = multer({
+  storage: pdfStorage,
+
+  limits: {
+    fileSize: 50 * 1024 * 1024,
+  },
+
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype !== "application/pdf") {
+      return cb(new Error("Only PDF files allowed"));
+    }
+
+    cb(null, true);
+  },
+});
+
+// ======================
+// HANDLE RESULT UPLOAD
+// ======================
+
+const handleUpload = (req, res, next) => {
+  upload.single("file")(req, res, (err) => {
+    if (err) {
+      console.error("UPLOAD ERROR:", err);
+
+      return res.status(500).json({
+        error: err.message || "Upload failed",
+      });
+    }
+
+    next();
+  });
+};
+
+// ======================
+// HANDLE PDF UPLOAD
+// ======================
+
+const handlePdfUpload = (req, res, next) => {
+  uploadPdfMiddleware.single("file")(req, res, (err) => {
+    if (err) {
+      console.error("PDF UPLOAD ERROR:", err);
+
+      return res.status(500).json({
+        error: err.message || "PDF upload failed",
+      });
+    }
+
+    next();
+  });
+};
+
+// ======================
 // RESULT UPLOAD
-// =====================
-router.post("/", upload.single("file"), async (req, res) => {
+// ======================
+
+router.post("/", handleUpload, async (req, res) => {
   try {
     let { year, className, heading } = req.body;
+
     const file = req.file;
 
     if (!file) {
-      return res.status(400).json({ error: "No file" });
+      return res.status(400).json({
+        error: "No file uploaded",
+      });
     }
 
-    className = className.replace(/(st|nd|rd|th)/g, "");
+    className = className.replace(
+      /(st|nd|rd|th)/g,
+      ""
+    );
 
-    const filePath = `/uploads/result/${file.filename}`;
+    console.log("RESULT FILE:", file);
+    console.log("PUBLIC ID:", file.filename);
 
-    const existing = await ResultFile.findOne({ year, className });
+    const existing = await ResultFile.findOne({
+      year,
+      className,
+    });
 
+    // =========================
+    // DELETE OLD FILE
+    // =========================
+    if (existing?.publicId) {
+      console.log(
+        "Deleting OLD Result File:",
+        existing.publicId
+      );
+
+      const cloudinaryResult =
+        await cloudinary.uploader.destroy(
+          existing.publicId,
+          {
+            resource_type: "raw",
+            invalidate: true,
+          }
+        );
+
+      console.log(
+        "Cloudinary Delete Result:",
+        cloudinaryResult
+      );
+    }
+
+    // =========================
+    // UPDATE EXISTING
+    // =========================
     if (existing) {
-      if (existing.filePath) {
-        const oldPath = path.join(process.cwd(), existing.filePath);
-
-        if (fs.existsSync(oldPath)) {
-          fs.unlinkSync(oldPath);
-        }
-      }
-
       existing.fileName = file.originalname;
-      existing.filePath = filePath;
+
+      existing.filePath = file.path;
+
+      // IMPORTANT
+      existing.publicId = file.filename;
+
       existing.heading = heading;
+
       existing.uploadedAt = new Date();
 
       await existing.save();
 
       return res.json({
-        message: "Replaced",
+        message: "Result replaced successfully",
         data: existing,
       });
     }
 
+    // =========================
+    // CREATE NEW
+    // =========================
     const saved = await ResultFile.create({
       fileName: file.originalname,
-      filePath,
+
+      filePath: file.path,
+
+      // IMPORTANT
+      publicId: file.filename,
+
       year,
+
       className,
+
       heading,
+
       uploadedAt: new Date(),
     });
 
     res.json({
-      message: "Uploaded",
+      message: "Result uploaded successfully",
       data: saved,
     });
   } catch (err) {
-    console.error("RESULT UPLOAD ERROR:", err);
-    res.status(500).json({ error: err.message });
+    console.error("RESULT UPLOAD ERROR:");
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message || "Upload failed",
+    });
   }
 });
 
-// =====================
-// PDF STORAGE
-// =====================
-const pdfStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = path.join(process.cwd(), "uploads", "pdfs");
-    fs.mkdirSync(uploadDir, { recursive: true });
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
+// ======================
+// DELETE RESULT FILE
+// ======================
 
-const uploadPdf = multer({
-  storage: pdfStorage,
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype === "application/pdf") {
-      cb(null, true);
-    } else {
-      cb(new Error("Only PDF allowed"));
-    }
-  },
-});
-
-// =====================
-// PDF UPLOAD
-// =====================
-router.post("/pdf", uploadPdf.single("file"), async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
-    const { title, className, year, price } = req.body;
+    const { id } = req.params;
+
+    const result = await ResultFile.findById(id);
+
+    if (!result) {
+      return res.status(404).json({
+        error: "Result file not found",
+      });
+    }
+
+    // =========================
+    // DELETE FROM CLOUDINARY
+    // =========================
+    if (result.publicId) {
+      console.log(
+        "Deleting Result File:",
+        result.publicId
+      );
+
+      const cloudinaryResult =
+        await cloudinary.uploader.destroy(
+          result.publicId,
+          {
+            resource_type: "raw",
+            invalidate: true,
+          }
+        );
+
+      console.log(
+        "Cloudinary Result Delete:",
+        cloudinaryResult
+      );
+    }
+
+    // =========================
+    // DELETE FROM DB
+    // =========================
+    await ResultFile.findByIdAndDelete(id);
+
+    res.json({
+      message: "Result file deleted successfully",
+    });
+  } catch (err) {
+    console.error("RESULT DELETE ERROR:");
+    console.error(err);
+
+    res.status(500).json({
+      error: err.message || "Delete failed",
+    });
+  }
+});
+
+// ======================
+// PDF UPLOAD
+// ======================
+
+router.post("/pdf", handlePdfUpload, async (req, res) => {
+  try {
+    const { title, className, year, pages, price } =
+      req.body;
+
     const file = req.file;
 
+    console.log("PDF FILE:", file);
+    console.log("PDF PUBLIC ID:", file?.filename);
+
     if (!file) {
-      return res.status(400).json({ error: "No PDF" });
+      return res.status(400).json({
+        error: "No PDF uploaded",
+      });
     }
-
-    if (!price) {
-      return res.status(400).json({ error: "Price required" });
-    }
-
-    let pages = 0;
-
-    try {
-      const buffer = fs.readFileSync(file.path);
-      const data = await pdfParse(buffer);
-      pages = data.numpages || 0;
-    } catch (parseErr) {
-      console.error("PDF PARSE ERROR:", parseErr);
-    }
-
-    const filePath = `/uploads/pdfs/${file.filename}`;
 
     const saved = await Pdf.create({
       fileName: file.originalname,
-      filePath,
+
+      // cloudinary url
+      filePath: file.path,
+
+      // IMPORTANT
+      publicId: file.filename,
+
       title,
       className,
       year,
-      pages,
-      price,
+      pages: pages ? Number(pages) : undefined,
+      price: price ? Number(price) : undefined,
       uploadedAt: new Date(),
     });
 
@@ -178,203 +341,107 @@ router.post("/pdf", uploadPdf.single("file"), async (req, res) => {
     });
   } catch (err) {
     console.error("PDF UPLOAD ERROR:", err);
-    res.status(500).json({ error: err.message });
+
+    res.status(500).json({
+      error: err.message || "PDF upload failed",
+    });
   }
 });
 
-// =====================
+// ======================
 // DELETE PDF
-// =====================
+// ======================
+
 router.delete("/pdf/:id", async (req, res) => {
   try {
-    const file = await Pdf.findById(req.params.id);
+    const { id } = req.params;
 
-    if (!file) {
-      return res.status(404).json({ error: "PDF not found" });
+    const pdf = await Pdf.findById(id);
+
+    if (!pdf) {
+      return res.status(404).json({
+        error: "PDF not found",
+      });
     }
 
-    if (file.filePath) {
-      const fullPath = path.join(process.cwd(), file.filePath);
+    console.log("Deleting PDF:", pdf.publicId);
 
-      if (fs.existsSync(fullPath)) {
-        fs.unlinkSync(fullPath);
-      }
+    // ======================
+    // DELETE FROM CLOUDINARY
+    // ======================
+
+    if (pdf.publicId) {
+      const deleted =
+        await cloudinary.uploader.destroy(
+          pdf.publicId,
+          {
+            resource_type: "raw",
+          }
+        );
+
+      console.log(
+        "Cloudinary PDF Delete:",
+        deleted
+      );
     }
 
-    await Pdf.findByIdAndDelete(req.params.id);
+    // ======================
+    // DELETE FROM DATABASE
+    // ======================
+
+    await Pdf.findByIdAndDelete(id);
 
     res.json({
       message: "PDF deleted successfully",
     });
   } catch (err) {
-    console.error("DELETE ERROR:", err);
-    res.status(500).json({ error: "Delete failed" });
+    console.error("PDF DELETE ERROR:", err);
+
+    res.status(500).json({
+      error: err.message || "PDF delete failed",
+    });
   }
 });
 
-// =====================
+// ======================
 // UPDATE PDF
-// =====================
+// ======================
+
 router.put("/pdf/:id", async (req, res) => {
   try {
+    const { id } = req.params;
+
     const { title, price } = req.body;
 
-    const updated = await Pdf.findByIdAndUpdate(
-      req.params.id,
-      { title, price },
-      { new: true }
-    );
+    const pdf = await Pdf.findById(id);
 
-    if (!updated) {
-      return res.status(404).json({ error: "PDF not found" });
+    if (!pdf) {
+      return res.status(404).json({
+        error: "PDF not found",
+      });
     }
+
+    if (title !== undefined) {
+      pdf.title = title;
+    }
+
+    if (price !== undefined) {
+      pdf.price = Number(price);
+    }
+
+    await pdf.save();
 
     res.json({
       message: "PDF updated successfully",
-      data: updated,
+      data: pdf,
     });
   } catch (err) {
-    console.error("UPDATE ERROR:", err);
-    res.status(500).json({ error: "Update failed" });
+    console.error("PDF UPDATE ERROR:", err);
+
+    res.status(500).json({
+      error: err.message || "PDF update failed",
+    });
   }
 });
 
-// =====================
-// CREATE ORDER
-// =====================
-router.post("/payment/create-order", async (req, res) => {
-  try {
-    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
-      return res.status(500).json({
-        error: "Razorpay keys missing in .env",
-      });
-    }
-
-    const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET,
-    });
-
-    const { pdfId } = req.body;
-
-    const pdf = await Pdf.findById(pdfId);
-
-    if (!pdf) {
-      return res.status(404).json({ error: "PDF not found" });
-    }
-
-    const order = await razorpay.orders.create({
-      amount: Math.round(Number(pdf.price) * 100),
-      currency: "INR",
-      receipt: `pdf_${pdf._id}`,
-    });
-
-    res.json({
-      orderId: order.id,
-      amount: order.amount,
-      key: process.env.RAZORPAY_KEY_ID,
-      pdf,
-    });
-  } catch (err) {
-    console.error("CREATE ORDER ERROR:", err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-
-// =====================
-// VERIFY PAYMENT
-// =====================
-router.post("/payment/verify", async (req, res) => {
-  try {
-    const {
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature,
-      pdfId,
-    } = req.body;
-
-    const body = `${razorpay_order_id}|${razorpay_payment_id}`;
-
-    const expectedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(body)
-      .digest("hex");
-
-    const isValid = expectedSignature === razorpay_signature;
-
-    if (!isValid) {
-      return res.status(400).json({ success: false });
-    }
-
-    const pdf = await Pdf.findById(pdfId);
-
-    if (!pdf) {
-      return res.status(404).json({ error: "PDF not found" });
-    }
-
-    // ✅ save order in database
-      const savedOrder = await Order.create({
-        razorpayOrderId: razorpay_order_id,
-        razorpayPaymentId: razorpay_payment_id,
-        pdfId: pdf._id,
-        title: pdf.title,
-        amount: pdf.price,
-        fileUrl: `http://localhost:5000${pdf.filePath}`,
-      });
-
-    res.json({
-      success: true,
-        order: {
-          id: savedOrder._id,
-          pdfId: savedOrder.pdfId,
-          amount: savedOrder.amount,
-          razorpayOrderId: savedOrder.razorpayOrderId,
-          razorpayPaymentId: savedOrder.razorpayPaymentId,
-          createdAt: savedOrder.createdAt,
-        },
-      pdf,
-      fileUrl: `http://localhost:5000${pdf.filePath}`,
-    });
-  } catch (err) {
-    console.error("VERIFY PAYMENT ERROR:", err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// =====================
-// SECURE PDF DOWNLOAD
-// =====================
-router.get("/payment/download/:orderId", async (req, res) => {
-  try {
-    const { orderId } = req.params;
-
-    const order = await Order.findById(orderId);
-
-    if (!order) {
-      return res.status(404).json({ error: "Order not found" });
-    }
-
-    if (order.status !== "paid") {
-      return res.status(403).json({ error: "Payment not verified" });
-    }
-
-    const pdf = await Pdf.findById(order.pdfId);
-
-    if (!pdf) {
-      return res.status(404).json({ error: "PDF not found" });
-    }
-
-    const filePath = path.join(process.cwd(), pdf.filePath);
-
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ error: "File missing" });
-    }
-
-    res.download(filePath, pdf.fileName);
-  } catch (err) {
-    console.error("DOWNLOAD ERROR:", err);
-    res.status(500).json({ error: err.message });
-  }
-});
 export default router;
