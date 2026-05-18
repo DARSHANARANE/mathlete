@@ -43,10 +43,9 @@ const resolvers = {
     // =====================================================
 
     getResultFiles: async () => {
-      const files =
-        await ResultFile.find().sort({
-          uploadedAt: -1,
-        });
+      const files = await ResultFile.find().sort({
+        uploadedAt: -1,
+      });
 
       return files.map((file) => ({
         id: file._id.toString(),
@@ -66,12 +65,30 @@ const resolvers = {
     },
 
     // =====================================================
-    // YEARS
+    // RESULT YEARS
     // =====================================================
 
-    getYears: async () => {
-      return await ResultFile.distinct(
-        "year"
+    getResultYears: async () => {
+      const years = await ResultFile.distinct("year");
+
+      return years.sort(
+        (a, b) =>
+          Number(b.split("-")[0]) -
+          Number(a.split("-")[0])
+      );
+    },
+
+    // =====================================================
+    // PDF YEARS
+    // =====================================================
+
+    getPdfYears: async () => {
+      const years = await Pdf.distinct("year");
+
+      return years.sort(
+        (a, b) =>
+          Number(b.split("-")[0]) -
+          Number(a.split("-")[0])
       );
     },
 
@@ -79,16 +96,10 @@ const resolvers = {
     // CLASSES
     // =====================================================
 
-    getClasses: async (
-      _,
-      { year }
-    ) => {
+    getClasses: async (_, { year }) => {
       const filter = {};
 
-      if (
-        year &&
-        year !== "all"
-      ) {
+      if (year && year !== "all") {
         filter.year = year;
       }
 
@@ -127,44 +138,8 @@ const resolvers = {
 
         heading: file.heading,
 
-        uploadedAt:
-          file.uploadedAt,
+        uploadedAt: file.uploadedAt,
       };
-    },
-
-    // =====================================================
-    // PDFS
-    // =====================================================
-
-    getPdfs: async () => {
-      const pdfs =
-        await Pdf.find().sort({
-          uploadedAt: -1,
-        });
-
-      return pdfs.map((file) => ({
-        id: file._id.toString(),
-
-        fileName: file.fileName,
-
-        filePath: file.filePath,
-
-        title: file.title,
-
-        className:
-          file.className,
-
-        level: file.level,
-
-        year: file.year,
-
-        pages: file.pages,
-
-        price: file.price,
-
-        uploadedAt:
-          file.uploadedAt,
-      }));
     },
 
     // =====================================================
@@ -172,8 +147,7 @@ const resolvers = {
     // =====================================================
 
     getPdf: async (_, { id }) => {
-      const file =
-        await Pdf.findById(id);
+      const file = await Pdf.findById(id);
 
       if (!file) return null;
 
@@ -185,14 +159,51 @@ const resolvers = {
     },
 
     // =====================================================
+    // PDFS
+    // =====================================================
+
+    getPdfs: async (_, { level }) => {
+      const filter = {};
+
+      if (level) {
+        filter.level = level;
+      }
+
+      const pdfs = await Pdf.find(filter).sort({
+        uploadedAt: -1,
+      });
+
+      return pdfs.map((file) => ({
+        id: file._id.toString(),
+
+        fileName: file.fileName,
+
+        filePath: file.filePath,
+
+        title: file.title,
+
+        className: file.className,
+
+        level: file.level,
+
+        year: file.year,
+
+        pages: file.pages,
+
+        price: file.price,
+
+        uploadedAt: file.uploadedAt,
+      }));
+    },
+
+    // =====================================================
     // ORDERS
     // =====================================================
 
     getOrders: async () => {
-      const orders =
-        await Order.find().sort({
-          createdAt: -1,
-        });
+      const orders = await Order.find().sort({
+        createdAt: -1,
+      });
 
       return orders.map((item) => ({
         id: item._id.toString(),
@@ -247,10 +258,9 @@ const resolvers = {
     // =====================================================
 
     getBooks: async () => {
-      const books =
-        await Book.find().sort({
-          createdAt: -1,
-        });
+      const books = await Book.find().sort({
+        createdAt: -1,
+      });
 
       return books.map((item) => ({
         id: item._id.toString(),
@@ -373,9 +383,7 @@ const resolvers = {
       { id }
     ) => {
       const file =
-        await ResultFile.findById(
-          id
-        );
+        await ResultFile.findById(id);
 
       if (!file) {
         throw new Error(
@@ -410,9 +418,7 @@ const resolvers = {
         );
       }
 
-      await Pdf.findByIdAndDelete(
-        id
-      );
+      await Pdf.findByIdAndDelete(id);
 
       return true;
     },
@@ -515,8 +521,7 @@ const resolvers = {
       try {
         const order =
           await razorpay.orders.create({
-            amount:
-              amount * 100,
+            amount: amount * 100,
 
             currency: "INR",
           });
@@ -526,8 +531,7 @@ const resolvers = {
 
           amount: order.amount,
 
-          currency:
-            order.currency,
+          currency: order.currency,
         };
       } catch (err) {
         console.error(
@@ -556,40 +560,26 @@ const resolvers = {
       }
     ) => {
       try {
-        // =========================================
-        // FIND PDF
-        // =========================================
-
         const pdf =
-          await Pdf.findById(
-            pdfId
-          );
+          await Pdf.findById(pdfId);
 
         if (!pdf) {
           return {
             success: false,
 
-            message:
-              "PDF not found",
+            message: "PDF not found",
 
-            downloadUrl:
-              null,
+            downloadUrl: null,
 
             orderId: null,
 
-            razorpayOrderId:
-              null,
+            razorpayOrderId: null,
 
-            razorpayPaymentId:
-              null,
+            razorpayPaymentId: null,
 
             amount: null,
           };
         }
-
-        // =========================================
-        // VERIFY SIGNATURE
-        // =========================================
 
         const generatedSignature =
           crypto
@@ -613,32 +603,23 @@ const resolvers = {
             message:
               "Invalid Razorpay signature",
 
-            downloadUrl:
-              null,
+            downloadUrl: null,
 
             orderId: null,
 
-            razorpayOrderId:
-              null,
+            razorpayOrderId: null,
 
-            razorpayPaymentId:
-              null,
+            razorpayPaymentId: null,
 
             amount: null,
           };
         }
 
-        // =========================================
-        // DOWNLOAD URL
-        // =========================================
-const downloadUrl = pdf.filePath.replace(
-  "/upload/",
-  "/upload/fl_attachment/"
-);
-
-        // =========================================
-        // SAVE ORDER
-        // =========================================
+        const downloadUrl =
+          pdf.filePath.replace(
+            "/upload/",
+            "/upload/fl_attachment/"
+          );
 
         const savedOrder =
           await Order.create({
@@ -656,13 +637,8 @@ const downloadUrl = pdf.filePath.replace(
 
             status: "paid",
 
-            fileUrl:
-              downloadUrl,
+            fileUrl: downloadUrl,
           });
-
-        // =========================================
-        // RESPONSE
-        // =========================================
 
         return {
           success: true,
@@ -697,16 +673,13 @@ const downloadUrl = pdf.filePath.replace(
             err.message ||
             "Payment verification failed",
 
-          downloadUrl:
-            null,
+          downloadUrl: null,
 
           orderId: null,
 
-          razorpayOrderId:
-            null,
+          razorpayOrderId: null,
 
-          razorpayPaymentId:
-            null,
+          razorpayPaymentId: null,
 
           amount: null,
         };
@@ -717,171 +690,152 @@ const downloadUrl = pdf.filePath.replace(
     // VERIFY BOOK PAYMENT
     // =====================================================
 
- verifyBookPayment: async (
-  _,
-  {
-    bookId,
-    studentName,
-    mobile,
-    email,
-    address,
-    pincode,
-    amount,
-    razorpay_order_id,
-    razorpay_payment_id,
-    razorpay_signature,
-  }
-) => {
-  try {
-    // =========================
-    // FIND BOOK
-    // =========================
-
-    const book =
-      await Book.findById(bookId);
-
-    if (!book) {
-      return {
-        success: false,
-
-        message: "Book not found",
-
-        orderId: null,
-
-        razorpayOrderId: null,
-
-        razorpayPaymentId:
-          null,
-
-        amount: null,
-
-        invoiceNumber: null,
-      };
-    }
-
-    // =========================
-    // VERIFY SIGNATURE
-    // =========================
-
-    const generatedSignature =
-      crypto
-        .createHmac(
-          "sha256",
-          process.env
-            .RAZORPAY_KEY_SECRET
-        )
-        .update(
-          `${razorpay_order_id}|${razorpay_payment_id}`
-        )
-        .digest("hex");
-
-    if (
-      generatedSignature !==
-      razorpay_signature
-    ) {
-      return {
-        success: false,
-
-        message:
-          "Invalid Razorpay signature",
-
-        orderId: null,
-
-        razorpayOrderId: null,
-
-        razorpayPaymentId:
-          null,
-
-        amount: null,
-
-        invoiceNumber: null,
-      };
-    }
-
-    // =========================
-    // GENERATE INVOICE NUMBER
-    // =========================
-
-    const invoiceNumber = `INV-${Date.now()}`;
-
-    // =========================
-    // SAVE ORDER
-    // =========================
-
-    const savedOrder =
-      await BookOrder.create({
+    verifyBookPayment: async (
+      _,
+      {
         bookId,
-
         studentName,
-
         mobile,
-
         email,
-
         address,
-
         pincode,
-
         amount,
+        razorpay_order_id,
+        razorpay_payment_id,
+        razorpay_signature,
+      }
+    ) => {
+      try {
+        const book =
+          await Book.findById(bookId);
 
-        invoiceNumber,
+        if (!book) {
+          return {
+            success: false,
 
-        razorpayOrderId:
-          razorpay_order_id,
+            message: "Book not found",
 
-        razorpayPaymentId:
-          razorpay_payment_id,
+            orderId: null,
 
-        status: "Paid",
-      });
+            razorpayOrderId: null,
 
-    // =========================
-    // RESPONSE
-    // =========================
+            razorpayPaymentId:
+              null,
 
-    return {
-      success: true,
+            amount: null,
 
-      message:
-        "Payment verified successfully",
+            invoiceNumber: null,
+          };
+        }
 
-      orderId:
-        savedOrder._id.toString(),
+        const generatedSignature =
+          crypto
+            .createHmac(
+              "sha256",
+              process.env
+                .RAZORPAY_KEY_SECRET
+            )
+            .update(
+              `${razorpay_order_id}|${razorpay_payment_id}`
+            )
+            .digest("hex");
 
-      razorpayOrderId:
-        savedOrder.razorpayOrderId,
+        if (
+          generatedSignature !==
+          razorpay_signature
+        ) {
+          return {
+            success: false,
 
-      razorpayPaymentId:
-        savedOrder.razorpayPaymentId,
+            message:
+              "Invalid Razorpay signature",
 
-      amount: savedOrder.amount,
+            orderId: null,
 
-      invoiceNumber:
-        savedOrder.invoiceNumber,
-    };
-  } catch (err) {
-    console.error(err);
+            razorpayOrderId: null,
 
-    return {
-      success: false,
+            razorpayPaymentId:
+              null,
 
-      message:
-        err.message ||
-        "Payment verification failed",
+            amount: null,
 
-      orderId: null,
+            invoiceNumber: null,
+          };
+        }
 
-      razorpayOrderId: null,
+        const invoiceNumber = `INV-${Date.now()}`;
 
-      razorpayPaymentId:
-        null,
+        const savedOrder =
+          await BookOrder.create({
+            bookId,
 
-      amount: null,
+            studentName,
 
-      invoiceNumber: null,
-    };
-  }
-},
+            mobile,
+
+            email,
+
+            address,
+
+            pincode,
+
+            amount,
+
+            invoiceNumber,
+
+            razorpayOrderId:
+              razorpay_order_id,
+
+            razorpayPaymentId:
+              razorpay_payment_id,
+
+            status: "Paid",
+          });
+
+        return {
+          success: true,
+
+          message:
+            "Payment verified successfully",
+
+          orderId:
+            savedOrder._id.toString(),
+
+          razorpayOrderId:
+            savedOrder.razorpayOrderId,
+
+          razorpayPaymentId:
+            savedOrder.razorpayPaymentId,
+
+          amount:
+            savedOrder.amount,
+
+          invoiceNumber:
+            savedOrder.invoiceNumber,
+        };
+      } catch (err) {
+        console.error(err);
+
+        return {
+          success: false,
+
+          message:
+            err.message ||
+            "Payment verification failed",
+
+          orderId: null,
+
+          razorpayOrderId: null,
+
+          razorpayPaymentId:
+            null,
+
+          amount: null,
+
+          invoiceNumber: null,
+        };
+      }
+    },
   },
 };
 

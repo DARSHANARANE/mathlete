@@ -4,10 +4,11 @@ import Table from "../../components/common/table/tablelayout";
 import type { Column } from "../../components/common/table/tablelayout";
 import DeleteModal from "../../components/common/Modal/DeleteModal";
 import { useQuery } from "@apollo/client/react";
-import { GET_PDFS, GET_YEARS } from "../../graphql/queries";
+import { GET_PDFS, GET_PDF_YEARS } from "../../graphql/queries";
 import { usePdfActions } from "../../hooks/usePdfActions";
 import PdfUploadModal from "../../components/common/Modal/PdfUploadModal";
 import { FaTrash, FaEdit } from "react-icons/fa";
+import { getFilterYearOptions } from "../../constants/yearOptions";
 
 // =======================
 // TYPES
@@ -18,7 +19,7 @@ type Pdf = {
   title: string;
   className: string;
   year: string;
-  pages: number;
+  level?: string;
   price: number;
   uploadedAt: string;
 };
@@ -28,7 +29,7 @@ type QueryData = {
 };
 
 type YearsData = {
-  getYears: string[];
+  getPdfYears: string[];
 };
 
 // =======================
@@ -48,16 +49,12 @@ const QuestionPaPer: React.FC = () => {
   const files = data?.getPdfs || [];
 
   const { uploadPdf, deletePdf, updatePdf } = usePdfActions();
+    const { data: yearsData } =
+      useQuery<YearsData>(GET_PDF_YEARS);
 
-  const { data: yearsData } = useQuery<YearsData>(GET_YEARS);
-
-  const yearOptions = [
-    { label: "All Years", value: "all" },
-    ...(yearsData?.getYears || []).map((y: string) => ({
-      label: y,
-      value: y,
-    })),
-  ];
+  const yearOptions = getFilterYearOptions(
+  yearsData?.getPdfYears
+);
 
   // =======================
   // SEARCH + FILTER
@@ -93,11 +90,12 @@ const QuestionPaPer: React.FC = () => {
         });
       } else {
         // ➕ CREATE
-        await uploadPdf({
+          await uploadPdf({
           file: formData.file,
           title: formData.title,
           className: formData.className,
           year: formData.year,
+          level: formData.level,
           price: Number(formData.price),
         });
       }
@@ -128,8 +126,8 @@ const QuestionPaPer: React.FC = () => {
     { header: "Title", accessor: "title" },
 
     {
-      header: "Pages",
-      accessor: "pages",
+      header: "Level",
+      accessor: "level",
     },
 
     {
@@ -217,7 +215,7 @@ const QuestionPaPer: React.FC = () => {
                 title: editData.title,
                 className: editData.className,
                 year: editData.year,
-                pages: String(editData.pages),
+                level: String(editData.level || ""),
                 price: String(editData.price),
               }
             : null

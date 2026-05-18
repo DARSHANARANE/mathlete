@@ -9,7 +9,6 @@ import SearchBox from "../../components/common/SearchBox";
 import { useNavigate } from "react-router-dom";
 import {
   GET_BOOKS,
-  GET_YEARS,
 } from "../../graphql/queries";
 
 import { BuyBookCard } from "../../components/common/QuestionPaperCardProps";
@@ -39,9 +38,6 @@ export default function StudentBooks() {
 
   const [level, setLevel] =
     useState("all");
-
-  const { data: yearsData } =
-    useQuery<YearsData>(GET_YEARS);
 
   const { data, loading } =
     useQuery<BookData>(GET_BOOKS);

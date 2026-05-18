@@ -8,11 +8,11 @@ import DeleteModal from "../../components/common/Modal/DeleteModal";
 import ResultUploadModal from "../../components/common/Modal/ResultUploadModal";
 
 import { useQuery, useMutation } from "@apollo/client/react";
-import { GET_RESULT_FILES } from "../../graphql/queries";
+import { GET_RESULT_FILES , GET_RESULT_YEARS} from "../../graphql/queries";
 import { DELETE_RESULT_FILE } from "../../graphql/mutations";
 
 import { useFileUpload } from "../../hooks/useFileUpload";
-import { GET_YEARS } from "../../graphql/queries";
+import { getFilterYearOptions } from "../../constants/yearOptions";
 
 
 type ResultFile = {
@@ -28,8 +28,9 @@ type QueryData = {
   getResultFiles: ResultFile[];
 };
 type YearsData = {
-  getYears: string[];
+  getResultYears: string[];
 };
+
 const ResultsUpload: React.FC = () => {
   const [year, setYear] = useState("all");
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -42,15 +43,13 @@ const ResultsUpload: React.FC = () => {
 const [search, setSearch] = useState("");
 const searchKeys: (keyof ResultFile)[] = ["fileName", "heading"];
   const files = data?.getResultFiles || [];
-  const { data: yearsData } = useQuery<YearsData>(GET_YEARS);
-  const yearOptions = [
-    { label: "All Years", value: "all" },
-    ...(yearsData?.getYears || []).map((y: string) => ({
-      label: y,
-      value: y,
-    })),
-  ];
+    const { data: yearsData } =
+      useQuery<YearsData>(GET_RESULT_YEARS);
 
+  const yearOptions = getFilterYearOptions(
+  yearsData?.getResultYears
+);
+console.log("ResultsUpload rendered", yearsData?.getResultYears);
   // ✅ FIXED: match modal signature
   const handleUpload = async (
     file: File | null,

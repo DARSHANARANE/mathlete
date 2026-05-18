@@ -314,8 +314,14 @@ router.delete("/:id", async (req, res) => {
 
 router.post("/pdf", handlePdfUpload, async (req, res) => {
   try {
-    const { title, className, year, pages, price } =
-      req.body;
+    const {
+      title,
+      className,
+      year,
+      pages,
+      price,
+      level,
+    } = req.body;
 
     const file = req.file;
 
@@ -327,21 +333,27 @@ router.post("/pdf", handlePdfUpload, async (req, res) => {
         error: "No PDF uploaded",
       });
     }
-
+console.log("REQ BODY:", req.body);
     const saved = await Pdf.create({
       fileName: file.originalname,
 
       // cloudinary url
       filePath: file.path.replace("http://", "https://"),
 
-      // IMPORTANT
+      // cloudinary public id
       publicId: file.filename,
 
       title,
       className,
       year,
+
       pages: pages ? Number(pages) : undefined,
+
       price: price ? Number(price) : undefined,
+
+      // ✅ level
+      level,
+
       uploadedAt: new Date(),
     });
 

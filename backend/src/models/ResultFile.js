@@ -6,14 +6,13 @@ const resultFileSchema = new mongoose.Schema(
 
     filePath: String,
 
-    // ✅ IMPORTANT
+    // Cloudinary public id
     publicId: String,
 
     className: {
       type: String,
       required: true,
     },
-
     year: {
       type: String,
       required: true,
@@ -31,9 +30,9 @@ const resultFileSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Prevent duplicate class + year
+// Prevent duplicate class + year + level
 resultFileSchema.index(
-  { className: 1, year: 1 },
+  { className: 1, year: 1, level: 1 },
   { unique: true }
 );
 

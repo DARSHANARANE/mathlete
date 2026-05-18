@@ -9,14 +9,14 @@ export const usePdfActions = () => {
     title,
     className,
     year,
-    pages,
+    level,
     price,
   }: {
     file: File;
     title: string;
     className: string;
     year: string;
-    pages?: number;
+    level: string;
     price: number;
   }) => {
     const formData = new FormData();
@@ -25,9 +25,7 @@ export const usePdfActions = () => {
     formData.append("title", title);
     formData.append("className", className);
     formData.append("year", year);
-    if (pages !== undefined && Number.isFinite(pages)) {
-      formData.append("pages", String(pages));
-    }
+    formData.append("level", level);
     formData.append("price", String(price));
 
     const res = await fetch("http://localhost:5000/api/upload/pdf", {

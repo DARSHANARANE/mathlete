@@ -129,40 +129,40 @@ const typeDefs = gql`
   # =========================
   # PDF PAYMENT RESPONSE
   # =========================
-type VerifyPdfPaymentResponse {
-  success: Boolean!
+  type VerifyPdfPaymentResponse {
+    success: Boolean!
 
-  message: String!
+    message: String!
 
-  downloadUrl: String
+    downloadUrl: String
 
-  orderId: String
+    orderId: String
 
-  razorpayOrderId: String
+    razorpayOrderId: String
 
-  razorpayPaymentId: String
+    razorpayPaymentId: String
 
-  amount: Float
-}
+    amount: Float
+  }
 
   # =========================
   # BOOK PAYMENT RESPONSE
   # =========================
-type VerifyBookPaymentResponse {
-  success: Boolean!
+  type VerifyBookPaymentResponse {
+    success: Boolean!
 
-  message: String!
+    message: String!
 
-  orderId: String
+    orderId: String
 
-  razorpayOrderId: String
+    razorpayOrderId: String
 
-  razorpayPaymentId: String
+    razorpayPaymentId: String
 
-  amount: Float
+    amount: Float
 
-  invoiceNumber: String
-}
+    invoiceNumber: String
+  }
 
   # =========================
   # QUERY
@@ -177,9 +177,17 @@ type VerifyBookPaymentResponse {
     # =====================
     getResultFiles: [ResultFile]
 
-    getYears: [String]
+    # RESULT YEARS
+    getResultYears: [String]
+
+    # PDF YEARS
+    getPdfYears: [String]
 
     getClasses(year: String): [String]
+
+    getPdfs(
+      level: String
+    ): [Pdf]
 
     getResultFileByClass(
       year: String!
@@ -189,8 +197,6 @@ type VerifyBookPaymentResponse {
     # =====================
     # PDF
     # =====================
-    getPdfs: [Pdf]
-
     getPdf(id: ID!): Pdf
 
     # =====================
@@ -229,7 +235,9 @@ type VerifyBookPaymentResponse {
     # =====================
     # RESULT FILE
     # =====================
-    deleteResultFile(id: ID!): Boolean
+    deleteResultFile(
+      id: ID!
+    ): Boolean
 
     # =====================
     # PDF
@@ -238,12 +246,15 @@ type VerifyBookPaymentResponse {
       file: Upload!
       title: String
       className: String
+      level: String
       year: String
       pages: Int
       price: Float!
     ): Pdf
 
-    deletePdf(id: ID!): Boolean
+    deletePdf(
+      id: ID!
+    ): Boolean
 
     # =====================
     # CONTACT

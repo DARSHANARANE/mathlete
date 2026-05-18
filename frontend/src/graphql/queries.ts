@@ -43,32 +43,20 @@ export const DELETE_RESULT_FILE =
 export const UPLOAD_PDF = gql`
   mutation UploadPdf(
     $file: Upload!
-
     $title: String
-
     $className: String
-
     $level: String
-
     $year: String
-
     $pages: Int
-
     $price: Float!
   ) {
     uploadPdf(
       file: $file
-
       title: $title
-
       className: $className
-
       level: $level
-
       year: $year
-
       pages: $pages
-
       price: $price
     ) {
       id
@@ -279,10 +267,15 @@ export const VERIFY_BOOK_PAYMENT =
 // STUDENT FLOW
 // ==============================
 
-// GET YEARS
-export const GET_YEARS = gql`
-  query GetYears {
-    getYears
+export const GET_PDF_YEARS = gql`
+  query GetPdfYears {
+    getPdfYears
+  }
+`;
+
+export const GET_RESULT_YEARS = gql`
+  query GetResultYears {
+    getResultYears
   }
 `;
 
