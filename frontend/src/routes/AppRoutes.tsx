@@ -20,6 +20,8 @@ import ContactPage from "../pages/admin/ContactPage";
 import StudentBooks from "../pages/student/StudentBooks";
 import BookOrders from "../pages/admin/BookOrders";
 import BooksUpload from "../pages/admin/BooksUpload";
+import BooksCheckoutPage from "../pages/student/BooksCheckoutPage";
+import BookOrderSuccessPage from "../pages/student/BookOrderSuccessPage";
 
 const AppRoutes = () => {
   return (
@@ -40,7 +42,12 @@ const AppRoutes = () => {
           path="/papers/checkout/:id"
           element={<QuestionPaperCheckoutPage />}
         />
+          <Route
+          path="/books/checkout/:id"
+          element={<BooksCheckoutPage />}
+        />
       <Route path="order-success" element={<OrderSuccessPage />} />
+        <Route path="book-order-success" element={<BookOrderSuccessPage />} />
       {/* ADMIN LOGIN */}
       <Route path="/admin/login" element={<Login />} />
 

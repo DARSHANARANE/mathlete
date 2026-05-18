@@ -70,3 +70,108 @@ export const CREATE_CONTACT = gql`
     }
   }
 `;
+// ==============================
+// CREATE RAZORPAY ORDER
+// ==============================
+
+export const CREATE_RAZORPAY_ORDER = gql`
+  mutation CreateRazorpayOrder(
+    $amount: Int!
+  ) {
+    createRazorpayOrder(
+      amount: $amount
+    ) {
+      id
+      amount
+      currency
+    }
+  }
+`;
+
+// ==============================
+// VERIFY PDF PAYMENT
+// ==============================
+
+export const VERIFY_PDF_PAYMENT =
+  gql`
+    mutation VerifyPdfPayment(
+      $pdfId: ID!
+
+      $amount: Float!
+
+      $razorpay_order_id: String!
+
+      $razorpay_payment_id: String!
+
+      $razorpay_signature: String!
+    ) {
+      verifyPdfPayment(
+        pdfId: $pdfId
+
+        amount: $amount
+
+        razorpay_order_id:
+          $razorpay_order_id
+
+        razorpay_payment_id:
+          $razorpay_payment_id
+
+        razorpay_signature:
+          $razorpay_signature
+      ) {
+        success
+
+        message
+
+        downloadUrl
+
+        orderId
+
+        razorpayOrderId
+
+        razorpayPaymentId
+
+        amount
+      }
+    }
+  `;
+
+// ==============================
+// VERIFY BOOK PAYMENT
+// ==============================
+
+export const VERIFY_BOOK_PAYMENT = gql`
+  mutation VerifyBookPayment(
+    $bookId: ID!
+    $studentName: String!
+    $mobile: String!
+    $email: String!
+    $address: String!
+    $pincode: String!
+    $amount: Float!
+    $razorpay_order_id: String!
+    $razorpay_payment_id: String!
+    $razorpay_signature: String!
+  ) {
+    verifyBookPayment(
+      bookId: $bookId
+      studentName: $studentName
+      mobile: $mobile
+      email: $email
+      address: $address
+      pincode: $pincode
+      amount: $amount
+      razorpay_order_id: $razorpay_order_id
+      razorpay_payment_id: $razorpay_payment_id
+      razorpay_signature: $razorpay_signature
+    ) {
+      success
+      message
+      orderId
+      razorpayOrderId
+      razorpayPaymentId
+      amount
+      invoiceNumber
+    }
+  }
+`;
