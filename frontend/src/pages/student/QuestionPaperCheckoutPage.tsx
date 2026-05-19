@@ -88,7 +88,6 @@ if (verifyData.success) {
               <h2 className="text-2xl font-bold text-slate-900">
                 {pdf.title || pdf.fileName}
               </h2>
-
               <p className="text-sm text-slate-500 mt-1">
                 {pdf.className && `Class ${pdf.className}`}{" "}
                 {pdf.year && `• ${pdf.year}`}{" "}
