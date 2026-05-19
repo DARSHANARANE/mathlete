@@ -224,7 +224,6 @@ export default function QuestionPaperCheckoutPage() {
                 {pdf.title ||
                   pdf.fileName}
               </h2>
-
               <p className="text-sm text-slate-500 mt-1">
                 {pdf.className &&
                   `Class ${pdf.className}`}{" "}
