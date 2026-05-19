@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import BaseModal from "./BaseModal";
-
+import { getUploadYearOptions } from "../../../constants/yearOptions";
 type PdfFormData = {
   file?: File | null;
   title: string;
   className: string;
+  level?: string;
   year: string;
   price: string;
 };
@@ -25,13 +26,14 @@ const PdfUploadModal: React.FC<Props> = ({
   const [form, setForm] = useState<PdfFormData>({
     file: null,
     title: "",
-    className: "",
-    year: "",
+   className: "1",
+    year: "2026-27",
+    level: "Level 1",
     price: "",
   });
 
   const isEdit = !!initialData;
-
+  const yearOptions = getUploadYearOptions();
   // ======================
   // Prefill for edit
   // ======================
@@ -41,6 +43,7 @@ const PdfUploadModal: React.FC<Props> = ({
         file: null,
         title: initialData.title || "",
         className: initialData.className || "",
+        level: initialData.level ? String(initialData.level) : "",
         year: initialData.year || "",
         price: String(initialData.price || ""),
       });
@@ -48,8 +51,9 @@ const PdfUploadModal: React.FC<Props> = ({
       setForm({
         file: null,
         title: "",
-        className: "",
-        year: "",
+        className: "1",
+        year: "2026-27",
+        level: "Level 1",
         price: "",
       });
     }
@@ -126,23 +130,57 @@ const PdfUploadModal: React.FC<Props> = ({
         />
 
         {/* CLASS */}
-        <input
-          className="w-full border p-2 rounded"
-          placeholder="Class (e.g. 2)"
-           value={isEdit ? `class ${form.className}` : `${form.className}`}
-          disabled={isEdit}
-          onChange={(e) => handleChange("className", e.target.value)}
-        />
+     <select
+  value={form.className}
+  onChange={(e) =>
+    handleChange("className", e.target.value)
+  }
+  className="w-full border p-2 rounded"
+>
+  {[...Array(7)].map((_, i) => (
+    <option
+      key={i}
+      value={`${i + 1}`}
+    >
+      Class {i + 1}
+    </option>
+  ))}
+</select>
 
         {/* YEAR */}
-        <input
-          className="w-full border p-2 rounded"
-          placeholder="Year (e.g. 2024-25)"
-          value={form.year}
-          disabled={isEdit}
-          onChange={(e) => handleChange("year", e.target.value)}
-        />
+   <select
+  className="w-full border p-2 rounded"
+  value={form.year}
+  disabled={isEdit}
+  onChange={(e) =>
+    handleChange("year", e.target.value)
+  }
+>
+  {yearOptions.map((option) => (
+    <option
+      key={option.value}
+      value={option.value}
+    >
+      {option.label}
+    </option>
+  ))}
+</select>
+        {/* LEVEL */}
+    <select
+  value={form.level}
+  onChange={(e) =>
+    handleChange("level", e.target.value)
+  }
+  className="w-full border p-2 rounded"
+>
+  <option value="Level 1">
+    Level 1
+  </option>
 
+  <option value="Level 2">
+    Level 2
+  </option>
+</select>
         {/* PRICE */}
         <input
           type="number"

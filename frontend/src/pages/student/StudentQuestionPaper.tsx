@@ -5,12 +5,8 @@ import Navbar from "../../components/common/homepage/Navbar";
 import GlobalFilter from "../../components/common/GlobalFilter";
 import SearchBox from "../../components/common/SearchBox";
 
-import { GET_PDFS, GET_YEARS } from "../../graphql/queries";
+import { GET_PDFS, } from "../../graphql/queries";
 import QuestionPaperCard from "../../components/common/QuestionPaperCardProps";
-
-type YearsData = {
-  getYears: string[];
-};
 
 type PdfItem = {
   id: string;
@@ -32,16 +28,10 @@ export default function StudentQuestionPaperPage() {
   const [year, setYear] = useState("all");
   const [className, setClassName] = useState("all");
   const [level, setLevel] = useState("all");
-  const { data: yearsData } = useQuery<YearsData>(GET_YEARS);
+
   const { data, loading } = useQuery<PdfData>(GET_PDFS);
 
-  const yearOptions = [
-    { label: "All Years", value: "all" },
-    ...(yearsData?.getYears || []).map((y) => ({
-      label: y,
-      value: y,
-    })),
-  ];
+
 
   const filteredPdfs = useMemo(() => {
     return (data?.getPdfs || []).filter((pdf) => {

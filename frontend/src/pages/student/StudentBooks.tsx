@@ -6,10 +6,9 @@ import { useQuery } from "@apollo/client/react/compiled";
 import Navbar from "../../components/common/homepage/Navbar";
 import GlobalFilter from "../../components/common/GlobalFilter";
 import SearchBox from "../../components/common/SearchBox";
-
+import { useNavigate } from "react-router-dom";
 import {
   GET_BOOKS,
-  GET_YEARS,
 } from "../../graphql/queries";
 
 import { BuyBookCard } from "../../components/common/QuestionPaperCardProps";
@@ -32,15 +31,13 @@ type BookData = {
 };
 
 export default function StudentBooks() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [className, setClassName] =
     useState("all");
 
   const [level, setLevel] =
     useState("all");
-
-  const { data: yearsData } =
-    useQuery<YearsData>(GET_YEARS);
 
   const { data, loading } =
     useQuery<BookData>(GET_BOOKS);
@@ -166,13 +163,18 @@ export default function StudentBooks() {
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
               {filteredBooks.map((book) => (
-                <BuyBookCard
+               <BuyBookCard
                   key={book.id}
                   title={book.title}
                   description={book.description}
+                  price={book.price}
                   className={book.className}
                   level={book.level}
-                  price={book.price}
+                  onBuy={() =>
+                    navigate(`/books/checkout/${book.id}`, {
+                      state: { book },
+                    })
+                  }
                 />
               ))}
             </div>

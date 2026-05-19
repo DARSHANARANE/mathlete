@@ -7,21 +7,26 @@ export default function OrderSuccessPage() {
 
   const order = location.state?.order;
   const pdf = location.state?.pdf;
+  const fileUrl = location.state?.fileUrl;
   console.log("location.state", location.state);
   useEffect(() => {
     if (!order || !pdf) {
-      navigate("/papers");
+      const redirectTo = pdf
+        ? `/papers/checkout/${pdf.id}`
+        : "/papers";
+      navigate(redirectTo);
     }
   }, [order, pdf, navigate]);
 
   if (!order || !pdf) return null;
 
-const handleDownload = () => {
-  window.open(
-    `http://localhost:5000/api/upload/payment/download/${order.id}`,
-    "_blank"
-  );
-};
+  const handleDownload = () => {
+    const url = fileUrl
+      ? fileUrl
+      : `http://localhost:5000/api/upload/payment/download/${order.id}`;
+
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 py-10 px-4">

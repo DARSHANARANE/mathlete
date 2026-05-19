@@ -74,9 +74,15 @@ const typeDefs = gql`
     address: String!
     pincode: String!
     amount: Float!
+
+    razorpayOrderId: String
     razorpayPaymentId: String
+
+    invoiceNumber: String
+
     status: String
     createdAt: String
+
     book: Book
   }
 
@@ -94,16 +100,68 @@ const typeDefs = gql`
   }
 
   # =========================
-  # ORDER
+  # PDF ORDER
   # =========================
   type Order {
     id: ID!
+
     amount: Float
+
     razorpayOrderId: String
     razorpayPaymentId: String
+
     createdAt: String
+
     fileUrl: String
+
     status: String
+  }
+
+  # =========================
+  # RAZORPAY ORDER
+  # =========================
+  type RazorpayOrder {
+    id: ID!
+    amount: Int!
+    currency: String!
+  }
+
+  # =========================
+  # PDF PAYMENT RESPONSE
+  # =========================
+  type VerifyPdfPaymentResponse {
+    success: Boolean!
+
+    message: String!
+
+    downloadUrl: String
+
+    orderId: String
+
+    razorpayOrderId: String
+
+    razorpayPaymentId: String
+
+    amount: Float
+  }
+
+  # =========================
+  # BOOK PAYMENT RESPONSE
+  # =========================
+  type VerifyBookPaymentResponse {
+    success: Boolean!
+
+    message: String!
+
+    orderId: String
+
+    razorpayOrderId: String
+
+    razorpayPaymentId: String
+
+    amount: Float
+
+    invoiceNumber: String
   }
 
   # =========================
@@ -119,9 +177,17 @@ const typeDefs = gql`
     # =====================
     getResultFiles: [ResultFile]
 
-    getYears: [String]
+    # RESULT YEARS
+    getResultYears: [String]
+
+    # PDF YEARS
+    getPdfYears: [String]
 
     getClasses(year: String): [String]
+
+    getPdfs(
+      level: String
+    ): [Pdf]
 
     getResultFileByClass(
       year: String!
@@ -131,8 +197,6 @@ const typeDefs = gql`
     # =====================
     # PDF
     # =====================
-    getPdfs: [Pdf]
-
     getPdf(id: ID!): Pdf
 
     # =====================
@@ -171,7 +235,9 @@ const typeDefs = gql`
     # =====================
     # RESULT FILE
     # =====================
-    deleteResultFile(id: ID!): Boolean
+    deleteResultFile(
+      id: ID!
+    ): Boolean
 
     # =====================
     # PDF
@@ -180,12 +246,15 @@ const typeDefs = gql`
       file: Upload!
       title: String
       className: String
+      level: String
       year: String
       pages: Int
       price: Float!
     ): Pdf
 
-    deletePdf(id: ID!): Boolean
+    deletePdf(
+      id: ID!
+    ): Boolean
 
     # =====================
     # CONTACT
@@ -198,7 +267,7 @@ const typeDefs = gql`
     ): Contact
 
     # =====================
-    # CREATE BOOK
+    # BOOK
     # =====================
     createBook(
       title: String!
@@ -209,18 +278,45 @@ const typeDefs = gql`
     ): Book
 
     # =====================
-    # CREATE BOOK ORDER
+    # COMMON RAZORPAY ORDER
     # =====================
-    createBookOrder(
+    createRazorpayOrder(
+      amount: Int!
+    ): RazorpayOrder
+
+    # =====================
+    # VERIFY PDF PAYMENT
+    # =====================
+    verifyPdfPayment(
+      pdfId: ID!
+
+      amount: Float!
+
+      razorpay_order_id: String!
+      razorpay_payment_id: String!
+      razorpay_signature: String!
+
+    ): VerifyPdfPaymentResponse
+
+    # =====================
+    # VERIFY BOOK PAYMENT
+    # =====================
+    verifyBookPayment(
       bookId: ID!
+
       studentName: String!
       mobile: String!
       email: String!
       address: String!
       pincode: String!
+
       amount: Float!
-      razorpayPaymentId: String
-    ): BookOrder
+
+      razorpay_order_id: String!
+      razorpay_payment_id: String!
+      razorpay_signature: String!
+
+    ): VerifyBookPaymentResponse
   }
 `;
 

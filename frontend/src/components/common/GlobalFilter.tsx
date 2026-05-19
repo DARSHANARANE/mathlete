@@ -1,10 +1,13 @@
 import React from "react";
 import { IoMdAddCircle } from "react-icons/io";
 import { FiDownload } from "react-icons/fi";
+
 import useIsMobile from "../../hooks/useIsMobile";
 import useExportToExcel from "../../hooks/useExportToExcel";
+
 import SearchBox from "./SearchBox";
 
+// ================= TYPES =================
 type Option = {
   label: string;
   value: string;
@@ -12,96 +15,122 @@ type Option = {
 
 type Props = {
   title?: string;
-  align?: " " | "left";
-  // filters
+  align?: "" | "left";
+
+  // ================= FILTERS =================
   showSearch?: boolean;
   showStatus?: boolean;
   showDate?: boolean;
 
-  // actions
+  showClass?: boolean;
+  showLevel?: boolean;
+
+  // ================= ACTIONS =================
   showAddButton?: boolean;
   showExportButton?: boolean;
 
-  // export
+  // ================= EXPORT =================
   exportData?: any[];
 
-  // config
+  // ================= CONFIG =================
   searchPlaceholder?: string;
+
   statusOptions?: Option[];
-  // controlled values
+  classOptions?: Option[];
+  levelOptions?: Option[];
+
+  hideAllClassOption?: boolean;
+  hideAllLevelOption?: boolean;
+
+  // ================= CONTROLLED VALUES =================
   searchValue?: string;
   statusValue?: string;
+  classValue?: string;
+  levelValue?: string;
   dateValue?: string;
 
-  // events
+  // ================= EVENTS =================
   onSearch?: (val: string) => void;
   onStatusChange?: (val: string) => void;
+  onClassChange?: (val: string) => void;
+  onLevelChange?: (val: string) => void;
   onDateChange?: (val: string) => void;
 
-  // ✅ SIMPLE & CLEAN ADD HANDLER
+  // ================= ADD BUTTON =================
   onAddClick?: () => void;
-
   addLabel?: string;
-  showClass?: boolean;
-  classOptions?: Option[];
-  classValue?: string;
-  onClassChange?: (val: string) => void;
-
-  showLevel?: boolean;
-  levelOptions?: Option[];
-  levelValue?: string;
-  onLevelChange?: (val: string) => void;
 };
 
 const GlobalFilter: React.FC<Props> = ({
+  // ================= DEFAULTS =================
   showSearch = true,
   showStatus = true,
   showDate = false,
+
+  showClass = false,
+  showLevel = false,
+
   showAddButton = false,
   showExportButton = false,
 
   exportData = [],
+
   searchPlaceholder = "Search by File Name or Heading",
-  statusOptions = [{ label: "All", value: "all" }],
+
+  statusOptions = [
+    {
+      label: "All",
+      value: "all",
+    },
+  ],
+
+  classOptions = [],
+  levelOptions = [],
+
+  hideAllClassOption = false,
+  hideAllLevelOption = false,
 
   searchValue = "",
   statusValue = "all",
+  classValue = "",
+  levelValue = "",
   dateValue = "all",
 
   onSearch,
   onStatusChange,
+  onClassChange,
+  onLevelChange,
   onDateChange,
+
   onAddClick,
 
   addLabel = "Add",
-  showClass = false,
-  classOptions = [],
-  classValue = "all",
-  onClassChange,
+
   align,
-
-  showLevel = false,
-  levelOptions = [],
-  levelValue = "all",
-  onLevelChange,
-
 }) => {
   const isMobile = useIsMobile();
-  const { exportToExcel } = useExportToExcel();
+
+  const { exportToExcel } =
+    useExportToExcel();
 
   return (
     <div
-      className={` ${align === "left" ? "" : "bg-white p-4 rounded-xl shadow-sm border space-y-4"
-        }`}
+      className={`${
+        align === "left"
+          ? ""
+          : "bg-white p-4 rounded-xl shadow-sm border space-y-4"
+      }`}
     >
-
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-
-        {/* FILTERS */}
+        {/* ================= FILTERS ================= */}
         <div
-          className={` ${align === "left" ? "flex flex-wrap gap-3" : "grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-            }`}>
-
+          className={`${
+            align === "left"
+              ? "flex flex-wrap gap-3"
+              : "grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+          }`}
+        >
+          {/* SEARCH */}
           {showSearch && onSearch && (
             <SearchBox
               value={searchValue}
@@ -109,44 +138,91 @@ const GlobalFilter: React.FC<Props> = ({
               placeholder={searchPlaceholder}
             />
           )}
+
+          {/* STATUS */}
           {showStatus && (
             <select
               value={statusValue}
-              onChange={(e) => onStatusChange?.(e.target.value)}
-              className={` border px-3 py-2  text-sm rounded-md ${align === "left" ? "min-w-[100px] flex-1 " : "w-full"
-                }`}>
+              onChange={(e) =>
+                onStatusChange?.(
+                  e.target.value
+                )
+              }
+              className={`border px-3 py-2 text-sm rounded-md ${
+                align === "left"
+                  ? "min-w-[100px] flex-1"
+                  : "w-full"
+              }`}
+            >
               {statusOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
+                <option
+                  key={opt.value}
+                  value={opt.value}
+                >
                   {opt.label}
                 </option>
               ))}
             </select>
           )}
+
+          {/* CLASS */}
           {showClass && (
             <select
               value={classValue}
-              onChange={(e) => onClassChange?.(e.target.value)}
-              className={` border px-3 py-2  text-sm rounded-md ${align === "left" ? "min-w-[100px] flex-1 " : "w-full"
-                }`}>
-              <option value="all">All Classes</option>
+              onChange={(e) =>
+                onClassChange?.(
+                  e.target.value
+                )
+              }
+              className={`border px-3 py-2 text-sm rounded-md ${
+                align === "left"
+                  ? "min-w-[100px] flex-1"
+                  : "w-full"
+              }`}
+            >
+              {!hideAllClassOption && (
+                <option value="">
+                  All Classes
+                </option>
+              )}
+
               {classOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
+                <option
+                  key={opt.value}
+                  value={opt.value}
+                >
                   {opt.label}
                 </option>
               ))}
             </select>
           )}
+
+          {/* LEVEL */}
           {showLevel && (
             <select
               value={levelValue}
-              onChange={(e) => onLevelChange?.(e.target.value)}
-              className={`border px-3 py-2 text-sm rounded-md ${align === "left" ? "min-w-[100px] flex-1" : "w-full"
-                }`}
+              onChange={(e) =>
+                onLevelChange?.(
+                  e.target.value
+                )
+              }
+              className={`border px-3 py-2 text-sm rounded-md ${
+                align === "left"
+                  ? "min-w-[100px] flex-1"
+                  : "w-full"
+              }`}
             >
-              <option value="all">All Levels</option>
+              {!hideAllLevelOption && (
+                <option value="">
+                  All Levels
+                </option>
+              )}
 
               {levelOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
+                <option
+                  key={opt.value}
+                  value={opt.value}
+                >
                   {opt.label}
                 </option>
               ))}
@@ -154,33 +230,40 @@ const GlobalFilter: React.FC<Props> = ({
           )}
         </div>
 
-        {/* ACTIONS */}
-        <div className={`flex gap-2 ${!showAddButton && !showExportButton ? "hidden" : ""}`}>
-
+        {/* ================= ACTIONS ================= */}
+        <div
+          className={`flex gap-2 ${
+            !showAddButton &&
+            !showExportButton
+              ? "hidden"
+              : ""
+          }`}
+        >
+          {/* ADD BUTTON */}
           {showAddButton && (
             <button
               onClick={onAddClick}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium 
-              bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-blue-500 text-white rounded-md hover:bg-blue-600"
             >
               <IoMdAddCircle size={18} />
               {addLabel}
             </button>
           )}
 
+          {/* EXPORT BUTTON */}
           {showExportButton && (
             <button
               onClick={() =>
-                exportToExcel(exportData, { fileName: "Export.xlsx" })
+                exportToExcel(exportData, {
+                  fileName: "Export.xlsx",
+                })
               }
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium 
-              bg-green-500 text-white rounded-md hover:bg-green-600"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-green-500 text-white rounded-md hover:bg-green-600"
             >
               <FiDownload size={18} />
               Export
             </button>
           )}
-
         </div>
       </div>
     </div>

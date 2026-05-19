@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from "react";
 import * as XLSX from "xlsx";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
-
+import { GET_RESULT_YEARS } from "../../graphql/queries";
 import GlobalFilter from "../../components/common/GlobalFilter";
 import Table from "../../components/common/table/tablelayout";
 import type { Column } from "../../components/common/table/tablelayout";
 
 import Navbar from "../../components/common/homepage/Navbar";
-import { GET_YEARS, GET_RESULT_FILE } from "../../graphql/queries";
+import { GET_RESULT_FILE } from "../../graphql/queries";
 import SearchBox from "../../components/common/SearchBox";
-import { FiCalendar, FiBook, FiLoader, FiAlertCircle, FiInbox } from "react-icons/fi";
+
+import {
+  FiCalendar,
+  FiBook,
+  FiLoader,
+  FiAlertCircle,
+  FiInbox,
+} from "react-icons/fi";
+
 import PageBanner from "../../components/common/PageBanner";
+import { getFilterYearOptions } from "../../constants/yearOptions";
 
 // ================= TYPES =================
 type StudentRow = {
@@ -34,15 +43,17 @@ type ResultFileVars = {
 };
 
 type YearsData = {
-  getYears: string[];
+  getResultYears: string[];
 };
 
 const StudentResults: React.FC = () => {
+  // ================= STATES =================
   const [year, setYear] = useState("all");
-  const [className, setClassName] = useState("all");
+  const [className, setClassName] = useState("");
 
   const [tableData, setTableData] = useState<StudentRow[]>([]);
   const [filteredData, setFilteredData] = useState<StudentRow[]>([]);
+
   const [search, setSearch] = useState("");
 
   const [loadingExcel, setLoadingExcel] = useState(false);
@@ -56,33 +67,41 @@ const StudentResults: React.FC = () => {
     ResultFileVars
   >(GET_RESULT_FILE);
 
-  const { data: yearsData } = useQuery<YearsData>(GET_YEARS);
+    const { data: yearsData } =
+      useQuery<YearsData>(GET_RESULT_YEARS);
 
-  const yearOptions = [
-    { label: "All Years", value: "all" },
-    ...(yearsData?.getYears || []).map((y: string) => ({
-      label: y,
-      value: y,
-    })),
-  ];
+  const yearOptions = getFilterYearOptions(
+  yearsData?.getResultYears
+  );
 
   // ================= FETCH FILE =================
   useEffect(() => {
-    if (year !== "all" && className !== "all") {
-      getFile({ variables: { year, className } });
+    if (year !== "all" && className) {
+      getFile({
+        variables: {
+          year,
+          className,
+        },
+      });
     }
   }, [year, className, getFile]);
 
   // ================= PARSE EXCEL =================
   useEffect(() => {
     if (data && !data.getResultFileByClass) {
-      setError("No result file found for selected class");
+      setError(
+        "No result file found for selected class"
+      );
+
       setTableData([]);
       setFilteredData([]);
+
       return;
     }
 
-    const fileUrl = data?.getResultFileByClass?.filePath;
+    const fileUrl =
+      data?.getResultFileByClass?.filePath;
+
     if (!fileUrl) return;
 
     const fetchExcel = async () => {
@@ -90,36 +109,59 @@ const StudentResults: React.FC = () => {
         setLoadingExcel(true);
         setError("");
 
-        const res = await fetch(`${BASE_URL}${fileUrl}`);
+        const finalUrl = fileUrl.startsWith("http")
+          ? fileUrl
+          : `${BASE_URL}${fileUrl}`;
+
+        const res = await fetch(finalUrl);
+
         const blob = await res.blob();
 
         const reader = new FileReader();
 
         reader.onload = (e) => {
-          const arrayBuffer = e.target?.result as ArrayBuffer;
-          const excelData = new Uint8Array(arrayBuffer);
-          const workbook = XLSX.read(excelData, { type: "array" });
-          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const arrayBuffer =
+            e.target?.result as ArrayBuffer;
 
-          const rawData = XLSX.utils.sheet_to_json<Record<string, any>>(sheet);
-          const jsonData: StudentRow[] = rawData.map((row, index) => ({
-            id:
-              row["ROLL NO"] ||
-              row["Roll No"] ||
-              row["rollNumber"] ||
-              index + 1,
-            ...row,
-          }));
+          const excelData =
+            new Uint8Array(arrayBuffer);
+
+          const workbook = XLSX.read(excelData, {
+            type: "array",
+          });
+
+          const sheet =
+            workbook.Sheets[
+              workbook.SheetNames[0]
+            ];
+
+          const rawData =
+            XLSX.utils.sheet_to_json<
+              Record<string, any>
+            >(sheet);
+
+          const jsonData: StudentRow[] =
+            rawData.map((row, index) => ({
+              id:
+                row["ROLL NO"] ||
+                row["Roll No"] ||
+                row["rollNumber"] ||
+                index + 1,
+              ...row,
+            }));
 
           setTableData(jsonData);
           setFilteredData(jsonData);
+
           setLoadingExcel(false);
         };
 
         reader.readAsArrayBuffer(blob);
       } catch (err) {
         console.error(err);
+
         setError("Failed to load result file");
+
         setLoadingExcel(false);
       }
     };
@@ -127,9 +169,10 @@ const StudentResults: React.FC = () => {
     fetchExcel();
   }, [data]);
 
-  // ================= SEARCH (UPDATED) =================
+  // ================= SEARCH =================
   useEffect(() => {
-    const normalizedSearch = search.trim().toLowerCase();
+    const normalizedSearch =
+      search.trim().toLowerCase();
 
     if (!normalizedSearch) {
       setFilteredData(tableData);
@@ -140,7 +183,9 @@ const StudentResults: React.FC = () => {
       Object.entries(row).some(
         ([key, value]) =>
           key !== "id" &&
-          String(value).toLowerCase().includes(normalizedSearch)
+          String(value)
+            .toLowerCase()
+            .includes(normalizedSearch)
       )
     );
 
@@ -151,17 +196,22 @@ const StudentResults: React.FC = () => {
   const columns: Column<StudentRow>[] =
     tableData.length > 0
       ? Object.keys(tableData[0])
-        .filter((key) => key !== "id")
-        .map((key) => ({
-          header: key,
-          accessor: key,
-          render: (value) => {
-            if (key.toLowerCase() === "rank" && value === 1) {
-              return "🥇 " + value;
-            }
-            return value;
-          },
-        }))
+          .filter((key) => key !== "id")
+          .map((key) => ({
+            header: key,
+            accessor: key,
+
+            render: (value) => {
+              if (
+                key.toLowerCase() === "rank" &&
+                value === 1
+              ) {
+                return "🥇 " + value;
+              }
+
+              return value;
+            },
+          }))
       : [];
 
   // ================= UI =================
@@ -170,48 +220,50 @@ const StudentResults: React.FC = () => {
       <Navbar />
 
       <div className="min-h-screen bg-gray-100 text-text">
-       <PageBanner
+        <PageBanner
           title="Student Results"
           subtitle="Track performance, celebrate progress, and grow with confidence"
           icon="🏆"
           variant="results"
         />
+
         <div className="p-4 space-y-4">
-          {/* YEAR FILTER */}
-          <div  className="bg-gray-100 px-4 flex items-center justify-between mb-4 bg-white p-4 rounded-xl shadow-sm border">
+          {/* FILTERS */}
+          <div className="bg-gray-100 px-4 flex items-center justify-between mb-4 bg-white p-4 rounded-xl shadow-sm border">
             {tableData.length > 0 && (
-              <div className="flex  w-full">
-
+              <div className="flex w-full">
                 <h2 className="text-xl font-bold">
-                  {data?.getResultFileByClass?.heading || "Student Results"}
+                  {data?.getResultFileByClass
+                    ?.heading ||
+                    "Student Results"}
                 </h2>
-
               </div>
             )}
+
             <div className="flex justify-end w-full gap-3">
               <GlobalFilter
                 align="left"
                 showSearch={false}
                 showStatus
-                showClass={year !== "all"}   // ✅ condition here
-
+                showClass={year !== "all"}
+                hideAllClassOption
                 statusOptions={yearOptions}
                 statusValue={year}
                 onStatusChange={(val) => {
                   setYear(val);
-                  setClassName("all");
+                  setClassName("");
                 }}
-
-                classOptions={[...Array(10)].map((_, i) => ({
-                  label: `Class ${i + 1}`,
-                  value: `${i + 1}`,
-                }))}
-
+                classOptions={[...Array(10)].map(
+                  (_, i) => ({
+                    label: `Class ${i + 1}`,
+                    value: `${i + 1}`,
+                  })
+                )}
                 classValue={className}
                 onClassChange={setClassName}
               />
 
-              {/* HEADER + SEARCH */}
+              {/* SEARCH */}
               {tableData.length > 0 && (
                 <SearchBox
                   value={search}
@@ -219,10 +271,9 @@ const StudentResults: React.FC = () => {
                   placeholder="Search student by name, roll no, etc."
                 />
               )}
-
             </div>
-
           </div>
+
           {/* TABLE */}
           <div className="mb-4">
             {year === "all" ? (
@@ -230,55 +281,76 @@ const StudentResults: React.FC = () => {
                 <div className="p-3 bg-gradient-to-br from-indigo-500 to-blue-500 text-white rounded-lg shadow">
                   <FiCalendar size={22} />
                 </div>
+
                 <div>
-                  <p className="text-sm font-semibold">Select Year</p>
+                  <p className="text-sm font-semibold">
+                    Select Year
+                  </p>
+
                   <p className="text-xs text-gray-500">
-                    Choose a year to view student results
+                    Choose a year to view student
+                    results
                   </p>
                 </div>
               </div>
-
-            ) : className === "all" ? (
-                <div className="flex items-center justify-center gap-4 min-h-[200px] p-5 bg-white/70 backdrop-blur border rounded-xl shadow-sm text-gray-700">
-
-                  <div className="p-3 bg-gradient-to-br from-indigo-500 to-blue-500 text-white rounded-lg shadow">
-                    <FiBook size={22} />
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold">No Class Selected</p>
-                    <p className="text-xs text-gray-500">Choose a class to see data</p>
-                  </div>
+            ) : !className ? (
+              <div className="flex items-center justify-center gap-4 min-h-[200px] p-5 bg-white/70 backdrop-blur border rounded-xl shadow-sm text-gray-700">
+                <div className="p-3 bg-gradient-to-br from-indigo-500 to-blue-500 text-white rounded-lg shadow">
+                  <FiBook size={22} />
                 </div>
 
+                <div>
+                  <p className="text-sm font-semibold">
+                    No Class Selected
+                  </p>
+
+                  <p className="text-xs text-gray-500">
+                    Choose a class to see data
+                  </p>
+                </div>
+              </div>
             ) : loading || loadingExcel ? (
               <div className="flex items-center justify-center gap-4 min-h-[200px] p-5 bg-white/70 backdrop-blur border rounded-xl shadow-sm text-gray-700">
-                    <div className="p-3 bg-gradient-to-br from-indigo-500 to-blue-500 text-white rounded-lg shadow">
-                        <FiLoader className="animate-spin" size={22} />
-                  </div>
-                <p>Fetching results, please wait...</p>
-              </div>
-
-            ) : error ? (
-             <div className="flex items-center justify-center gap-4 min-h-[200px] p-5 bg-white/70 backdrop-blur border rounded-xl shadow-sm text-gray-700">
-                <div className="p-3 bg-gradient-to-br from-orange-300 to-red-600 text-white rounded-lg shadow">
-                <FiAlertCircle size={22} />
+                <div className="p-3 bg-gradient-to-br from-indigo-500 to-blue-500 text-white rounded-lg shadow">
+                  <FiLoader
+                    className="animate-spin"
+                    size={22}
+                  />
                 </div>
+
+                <p>
+                  Fetching results, please wait...
+                </p>
+              </div>
+            ) : error ? (
+              <div className="flex items-center justify-center gap-4 min-h-[200px] p-5 bg-white/70 backdrop-blur border rounded-xl shadow-sm text-gray-700">
+                <div className="p-3 bg-gradient-to-br from-orange-300 to-red-600 text-white rounded-lg shadow">
+                  <FiAlertCircle size={22} />
+                </div>
+
                 <p>{error}</p>
               </div>
-
             ) : filteredData.length === 0 ? (
-                      <div className="flex items-center justify-center gap-4 min-h-[200px] p-5 bg-white/70 backdrop-blur border rounded-xl shadow-sm text-gray-700">
-                        <div className="p-3 bg-gradient-to-br from-orange-300 to-red-600 text-white rounded-lg shadow">
-                          <FiInbox size={22} />
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold">No results found</p>
-                          <p className="text-xs text-gray-500">Try changing filters or search</p>
-                        </div>
-                      </div>
+              <div className="flex items-center justify-center gap-4 min-h-[200px] p-5 bg-white/70 backdrop-blur border rounded-xl shadow-sm text-gray-700">
+                <div className="p-3 bg-gradient-to-br from-orange-300 to-red-600 text-white rounded-lg shadow">
+                  <FiInbox size={22} />
+                </div>
 
+                <div>
+                  <p className="text-sm font-semibold">
+                    No results found
+                  </p>
+
+                  <p className="text-xs text-gray-500">
+                    Try changing filters or search
+                  </p>
+                </div>
+              </div>
             ) : (
-              <Table data={filteredData} columns={columns} />
+              <Table
+                data={filteredData}
+                columns={columns}
+              />
             )}
           </div>
         </div>

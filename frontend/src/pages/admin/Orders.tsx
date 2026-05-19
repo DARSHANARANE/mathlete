@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import GlobalFilter from "../../components/common/GlobalFilter";
 import Table from "../../components/common/table/tablelayout";
 import { useQuery } from "@apollo/client/react";
-import { GET_Orders } from "../../graphql/queries";
+import { GET_ORDERS } from "../../graphql/queries";
 
 
 type OrderItem = {
@@ -30,7 +30,7 @@ type OrderRow = {
 };
 
 const Orders: React.FC = () => {
-  const { data, loading } = useQuery<GetOrdersResponse>(GET_Orders);
+  const { data, loading } = useQuery<GetOrdersResponse>(GET_ORDERS);
  const [search, setSearch] = useState("");
   const orders: OrderRow[] =
     data?.getOrders?.map((item) => ({

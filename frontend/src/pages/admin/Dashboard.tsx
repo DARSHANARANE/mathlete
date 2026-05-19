@@ -4,7 +4,7 @@ import { SlCalender } from "react-icons/sl";
 import { RiLoader2Line } from "react-icons/ri";
 import { FaUserGraduate } from "react-icons/fa";
 import { useQuery } from "@apollo/client/react";
-import { GET_Orders } from "../../graphql/queries";
+import { GET_ORDERS } from "../../graphql/queries";
 type OrderItem = {
   id: string;
   amount: number;
@@ -18,7 +18,7 @@ type GetOrdersResponse = {
   getOrders: OrderItem[];
 };
 const Dashboard: React.FC = () => {
-const { data } = useQuery<GetOrdersResponse>(GET_Orders);
+const { data } = useQuery<GetOrdersResponse>(GET_ORDERS);
 
 const totalOrders = data?.getOrders?.length || 0;
 const totalRevenue =
