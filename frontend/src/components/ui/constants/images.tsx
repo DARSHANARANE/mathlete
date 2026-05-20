@@ -1,5 +1,5 @@
 import Banner from "../../../assets/banner_img.png";
-import AboutImg from "../../../assets/about-img.jpg";
+import AboutImg from "../../../assets/about_img.png";
 
 const Images = {
   Banner,
