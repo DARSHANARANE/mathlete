@@ -1,9 +1,7 @@
 import "./config/env.js";
 
-
 import express from "express";
 import cors from "cors";
-import bodyParser from "body-parser";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 
@@ -17,7 +15,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const app = express();
-
 
 // ======================
 // CORS
@@ -33,8 +30,12 @@ app.use(
   })
 );
 
-app.use(bodyParser.json());
+// ======================
+// BODY PARSER
+// ======================
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // ======================
 // Connect DB
@@ -42,14 +43,12 @@ app.use(bodyParser.json());
 
 await connectDB();
 
-
 // ======================
 // Path Fix
 // ======================
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 
 // ======================
 // Static Uploads
@@ -60,13 +59,11 @@ app.use(
   express.static(path.join(__dirname, "../uploads/result"))
 );
 
-
 // ======================
 // Upload Routes
 // ======================
 
 app.use("/api/upload", uploadRoute);
-
 
 // ======================
 // Health Check Route
@@ -83,7 +80,6 @@ app.get("/health", (req, res) => {
   });
 });
 
-
 // ======================
 // Apollo Server
 // ======================
@@ -97,7 +93,6 @@ await server.start();
 
 app.use(
   "/graphql",
-  express.json(),
   expressMiddleware(server, {
     context: async ({ req }) => {
       const user = await authMiddleware(req);
@@ -109,6 +104,7 @@ app.use(
 // ======================
 // GLOBAL ERROR HANDLER
 // ======================
+
 app.use((err, req, res, next) => {
   console.error("Unhandled server error:", err);
 
@@ -129,7 +125,9 @@ const serverInstance = app.listen(PORT, () => {
 
 serverInstance.on("error", (err) => {
   if (err.code === "EADDRINUSE") {
-    console.error(`Port ${PORT} is already in use. Stop the other process or set a different PORT in .env.`);
+    console.error(
+      `Port ${PORT} is already in use. Stop the other process or set a different PORT in .env.`
+    );
     process.exit(1);
   }
 
