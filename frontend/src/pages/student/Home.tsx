@@ -4,6 +4,7 @@ import Features from "../../components/common/homepage/Features";
 import Footer from "../../components/common/homepage/Footer";
 import Vision from "../../components/common/homepage/Vision";
 import AboutSection from "../../components/common/homepage/AboutSection";
+import StudentCertificationSlider from "../../components/common/StudentCertificationSlider";
 
 const Home = () => {
   return (
@@ -13,6 +14,7 @@ const Home = () => {
       <HeroSection/>
       <Vision />
       <AboutSection />
+      <StudentCertificationSlider />
       <Features />
     </div>
     <Footer />

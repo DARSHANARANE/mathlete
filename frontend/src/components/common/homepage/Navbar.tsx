@@ -20,7 +20,14 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-red-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-6">
         {/* Logo */}
+         <button
+            onClick={() => setOpen(true)}
+            className="md:hidden text-3xl text-gray-800 relative top-[-2px]"
+          >
+            ☰
+          </button>
         <Link to="/" className="flex items-center">
           <img
             src={Logo}
@@ -28,6 +35,9 @@ const Navbar = () => {
             className="h-10 md:h-12 object-contain"
           />
         </Link>
+
+        </div>
+
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8">
@@ -85,73 +95,106 @@ const Navbar = () => {
         </div>
       </div>
       <div>
+{/* Mobile Toggle */}
 
-        {/* Mobile Toggle */}
-        <button
-          onClick={() => setOpen(!open)}
-          className="md:hidden text-2xl text-gray-800"
-        >
-          {open ? "✕" : "☰"}
-        </button>
-      </div>
+{/* Mobile Drawer */}
+<div
+  className={`fixed inset-y-0 left-0 w-[280px] z-50
+  bg-white backdrop-blur-xl
+  border-r border-white/30
+  transform transition-transform duration-300
+  ${open ? "translate-x-0" : "-translate-x-full"}
+  `}
+>
+  {/* Drawer Header */}
+  <div className="flex items-center justify-between px-5 py-4 border-b border-white/20">
+    <img src={Logo} alt="logo" className="h-10" />
 
-      {/* Mobile Menu */}
-      <div
-        className={`md:hidden transition-all duration-300 overflow-hidden ${open ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-          }`}
+    <button
+      onClick={() => setOpen(false)}
+      className="text-2xl text-gray-800 relative top-[-2px]"
+    >
+      ✕
+    </button>
+  </div>
+
+  {/* Drawer Links */}
+  <div className="flex flex-col gap-5 px-6 py-8 text-gray-800 font-medium
+    bg-white backdrop-blur-xl
+  border-r border-white/30
+  shadow-2xl  h-screen">
+    <Link to="/" onClick={() => setOpen(false)}>
+      Home
+    </Link>
+
+    <Link to="/about" onClick={() => setOpen(false)}>
+      About
+    </Link>
+
+    <Link to="/results" onClick={() => setOpen(false)}>
+      Results
+    </Link>
+
+    {/* Products Dropdown */}
+    <div>
+      <button
+        onClick={() => setProductOpen(!productOpen)}
+        className="flex items-center gap-2"
       >
-        <div className="px-6 pb-4 flex flex-col gap-4 bg-white border-t border-red-100 text-gray-700">
-          <Link to="/" onClick={() => setOpen(false)}>Home</Link>
-          <Link to="/about" onClick={() => setOpen(false)}>About1</Link>
-          <Link to="/results" onClick={() => setOpen(false)}>Results</Link>
-          {/* Products Dropdown */}
-          <div className="relative">
-            <button
-              onClick={() => setProductOpen(!productOpen)}
-              className="flex items-center gap-1"
-            >
-              Products
-              <ChevronDown
-                size={18}
-                className={`transition-transform duration-300 ${productOpen ? "rotate-180" : ""
-                  }`}
-              />
-            </button>
+        Products
 
-            {productOpen && (
-              <div className="mt-2 ml-3 flex flex-col gap-2 border-l border-gray-200 pl-3">
-                <Link
-                  to="/papers"
-                  onClick={() => {
-                    setOpen(false);
-                    setProductOpen(false);
-                  }}
-                  className="hover:text-[#E3344A]"
-                >
-                  Buy Papers
-                </Link>
+        <ChevronDown
+          size={18}
+          className={`transition-transform duration-300 ${
+            productOpen ? "rotate-180" : ""
+          }`}
+        />
+      </button>
 
-                <Link
-                  to="/books"
-                  onClick={() => {
-                    setOpen(false);
-                    setProductOpen(false);
-                  }}
-                  className="hover:text-[#E3344A]"
-                >
-                  Buy Books
-                </Link>
-              </div>
-            )}
-          </div>
-          <Link to="/gallery" onClick={() => setOpen(false)}>Gallery</Link>
-          <Link to="/contact" onClick={() => setOpen(false)}>Contact</Link>
+      {productOpen && (
+        <div className="mt-3 ml-4 flex flex-col gap-3 border-l border-white/30 pl-4">
+          <Link
+            to="/papers"
+            onClick={() => {
+              setOpen(false);
+              setProductOpen(false);
+            }}
+          >
+            Buy Papers
+          </Link>
 
-
-          <Button variant="primary" to="/papers">
-            Download Now
-          </Button>
+          <Link
+            to="/books"
+            onClick={() => {
+              setOpen(false);
+              setProductOpen(false);
+            }}
+          >
+            Buy Books
+          </Link>
         </div>
+      )}
+    </div>
+
+    <Link to="/exam-fees" onClick={() => setOpen(false)}>
+      Exam Fees
+    </Link>
+
+    <Link to="/gallery" onClick={() => setOpen(false)}>
+      Gallery
+    </Link>
+
+    <Link to="/contact" onClick={() => setOpen(false)}>
+      Contact
+    </Link>
+
+    <div className="pt-4">
+      <Button variant="secondary" to="/papers">
+        Download Papers
+      </Button>
+    </div>
+  </div>
+</div>
       </div>
     </nav>
   );
