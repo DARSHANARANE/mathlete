@@ -8,11 +8,11 @@ import Images from "../ui/constants/images";
 import Button from "../ui/Button";
 
 const certificates = [
-    { id: 1, image: Images.Certificate1 },
-    { id: 2, image: Images.Certificate2 },
-    { id: 3, image: Images.Certificate3 },
-    { id: 4, image: Images.Certificate4 },
-    { id: 5, image: Images.Certificate5 },
+    { id: 1, image: Images.certificate1 },
+    { id: 2, image: Images.certificate2 },
+    { id: 3, image: Images.certificate3 },
+    { id: 4, image: Images.certificate4 },
+    { id: 5, image: Images.certificate5 },
 ];
 
 const StudentCertificationSlider = () => {
