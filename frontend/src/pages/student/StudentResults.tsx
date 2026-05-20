@@ -224,12 +224,11 @@ const StudentResults: React.FC = () => {
           title="Student Results"
           subtitle="Track performance, celebrate progress, and grow with confidence"
           icon="🏆"
-          variant="results"
         />
 
         <div className="p-4 space-y-4">
           {/* FILTERS */}
-          <div className="bg-gray-100 px-4 flex items-center justify-between mb-4 bg-white p-4 rounded-xl shadow-sm border">
+          <div className="bg-gray-100 px-4 flex items-center justify-between mb-4 bg-white p-4 rounded-xl shadow-sm border md:flex-row flex-col gap-4">
             {tableData.length > 0 && (
               <div className="flex w-full">
                 <h2 className="text-xl font-bold">
@@ -240,7 +239,7 @@ const StudentResults: React.FC = () => {
               </div>
             )}
 
-            <div className="flex justify-end w-full gap-3">
+            <div className="flex justify-end w-full gap-3 md:flex-row flex-col">
               <GlobalFilter
                 align="left"
                 showSearch={false}
