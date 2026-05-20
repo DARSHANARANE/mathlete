@@ -6,9 +6,8 @@ import {
 import { setContext } from "@apollo/client/link/context";
 import { createUploadLink } from "apollo-upload-client";
 
-// ✅ IMPORTANT: NO .mjs import, NO deep import
 const uploadLink = createUploadLink({
-  uri: "http://localhost:5000/graphql",
+  uri: import.meta.env.VITE_API_URL,
 });
 
 const authLink = setContext((_, { headers }) => {
