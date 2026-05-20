@@ -11,7 +11,7 @@ const certificates = [
     { id: 1, image: Images.certificate1 },
     { id: 2, image: Images.certificate2 },
     { id: 3, image: Images.certificate3 },
-    { id: 4, image: Images.certificate4 },
+    { id: 4, image: Images.certificate6 },
     { id: 5, image: Images.certificate5 },
 ];
 
