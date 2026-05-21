@@ -7,7 +7,24 @@ import { ChevronDown } from "lucide-react";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [productOpen, setProductOpen] = useState(false);
-  const navLink = (path: string, label: string) => (
+const navLink = (path: string, label: string) => {
+  const isExternal = path.startsWith("http");
+
+  if (isExternal) {
+    return (
+      <a
+        href={path}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="relative px-2 py-1 text-gray-700 hover:text-red-500 text-sm font-medium transition duration-300 group"
+      >
+        {label}
+        <span className="absolute left-0 -bottom-1 h-[2px] w-0 rounded-full bg-gradient-to-r from-red-300 to-red-500 transition-all duration-300 group-hover:w-full"></span>
+      </a>
+    );
+  }
+
+  return (
     <Link
       to={path}
       className="relative px-2 py-1 text-gray-700 hover:text-red-500 text-sm font-medium transition duration-300 group"
@@ -16,6 +33,7 @@ const Navbar = () => {
       <span className="absolute left-0 -bottom-1 h-[2px] w-0 rounded-full bg-gradient-to-r from-red-300 to-red-500 transition-all duration-300 group-hover:w-full"></span>
     </Link>
   );
+};
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-red-100 shadow-sm">
@@ -82,7 +100,7 @@ const Navbar = () => {
               </Link>
             </div>
           </div>
-          {navLink("/exam-fees", "Exam Fees")}
+          {navLink("https://forms.eduqfix.com/edufitform/add", "Exam Fees")}
           {navLink("/gallery", "Gallery")}
           {navLink("/contact", "Contact")}
         </div>
