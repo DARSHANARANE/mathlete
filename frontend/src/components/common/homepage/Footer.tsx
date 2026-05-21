@@ -18,9 +18,8 @@ const Footer = () => {
         {/* Brand */}
         <div>
           <h3 className="text-white text-lg font-semibold flex items-center gap-2 mb-3">
-            <img src={Logo} alt="logo" className="h-6 w-auto" /> MATHELETE
+           MATHELETE
           </h3>
-
           <p className="text-sm text-gray-400">
             Your trusted source for authentic question papers from top universities.
           </p>

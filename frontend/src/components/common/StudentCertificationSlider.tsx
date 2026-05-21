@@ -18,11 +18,11 @@ const certificates = [
 const StudentCertificationSlider = () => {
     return (
         <div className="py-16  bg-gray-100">
-            <div className="max-w-4xl mx-auto px-4">
-                <h2 className="text-4xl font-bold text-center mb-10">
-                    Student Certifications
-                </h2>
-
+            <div className="max-w-4xl mx-auto px-5">
+                <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mt-3 mb-6 leading-tight">
+                Student Certifications
+                <span className="text-[#e3344a]"> Easy & Fun</span>
+              </h2>
                 <Swiper
                     modules={[Autoplay, Pagination]}
                     spaceBetween={20}
