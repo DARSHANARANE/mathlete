@@ -1,14 +1,13 @@
 import { motion } from "framer-motion";
 import AboutImages from "../../ui/constants/images";
 import Button from "../../ui/Button";
-import { Link } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function AboutSection() {
   const navigate = useNavigate();
 
   return (
-    <section className="bg-white px-6 py-20 md:px-16">
+    <section className="bg-white px-6 py-12 md:px-16">
       <div className="mx-auto grid max-w-7xl items-center gap-14 md:grid-cols-2">
         
         {/* LEFT CONTENT */}

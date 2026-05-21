@@ -100,7 +100,7 @@ const navLink = (path: string, label: string) => {
               </Link>
             </div>
           </div>
-          {navLink("https://forms.eduqfix.com/edufitform/add", "Exam Fees")}
+          {navLink("https://forms.eduqfix.com/edufitform/add", "Student Registration")}
           {navLink("/gallery", "Gallery")}
           {navLink("/contact", "Contact")}
         </div>
