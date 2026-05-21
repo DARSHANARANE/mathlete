@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import Navbar from "../../components/common/homepage/Navbar";
 import Footer from "../../components/common/homepage/Footer";
+import TopButton from "../../components/ui/TopButton";
 
 /* auto import all gallery images */
 const galleryImages = Object.values(
@@ -97,6 +98,8 @@ const Gallery = () => {
       </section>
 
       <Footer />
+       {/* Back To Top Button */}
+       <TopButton />
     </>
   );
 };

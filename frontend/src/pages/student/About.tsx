@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import Navbar from "../../components/common/homepage/Navbar";
 import Footer from "../../components/common/homepage/Footer";
 import Images from "../../components/ui/constants/images";
+import TopButton from "../../components/ui/TopButton";
 
 const About = () => {
   return (
@@ -129,6 +130,8 @@ const About = () => {
         </div>
       </section>
       <Footer />
+       {/* Back To Top Button */}
+      <TopButton />
     </>
   );
 };
