@@ -6,6 +6,7 @@ import { Mail, Phone, MapPin } from "lucide-react";
 import Navbar from "../../components/common/homepage/Navbar";
 import Footer from "../../components/common/homepage/Footer";
 import { CREATE_CONTACT } from "../../graphql/mutations";
+import TopButton from "../../components/ui/TopButton";
 
 type CreateContactResponse = {
   createContact: {
@@ -189,8 +190,9 @@ const Contact = () => {
           </div>
         </div>
       </section>
-
       <Footer />
+      {/* Back To Top Button */}
+      <TopButton />
     </>
   );
 };
