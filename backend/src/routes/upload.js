@@ -160,10 +160,6 @@ router.post("/", handleUpload, async (req, res) => {
       /(st|nd|rd|th)/g,
       ""
     );
-
-    console.log("RESULT FILE:", file);
-    console.log("PUBLIC ID:", file.filename);
-
     const existing = await ResultFile.findOne({
       year,
       className,
@@ -325,15 +321,11 @@ router.post("/pdf", handlePdfUpload, async (req, res) => {
 
     const file = req.file;
 
-    console.log("PDF FILE:", file);
-    console.log("PDF PUBLIC ID:", file?.filename);
-
     if (!file) {
       return res.status(400).json({
         error: "No PDF uploaded",
       });
     }
-console.log("REQ BODY:", req.body);
     const saved = await Pdf.create({
       fileName: file.originalname,
 
@@ -386,7 +378,7 @@ router.delete("/pdf/:id", async (req, res) => {
       });
     }
 
-    console.log("Deleting PDF:", pdf.publicId);
+
 
     // ======================
     // DELETE FROM CLOUDINARY

@@ -115,17 +115,60 @@ export default function StudentQuestionPaperPage() {
           </div>
 
           {/* Cards */}
-          {loading ? (
-            <p className="text-gray-500">Loading question papers...</p>
-          ) : filteredPdfs.length === 0 ? (
-            <p className="text-gray-500">No question papers found.</p>
-          ) : (
-            <div className="grid gap-6 sm:grid-cols-4 lg:grid-cols-5">
-              {filteredPdfs.map((pdf) => (
-                <QuestionPaperCard key={pdf.id} pdf={pdf} />
-              ))}
-            </div>
-          )}
+         {loading ? (
+  <div className="space-y-6">
+    
+    {/* Warmup Message */}
+    <div className="rounded-2xl border border-orange-100 bg-orange-50 p-4 text-center">
+      <div className="mx-auto mb-3 h-10 w-10 animate-spin rounded-full border-4 border-orange-200 border-t-orange-500"></div>
+
+      <h3 className="text-lg font-semibold text-gray-800">
+        Preparing Question Papers
+      </h3>
+
+      <p className="mt-1 text-sm text-gray-600">
+        Server is starting for the first request. Papers will appear automatically.
+      </p>
+    </div>
+
+    {/* Skeleton Cards */}
+    <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+      {[...Array(5)].map((_, index) => (
+        <div
+          key={index}
+          className="animate-pulse rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
+        >
+          <div className="h-40 rounded-xl bg-gray-200"></div>
+
+          <div className="mt-4 h-4 w-3/4 rounded bg-gray-200"></div>
+
+          <div className="mt-2 h-3 w-1/2 rounded bg-gray-100"></div>
+
+          <div className="mt-6 h-10 rounded-xl bg-gray-200"></div>
+        </div>
+      ))}
+    </div>
+  </div>
+) : filteredPdfs.length === 0 ? (
+  <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-gray-50 py-16 text-center">
+    
+    <div className="mb-4 text-5xl">📄</div>
+
+    <h3 className="text-xl font-semibold text-gray-800">
+      No Question Papers Found
+    </h3>
+
+    <p className="mt-2 max-w-md text-sm text-gray-500">
+      Try changing filters or check again later for newly uploaded papers.
+    </p>
+  </div>
+) : (
+  <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+    {filteredPdfs.map((pdf) => (
+      <QuestionPaperCard key={pdf.id} pdf={pdf} />
+    ))}
+  </div>
+)}
         </div>
       </div>
     </>

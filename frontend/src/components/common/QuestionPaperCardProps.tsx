@@ -8,6 +8,7 @@ type PdfItem = {
   filePath: string;
   title?: string;
   className?: string;
+  level?: number | string;
   year?: string;
   pages?: number;
   price?: number;
@@ -26,75 +27,76 @@ export default function QuestionPaperCard({ pdf }: Props) {
       state: { pdf },
     });
   };
+
   return (
-    <div className="group w-full max-w-[250px]">
-      <div className="overflow-hidden rounded-[16px] bg-white shadow-[0_10px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)]">
+  <div className="group w-full">
+  <div className="overflow-hidden rounded-3xl border border-red-100/60 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
 
+    <div className="relative flex w-full flex-col overflow-hidden rounded-3xl">
 
+      {/* Soft Background Glow */}
+      <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-red-100/40 blur-3xl"></div>
 
-        {/* COVER AREA */}
-        <div className="flex items-center justify-center w-full flex z-10">
-          <div className="relative flex  py-1 w-full gap-2 flex-col justify-center overflow-hidden rounded-2xl shadow-[0_10px_20px_rgba(0,0,0,0.05)]">
-            <div className="relative z-10 w-full flex h-20 w-20 items-center justify-center rounded-3xl border border-white/20 bg-white/15 backdrop-blur-md">
-              <FileText className="h-12 w-12 text-red-500" />
-            </div>
-            <div className="flex items-center leading-snug w-full justify-center">
-              {pdf.year && (
-                <span
-                  className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase}`}
-                >
-                  {pdf.year}
-                </span>
-              )}
-            </div>
-          </div>
+      {/* TOP */}
+      <div className="relative bg-gradient-to-br from-red-50 via-rose-50 to-orange-50 p-5 min-h-[145px] border-b border-red-100/60">
+
+        {/* Tags */}
+        <div className="flex items-center justify-between">
+
+          {/* Level */}
+          <span className="rounded-full border border-amber-100 bg-gradient-to-r from-amber-50 to-yellow-50 px-3 py-1 text-[11px] font-bold text-amber-700 shadow-sm">
+              {pdf.level}
+          </span>
+
+          {/* Class */}
+          <span className="rounded-full border border-red-100 bg-white px-3 py-1 text-[11px] font-bold text-red-500 shadow-sm">
+            Class {pdf.className}
+          </span>
         </div>
 
-        {/* CONTENT */}
-        <div className="px-5 pb-5 pt-4">
-          <h3 className=" mt-2 text-lg font-black leading-snug text-black">
+        {/* Title */}
+        <div className="mt-5 flex items-start gap-3">
+
+          {/* Icon */}
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-rose-400 shadow-[0_10px_20px_rgba(239,68,68,0.25)]">
+            <FileText className="h-6 w-6 text-white" />
+          </div>
+
+          {/* Text */}
+          <div>
+            <h3 className="mt-1 line-clamp-2 text-lg font-black leading-snug text-gray-800">
             {pdf.title || pdf.fileName}
-          </h3>
-          {/* PRICE */}
-          <div className="flex items-end justify-between">
-            <div>
-
-
-              <h2 className="mt-1 text-3xl font-black text-slate-900">
-                ₹{pdf.price ?? 0}
-              </h2>
-            </div>
-
-            {/* META */}
-            <div className="mt-5 flex flex-wrap items-center gap-2">
-              {pdf.className && (
-                <span className="rounded-md bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-700">
-                  Class {pdf.className}
-                </span>
-              )}
-
-
-              <span className="rounded-md bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-700">
-                30 Pages
-              </span>
-            </div>
-
+            </h3>
           </div>
-
-
-          {/* BUTTON */}
-          <div className={`mt-3 flex items-center justify-center w-full`}> 
-            <Button
-              onClick={handleCheckout}
-            >
-              <Download size={15} />
-              Download Paper
-            </Button>
-          </div>
-
         </div>
       </div>
+
+      {/* BOTTOM */}
+      <div className="flex items-center justify-between px-5 pb-5 pt-3">
+
+        {/* PRICE */}
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400">
+            Price
+          </p>
+
+          <h2 className="mt-1 text-3xl font-black text-gray-900">
+           ₹{pdf.price ?? 0}
+          </h2>
+        </div>
+
+        {/* BUTTON */}
+        <button
+           onClick={handleCheckout}
+          className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-red-500 to-rose-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:scale-[1.03] hover:shadow-lg"
+        >
+          <Download size={15} />
+           Download
+        </button>
+      </div>
     </div>
+  </div>
+</div>
   );
 }
 
@@ -117,62 +119,85 @@ export const BuyBookCard: React.FC<
   level,
   onBuy,
 }) => {
-  return (
+    return (
     <div className="group w-full">
-      <div className="overflow-hidden rounded-[16px] bg-white shadow-[0_10px_35px_rgba(0,0,0,0.08)] transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)]">
-        <div className="flex w-full items-center justify-center">
-          <div className="relative flex w-full flex-col justify-center gap-2 overflow-hidden rounded-2xl py-1 shadow-[0_10px_20px_rgba(0,0,0,0.05)]">
-            
-            {/* TOP */}
-              <div className="bg-gradient-to-r from-[#D90621] via-[#EE3344] to-[#ff6b81] p-5 text-white min-h-[140px]">
-      <div className="flex items-center justify-between">
-        <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold backdrop-blur">
-          {level || "Level 1"}
-        </span>
+  <div className="overflow-hidden rounded-3xl border border-red-100/60 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_45px_rgba(239,68,68,0.12)]">
 
-        <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-[#D90621]">
-          Class {className}
-        </span>
-      </div>
+    <div className="relative flex w-full flex-col overflow-hidden">
 
-      <h3 className="mt-4 line-clamp-2 text-xl font-black leading-snug">
-        {title}
-      </h3>
-    </div>
+      {/* Decorative Glow */}
+      <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-red-100/40 blur-3xl"></div>
 
-            {/* CONTENT */}
-           
-            <div className="min-h-[62px] px-5 pt-4">
-              <p className="line-clamp-2 text-[14px] font-medium leading-6 text-black/80">
-                {description || "No description available."}
-              </p>
-            </div>
-            <div className="px-5 pb-5 pt-2 flex items-end justify-between">
-              {/* PRICE */}
-              <div className="flex items-end justify-between">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                    Price
-                  </p>
+      {/* TOP */}
+      <div className="relative min-h-[150px] border-b border-red-100/60 bg-gradient-to-br from-red-50 via-rose-50 to-orange-50 p-5">
 
-                  <h2 className="mt-1 text-3xl font-black text-slate-900">
-                    ₹{price || 0}
-                  </h2>
-                </div>
-             
-              </div>
+        {/* TAGS */}
+        <div className="flex items-center justify-between">
 
-              {/* BUTTON */}
-              <div className="mt-4 flex w-full items-center justify-center">
-                <Button onClick={onBuy}>
-                  <Download size={15} />
-                  Buy Book
-                </Button>
-              </div>
-            </div>
+          {/* LEVEL */}
+          <span className="rounded-full border border-amber-100 bg-gradient-to-r from-amber-50 to-yellow-50 px-3 py-1 text-[11px] font-bold text-amber-700 shadow-sm">
+            {level || "Level 1"}
+          </span>
+
+          {/* CLASS */}
+          <span className="rounded-full border border-red-100 bg-white/90 px-3 py-1 text-[11px] font-bold text-red-500 shadow-sm backdrop-blur">
+            Class {className}
+          </span>
+        </div>
+
+        {/* TITLE SECTION */}
+        <div className="mt-5 flex items-start gap-4">
+
+          {/* ICON */}
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-red-500 to-rose-400 shadow-[0_10px_25px_rgba(239,68,68,0.25)]">
+            <FileText className="h-7 w-7 text-white" />
+          </div>
+
+          {/* TEXT */}
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-red-400">
+              Study Material
+            </p>
+
+            <h3 className="mt-1 line-clamp-2 text-xl font-black leading-snug text-gray-800">
+              {title}
+            </h3>
           </div>
         </div>
       </div>
+
+      {/* CONTENT */}
+      <div className="min-h-[72px] px-5 pt-4">
+        <p className="line-clamp-2 text-[14px] leading-6 text-gray-600">
+          {description || "No description available."}
+        </p>
+      </div>
+
+      {/* FOOTER */}
+      <div className="flex items-end justify-between px-5 pb-5 pt-3">
+
+        {/* PRICE */}
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400">
+            Price
+          </p>
+
+          <h2 className="mt-1 text-3xl font-black text-gray-900">
+            ₹{price || 0}
+          </h2>
+        </div>
+
+        {/* BUTTON */}
+        <button
+          onClick={onBuy}
+          className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-red-500 to-rose-500 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-300 hover:scale-[1.03] hover:shadow-lg"
+        >
+          <Download size={16} />
+          Buy Now
+        </button>
+      </div>
     </div>
-  );
-};
+  </div>
+</div>
+    );
+  };
