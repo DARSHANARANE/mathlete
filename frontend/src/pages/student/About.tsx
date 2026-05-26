@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import Navbar from "../../components/common/homepage/Navbar";
 import Footer from "../../components/common/homepage/Footer";
 import Images from "../../components/ui/constants/images";
+import TopButton from "../../components/ui/TopButton";
 
 const About = () => {
   return (
@@ -49,14 +50,14 @@ const About = () => {
                 <span className="text-[#e3344a]"> Easy & Fun</span>
               </h2>
 
-              <p className="text-gray-600 leading-8 mb-5">
-                Mathlete is a venture by Dynamik Education who are active in the field of education for the past decade. 
-                Dynamik Education has established  English marathon ( English language competition for school children)in Pune ,
+             <p className="text-gray-600 leading-8 mb-5">
+                Mathlete is a venture by EDUFIT who are active in the field of education for the past decade. 
+                EDUFIT has established  English marathon ( English language competition for school children)in Pune ,
                  besides this they also manage their  own preschool by the name of Aussie Kids in Bhusari Colony,  Pune. </p>
 
 
-                <p className="text-gray-600 leading-8 mb-5">Dynamik education is spearheaded by the dynamic  trio Namrata Sharma, Sheetal Kulkarni and Sarita Meid, whose  passion for education and mathematics lead them to create Mathlete.
-                They and their expert team are successful in taking mathlete to 3000+ students across 50+ schools in and around Pune.
+                <p className="text-gray-600 leading-8 mb-5">EDUFIT is spearheaded by the dynamic duo Namrata Sharma and Sarita Meid, whose  passion for education and mathematics lead them to create Mathlete.
+                They and their expert team are successful in taking mathlete to 10000+ students across 100+ schools in and around Pune.
                 </p>
 
               <p className="text-gray-600 leading-8">
@@ -129,6 +130,8 @@ const About = () => {
         </div>
       </section>
       <Footer />
+       {/* Back To Top Button */}
+      <TopButton />
     </>
   );
 };

@@ -5,7 +5,8 @@ import { GET_RESULT_YEARS } from "../../graphql/queries";
 import GlobalFilter from "../../components/common/GlobalFilter";
 import Table from "../../components/common/table/tablelayout";
 import type { Column } from "../../components/common/table/tablelayout";
-
+import Images from "../../components/ui/constants/images";
+import { motion } from "framer-motion";
 import Navbar from "../../components/common/homepage/Navbar";
 import { GET_RESULT_FILE } from "../../graphql/queries";
 import SearchBox from "../../components/common/SearchBox";
@@ -18,7 +19,6 @@ import {
   FiInbox,
 } from "react-icons/fi";
 
-import PageBanner from "../../components/common/PageBanner";
 import { getFilterYearOptions } from "../../constants/yearOptions";
 
 // ================= TYPES =================
@@ -220,11 +220,24 @@ const StudentResults: React.FC = () => {
       <Navbar />
 
       <div className="min-h-screen bg-gray-100 text-text">
-        <PageBanner
-          title="Student Results"
-          subtitle="Track performance, celebrate progress, and grow with confidence"
-          icon="🏆"
+        {/* Banner */}
+      <div className="relative w-full h-[220px] md:h-[250px]">
+        <img
+          src={Images.Banner}
+          alt="Banner"
+          className="w-full h-full object-cover"
         />
+        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+          <motion.h1
+            className="text-white text-4xl md:text-6xl font-bold"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            Results Dashboard
+          </motion.h1>
+        </div>
+      </div>
 
         <div className="p-4 space-y-4">
           {/* FILTERS */}

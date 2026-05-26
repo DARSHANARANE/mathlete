@@ -19,17 +19,15 @@ const StudentCertificationSlider = () => {
     return (
         <div className="py-16  bg-gray-100 ">
             <div className="text-center relative">
-                <h2 className="text-4xl font-black text-[#1b1444] md:text-5xl">
-                    Student{" "}
-                    <span className="relative inline-block text-[#E3344A]">
-                        Certifications
-                        <span className="absolute -bottom-2 left-0 -z-10 h-3 w-full rounded-full bg-[#ffd7dd]" />
+                <span className="text-[#e3344a] font-semibold uppercase tracking-wider">
+                Student Awards & Rewards  
+              </span>
+               <h2 className="text-4xl font-black text-[#1b1444] md:text-5xl leading-tight">
+                    Recognizing student <br />
+                    <span className="text-[#e3344a]">
+                        success and achievement.
                     </span>
                 </h2>
-
-                <p className="mt-4 text-[#6d6886]">
-                    Recognizing student success and achievement.
-                </p>
             </div>
             <div className="max-w-4xl mx-auto px-5 mt-12">
                 <Swiper

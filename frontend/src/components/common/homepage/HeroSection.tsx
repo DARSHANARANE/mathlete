@@ -70,7 +70,7 @@ const Hero = () => {
           {/* Stats */}
           <div className="mt-14 flex flex-wrap gap-10">
             <div>
-              <h3 className="text-3xl font-bold text-red-500">3k+</h3>
+              <h3 className="text-3xl font-bold text-red-500">10k+</h3>
               <p className="mt-1 text-sm text-gray-300">
                 Students 
               </p>
@@ -84,7 +84,7 @@ const Hero = () => {
             </div>
 
             <div>
-              <h3 className="text-3xl font-bold text-red-500">50+</h3>
+              <h3 className="text-3xl font-bold text-red-500">100+</h3>
               <p className="mt-1 text-sm text-gray-300">
                 Schools
               </p>
