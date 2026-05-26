@@ -23,7 +23,6 @@ const Home = () => {
 
         <Features />
       </main>
-
       <Footer />
 
       {/* Back To Top Button */}

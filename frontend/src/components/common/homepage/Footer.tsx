@@ -1,79 +1,182 @@
 import { Link } from "react-router-dom";
-import Logo from "../../../assets/mathlete_logo.png"
+
 import {
-  FaGraduationCap,
-  FaFacebook,
-  FaTwitter,
+  FaFacebookF,
   FaInstagram,
-  FaLinkedin
+  FaLinkedinIn,
+  FaTwitter,
 } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-gray-300 mt-10">
+    <footer className="relative overflow-hidden bg-[#0f172a] text-white">
 
-      {/* Top Section */}
-      <div className="max-w-7xl mx-auto px-4 py-10 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+      {/* Top Border */}
+      <div className="h-1 w-full bg-gradient-to-r from-[#E3344A] via-[#ff7b8f] to-[#E3344A]" />
 
-        {/* Brand */}
-        <div>
-          <h3 className="text-white text-lg font-semibold flex items-center gap-2 mb-3">
-           MATHELETE
-          </h3>
-          <p className="text-sm text-gray-400">
-            Your trusted source for authentic question papers from top universities.
-          </p>
+      {/* Main Footer */}
+      <div className="max-w-7xl mx-auto px-6 py-16">
 
-          {/* Social */}
-          <div className="flex gap-4 mt-4 text-xl">
-            <a href="#" className="hover:text-white"><FaFacebook /></a>
-            <a href="#" className="hover:text-white"><FaTwitter /></a>
-            <a href="#" className="hover:text-white"><FaInstagram /></a>
-            <a href="#" className="hover:text-white"><FaLinkedin /></a>
+        <div className="grid gap-14 lg:grid-cols-[1.2fr_1fr_1fr]">
+
+          {/* Left Section */}
+          <div>
+
+            <Link
+              to="/"
+              className="inline-block"
+            >
+              <h2 className="text-4xl font-black tracking-wide">
+                MATHLETE
+              </h2>
+            </Link>
+
+            <p className="mt-5 max-w-sm text-sm leading-7 text-gray-400">
+              Empowering students with creative, modern,
+              and interactive educational experiences.
+            </p>
+
+            {/* Social Icons */}
+            <div className="mt-8 flex items-center gap-4">
+
+              {[
+                FaFacebookF,
+                FaInstagram,
+                FaTwitter,
+                FaLinkedinIn,
+              ].map((Icon, index) => (
+                <a
+                  key={index}
+                  href="#"
+                  className="
+                    flex
+                    h-11
+                    w-11
+                    items-center
+                    justify-center
+                    rounded-2xl
+                    border
+                    border-white/10
+                    bg-white/5
+                    text-gray-300
+                    transition-all
+                    duration-300
+                    hover:-translate-y-1
+                    hover:border-[#E3344A]
+                    hover:bg-[#E3344A]
+                    hover:text-white
+                  "
+                >
+                  <Icon size={16} />
+                </a>
+              ))}
+
+            </div>
           </div>
-        </div>
 
-        {/* Quick Links */}
-        <div>
-          <h3 className="text-white font-semibold mb-3">Quick Links</h3>
-          <ul className="space-y-2 text-sm">
-            <li><Link to="/browse" className="hover:text-white">Browse Papers</Link></li>
-            <li><Link to="/orders" className="hover:text-white">My Orders</Link></li>
-            <li><Link to="#" className="hover:text-white">About Us</Link></li>
-            <li><Link to="#" className="hover:text-white">Contact</Link></li>
-          </ul>
-        </div>
+          {/* Links */}
+          <div>
 
-        {/* Categories */}
-        <div>
-          <h3 className="text-white font-semibold mb-3">Categories</h3>
-          <ul className="space-y-2 text-sm">
-            <li><Link to="/browse?subject=Mathematics" className="hover:text-white">Mathematics</Link></li>
-            <li><Link to="/browse?subject=Physics" className="hover:text-white">Physics</Link></li>
-            <li><Link to="/browse?subject=Chemistry" className="hover:text-white">Chemistry</Link></li>
-            <li><Link to="/browse?subject=Computer Science" className="hover:text-white">Computer Science</Link></li>
-          </ul>
-        </div>
+            <h3 className="text-xl font-bold text-white">
+              Quick Links
+            </h3>
 
-        {/* Legal */}
-        <div>
-          <h3 className="text-white font-semibold mb-3">Legal</h3>
-          <ul className="space-y-2 text-sm">
-            <li><Link to="#" className="hover:text-white">Terms of Service</Link></li>
-            <li><Link to="#" className="hover:text-white">Privacy Policy</Link></li>
-            <li><Link to="#" className="hover:text-white">Refund Policy</Link></li>
-            <li><Link to="#" className="hover:text-white">FAQ</Link></li>
-          </ul>
+            <div className="mt-6 flex flex-col gap-4">
+
+              {[
+                { name: "About", path: "/about" },
+                { name: "Results", path: "/results" },
+                { name: "Products", path: "/products" },
+                { name: "Students Registration", path: "/students" },
+                { name: "Contact", path: "/contact" },
+              ].map((item, index) => (
+                <Link
+                  key={index}
+                  to={item.path}
+                  className="
+                    text-sm
+                    text-gray-400
+                    transition-all
+                    hover:translate-x-1
+                    hover:text-white
+                  "
+                >
+                  {item.name}
+                </Link>
+              ))}
+
+            </div>
+          </div>
+
+          {/* Contact */}
+          <div>
+
+            <h3 className="text-xl font-bold text-white">
+              Contact Info
+            </h3>
+
+            <div className="mt-6 space-y-5">
+
+              <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5">
+
+                <p className="text-xs uppercase tracking-widest text-[#E3344A]">
+                  Email
+                </p>
+
+                <p className="mt-2 text-sm text-gray-300">
+                  support@mathlete.com
+                </p>
+
+              </div>
+
+              <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5">
+
+                <p className="text-xs uppercase tracking-widest text-[#E3344A]">
+                  Phone
+                </p>
+
+                <p className="mt-2 text-sm text-gray-300">
+                  +91 98765 43210
+                </p>
+
+              </div>
+
+              <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-5">
+
+                <p className="text-xs uppercase tracking-widest text-[#E3344A]">
+                  Address
+                </p>
+
+                <p className="mt-2 text-sm text-gray-300">
+                  Thane, Maharashtra
+                </p>
+
+              </div>
+
+            </div>
+          </div>
+
         </div>
 
       </div>
 
       {/* Bottom */}
-      <div className="border-t border-gray-700 text-center py-4 text-sm text-gray-400">
-        © 2026 MATHLETE. All rights reserved.{" "}
-        <span className="font-semibold text-gray-300">
-          Developed by Team MiniAn
-        </span>
+      <div className="border-t border-white/10">
+
+        <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col gap-3 md:flex-row items-center justify-between">
+
+          <p className="text-sm text-gray-400">
+            © 2026 MATHLETE. All rights reserved.
+          </p>
+
+          <p className="text-sm text-gray-400">
+            Developed by{" "}
+            <span className="font-semibold text-white">
+              Team MiniAn
+            </span>
+          </p>
+
+        </div>
       </div>
 
     </footer>
