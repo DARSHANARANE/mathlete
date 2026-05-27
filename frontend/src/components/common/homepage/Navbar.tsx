@@ -2,11 +2,9 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import Logo from "../../../assets/mathlete_logo.png";
 import Button from "../../ui/Button";
-import { ChevronDown } from "lucide-react";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const [productOpen, setProductOpen] = useState(false);
 const navLink = (path: string, label: string) => {
   const isExternal = path.startsWith("http");
 
@@ -114,7 +112,7 @@ const navLink = (path: string, label: string) => {
     </Link>
 
 
-    <Link to="/exam-fees" onClick={() => setOpen(false)}>
+    <Link to="https://forms.eduqfix.com/edufitform/add" onClick={() => setOpen(false)}>
       Student Registration
     </Link>
     <Link to="/books" onClick={() => setOpen(false)}>
