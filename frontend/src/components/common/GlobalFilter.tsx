@@ -181,7 +181,7 @@ const GlobalFilter: React.FC<Props> = ({
               }`}
             >
               {!hideAllClassOption && (
-                <option value="">
+                <option value="all">
                   All Classes
                 </option>
               )}
@@ -213,7 +213,7 @@ const GlobalFilter: React.FC<Props> = ({
               }`}
             >
               {!hideAllLevelOption && (
-                <option value="">
+                <option value="all">
                   All Levels
                 </option>
               )}

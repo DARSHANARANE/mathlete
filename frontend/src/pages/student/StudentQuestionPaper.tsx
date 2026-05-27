@@ -14,6 +14,7 @@ type PdfItem = {
   filePath: string;
   title?: string;
   className?: string;
+  level?: string;
   year?: string;
   pages?: number;
   price?: number;
@@ -44,10 +45,12 @@ export default function StudentQuestionPaperPage() {
 
       const matchClass =
         className === "all" || pdf.className === className;
+      const matchLevel =
+        level === "all" || pdf.level === level;
 
-      return matchSearch && matchYear && matchClass;
+      return matchSearch && matchYear && matchClass && matchLevel;
     });
-  }, [data, search, year, className]);
+  }, [data, search, year, className, level]);
 
   return (
     <>
@@ -97,9 +100,18 @@ export default function StudentQuestionPaperPage() {
                   showLevel
                   levelValue={level}
                   onLevelChange={setLevel}
+                
                   levelOptions={[
-                    { label: "Level 1", value: "level1" },
-                    { label: "Level 2", value: "level2" },
+
+                    {
+                      label: "Level 1",
+                      value: "Level 1",
+                    },
+
+                    {
+                      label: "Level 2",
+                      value: "Level 2",
+                    },
                   ]}
                 />
 

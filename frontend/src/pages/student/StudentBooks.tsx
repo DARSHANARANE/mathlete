@@ -111,7 +111,7 @@ export default function StudentBooks() {
 
                   showClass
                   classOptions={[
-                    ...[...Array(10)].map(
+                    ...[...Array(7)].map(
                       (_, i) => ({
                         label: `Class ${i + 1}`,
                         value: `${i + 1}`,
