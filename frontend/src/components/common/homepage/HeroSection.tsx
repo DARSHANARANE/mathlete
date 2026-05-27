@@ -1,4 +1,4 @@
-import heroBg from "../../../assets/img-3.jpg"; // your uploaded image
+import heroBg from "../../../assets/main_bg.jpeg"; 
 import UIButton from "../../ui/Button";
 import { motion } from "framer-motion";
 
@@ -10,11 +10,12 @@ const Hero = () => {
         <img
           src={heroBg}
           alt="Parents and Students"
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover  contrast-125 brightness-40"
         />
 
         {/* Red Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#3b0000]/50 via-[#1a0000]/70 to-transparent" />
+       <div className="absolute inset-0 bg-black/65" />
+<div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
       </div>
 
   
@@ -32,14 +33,13 @@ const Hero = () => {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-5xl font-black leading-tight text-white md:text-7xl"
+            className="text-5xl font-black leading-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] md:text-7xl"
           >
-            Building Strong
+            Learn Through 
             <br />
             <span className="text-red-500">
-              Mathematical
-            </span>{" "}
-            Foundations
+              Competition 
+            </span>
           </motion.h1>
               {/* Buttons */}
           <motion.div
@@ -49,11 +49,11 @@ const Hero = () => {
             className="mt-10 flex flex-wrap gap-5"
           >
             <UIButton className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-xl shadow-xl shadow-red-900/30">
-             Explore Papers
+              Practice Paper 
             </UIButton>
 
             <button className="rounded-xl border border-white/20 bg-white/10 px-8 py-4 font-medium text-white backdrop-blur-md transition hover:bg-white/20">
-              Explore Results
+               Book Purchase
             </button>
           </motion.div>
           {/* Description */}

@@ -92,20 +92,14 @@ const Contact = () => {
     {
       icon: <Phone className="text-[#ff9800]" size={24} />,
       title: "Phone Number",
-      value: "+91 98765 43210",
+      value: "98230 30379, 96650 06698 ",
       bg: "bg-[#fff7e8]",
     },
     {
       icon: <MapPin className="text-[#2b7fff]" size={24} />,
       title: "Office Location",
-      value: "Thane, Maharashtra",
+      value: " Kothrud , Pune ",
       bg: "bg-[#eef6ff]",
-    },
-    {
-      icon: <Clock3 className="text-[#7b61ff]" size={24} />,
-      title: "Working Hours",
-      value: "Mon - Sat | 9AM - 7PM",
-      bg: "bg-[#f4f0ff]",
     },
   ];
 
@@ -113,8 +107,8 @@ const Contact = () => {
     <>
       <Navbar />
 
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#fff5f5] via-white to-[#fff7f8] py-24">
-        
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#fff5f5] via-white to-[#fff7f8] py-12">
+
         {/* Background Grid */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#f1f1f110_1px,transparent_1px),linear-gradient(to_bottom,#f1f1f110_1px,transparent_1px)] bg-[size:40px_40px]" />
 
@@ -351,12 +345,14 @@ const Contact = () => {
           </div>
 
           {/* Contact Cards */}
-          <div className="mt-24 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-24 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 
             {contactCards.map((item, index) => (
               <div
                 key={index}
                 className="
+                flex
+                gap-5
                   group
                   rounded-[32px]
                   border
@@ -378,22 +374,25 @@ const Contact = () => {
                 >
                   {item.icon}
                 </div>
+                <div>
+                  <h3 className="text-xl font-black text-[#111827]">
+                    {item.title}
+                  </h3>
 
-                <h3 className="text-xl font-black text-[#111827]">
-                  {item.title}
-                </h3>
+                  <p className="mt-3 text-sm leading-7 text-[#6b7280]">
+                    {item.value}
+                  </p>
+                </div>
 
-                <p className="mt-3 text-sm leading-7 text-[#6b7280]">
-                  {item.value}
-                </p>
 
               </div>
             ))}
 
           </div>
 
+
           {/* Map */}
-          <div className="mt-24 overflow-hidden rounded-[40px] border border-white/40 bg-white shadow-[0_30px_80px_rgba(15,23,42,0.08)]">
+          <div className="mt-24 overflow-hidden rounded-[40px] border border-white/40 bg-white shadow-[0_30px_80px_rgba(15,23,42,0.08)] hidden">
 
             <iframe
               title="map"

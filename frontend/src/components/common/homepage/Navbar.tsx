@@ -37,7 +37,7 @@ const navLink = (path: string, label: string) => {
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-red-100 shadow-sm">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="max-w-8xl mx-auto px-4 py-4 flex items-center justify-between">
         <div className="flex items-center gap-6">
         {/* Logo */}
          <button
@@ -58,50 +58,14 @@ const navLink = (path: string, label: string) => {
 
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-5">
           {navLink("/", "Home")}
           {navLink("/about", "About")}
-          {navLink("/results", "Results")}
-
-          {/* Products Dropdown */}
-          <div className="relative group">
-            <button className="flex items-center gap-1 text-sm font-medium  text-gray-700 hover:text-red-500 transition-colors">
-              Products
-              <ChevronDown
-                size={16}
-                className="transition-transform duration-300 group-hover:rotate-180"
-              />
-            </button>
-
-            {/* Dropdown Menu */}
-            <div
-              className="
-        absolute left-0 top-full mt-3
-        w-48 rounded-xl border border-slate-200
-        bg-white shadow-xl
-        opacity-0 invisible
-        group-hover:opacity-100 group-hover:visible
-        transition-all duration-300
-        overflow-hidden
-      "
-            >
-              <Link
-                to="/papers"
-                className="block px-4 py-3 text-sm text-slate-700 hover:bg-[#FFF1F3] hover:text-[#E3344A] transition-colors"
-              >
-                Buy Papers
-              </Link>
-
-              <Link
-                to="/books"
-                className="block px-4 py-3 text-sm text-slate-700 hover:bg-[#FFF1F3] hover:text-[#E3344A] transition-colors"
-              >
-                Buy Books
-              </Link>
-            </div>
-          </div>
           {navLink("https://forms.eduqfix.com/edufitform/add", "Student Registration")}
+          {navLink("/books", "Purchase Books")}
+          {navLink("/papers", "Purchase  Papers")}
           {navLink("/gallery", "Gallery")}
+          {navLink("/results", "Results")}  
           {navLink("/contact", "Contact")}
         </div>
 
@@ -149,59 +113,25 @@ const navLink = (path: string, label: string) => {
       About
     </Link>
 
-    <Link to="/results" onClick={() => setOpen(false)}>
-      Results
-    </Link>
-
-    {/* Products Dropdown */}
-    <div>
-      <button
-        onClick={() => setProductOpen(!productOpen)}
-        className="flex items-center gap-2"
-      >
-        Products
-
-        <ChevronDown
-          size={18}
-          className={`transition-transform duration-300 ${
-            productOpen ? "rotate-180" : ""
-          }`}
-        />
-      </button>
-
-      {productOpen && (
-        <div className="mt-3 ml-4 flex flex-col gap-3 border-l border-white/30 pl-4">
-          <Link
-            to="/papers"
-            onClick={() => {
-              setOpen(false);
-              setProductOpen(false);
-            }}
-          >
-            Buy Papers
-          </Link>
-
-          <Link
-            to="/books"
-            onClick={() => {
-              setOpen(false);
-              setProductOpen(false);
-            }}
-          >
-            Buy Books
-          </Link>
-        </div>
-      )}
-    </div>
 
     <Link to="/exam-fees" onClick={() => setOpen(false)}>
-      Exam Fees
+      Student Registration
     </Link>
+    <Link to="/books" onClick={() => setOpen(false)}>
+      Purchase Books
+    </Link>
+       <Link to="/papers" onClick={() => setOpen(false)}>
+      Purchase Papers
+    </Link>
+
+
 
     <Link to="/gallery" onClick={() => setOpen(false)}>
       Gallery
     </Link>
-
+    <Link to="/results" onClick={() => setOpen(false)}>
+      Results
+    </Link>
     <Link to="/contact" onClick={() => setOpen(false)}>
       Contact
     </Link>

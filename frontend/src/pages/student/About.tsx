@@ -45,10 +45,10 @@ const About = () => {
                 About Mathlete
               </span>
 
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mt-3 mb-6 leading-tight">
-                Making Mathematics
-                <span className="text-[#e3344a]"> Easy & Fun</span>
-              </h2>
+             
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mt-5 leading-tight">
+            Making Mathematics<br /> Easy & Fun
+          </h2>
 
              <p className="text-gray-600 leading-8 mb-5">
                 Mathlete is a venture by EDUFIT who are active in the field of education for the past decade. 
@@ -102,8 +102,7 @@ const About = () => {
                 </h3>
 
                 <p className="leading-8 text-white/90">
-                  To help children overcome early hurdles in mathematics
-                  while building confidence and a positive attitude.
+                  To help young school children overcome the first major hurdles in mathematics i.e addition, subtraction, multiplication and division and to instill confidence and a can do attitude in them.
                 </p>
               </motion.div>
 
@@ -115,13 +114,12 @@ const About = () => {
                 transition={{ duration: 0.6, delay: 0.2 }}
                 viewport={{ once: true }}
               >
-                <h3 className="text-4xl font-bold text-[#e3344a] mb-5">
+                <h3 className="text-4xl font-bold  mb-5">
                   Mission
                 </h3>
 
                 <p className="leading-8 text-gray-600">
-                  To create a confident and positive stepping stone
-                  for every child entering the world of mathematics.
+                  To create a confident and positive stepping stone for every child into the world of early mathematics.
                 </p>
               </motion.div>
 

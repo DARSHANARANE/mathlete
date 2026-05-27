@@ -25,12 +25,12 @@ const galleryImages = Object.values(
   })
   .map((module: any, index) => {
     const layouts = [
-      "md:col-span-2 md:row-span-2 h-[420px]",
-      "h-[200px]",
-      "h-[260px]",
+      "md:col-span-2 md:row-span-2 h-[820px]",
+      "h-[400px]",
+      "h-[460px]",
       "md:row-span-2 h-[420px]",
-      "h-[240px]",
-      "md:col-span-2 h-[260px]",
+      "h-[440px]",
+      "md:col-span-2 h-[460px]",
     ];
 
     return {

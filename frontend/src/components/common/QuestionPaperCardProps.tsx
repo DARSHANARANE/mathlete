@@ -155,7 +155,7 @@ export const BuyBookCard: React.FC<
 
           {/* TEXT */}
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-red-400">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em]">
               Study Material
             </p>
 
