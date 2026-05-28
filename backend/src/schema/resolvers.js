@@ -511,6 +511,26 @@ const resolvers = {
     },
 
     // =====================================================
+    // DELETE BOOK
+    // =====================================================
+    deleteBook: async (
+      _,
+      { id },
+      { user }
+    ) => {
+      isAdmin(user);
+
+      const book = await Book.findById(id);
+
+      if (!book) {
+        throw new Error("Book not found");
+      }
+
+      await Book.findByIdAndDelete(id);
+
+      return true;
+    },
+    // =====================================================
     // CREATE RAZORPAY ORDER
     // =====================================================
 

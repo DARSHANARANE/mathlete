@@ -4,7 +4,7 @@ import BaseModal from "./BaseModal";
 type DeleteModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onDelete: () => void;
+  onDelete: () => Promise<void> | void;
   title?: string;
   message?: string;
 };

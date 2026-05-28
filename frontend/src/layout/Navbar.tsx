@@ -56,7 +56,7 @@ const Navbar: React.FC<Props> = ({
         {rightContent}
         {!isMobile && (
           <button
-            onClick={() => navigate("/student-portal")}
+            onClick={() => navigate("/home")}
             className="text-sm font-medium text-gray-600 hover:text-blue-500 flex items-center gap-1"
           >
             <PiStudentBold size={18} /> Student Portal

@@ -175,3 +175,8 @@ export const VERIFY_BOOK_PAYMENT = gql`
     }
   }
 `;
+export const DELETE_BOOK = gql`
+  mutation DeleteBook($id: ID!) {
+    deleteBook(id: $id)
+  }
+`;

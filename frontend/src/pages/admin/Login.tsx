@@ -37,14 +37,21 @@ export default function Login() {
     "default"
   );
 
+  // ✅ Prevent flickering
+  const [checkingAuth, setCheckingAuth] = useState(true);
+
   const [login, { loading }] = useMutation<LoginResponse, LoginVariables>(
     LOGIN
   );
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+
     if (token) {
-      window.location.href = "/admin/dashboard";
+      // ✅ Redirect without flicker
+      window.location.replace("/admin/dashboard");
+    } else {
+      setCheckingAuth(false);
     }
   }, []);
 
@@ -60,13 +67,14 @@ export default function Login() {
         throw new Error("No response from server");
       }
 
+      // ✅ Save token
       localStorage.setItem("token", data.login.token);
 
       setStatus("success");
       toast.success("Login successful 🚀");
 
       setTimeout(() => {
-        window.location.href = "/admin/dashboard";
+        window.location.replace("/admin/dashboard");
       }, 1000);
     } catch (err: any) {
       setStatus("error");
@@ -91,24 +99,39 @@ export default function Login() {
           <FaSpinner className="animate-spin" /> Authenticating...
         </>
       );
+
     if (status === "success")
       return (
         <>
           <FaCheck /> Success!
         </>
       );
+
     if (status === "error")
       return (
         <>
           <FaTimes /> Invalid Credentials
         </>
       );
+
     return (
       <>
         <FaSignInAlt /> Login
       </>
     );
   };
+
+  // ✅ Show loader while checking token
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="flex items-center gap-2 text-blue-600 text-lg font-medium">
+          <FaSpinner className="animate-spin" />
+          Checking authentication...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 font-sans">
@@ -126,12 +149,13 @@ export default function Login() {
             <label className="flex items-center gap-2 text-sm font-medium mb-1">
               <FaUser /> Email
             </label>
+
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="admin@mathlete.com"
-              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
               required
             />
           </div>
@@ -140,12 +164,13 @@ export default function Login() {
             <label className="flex items-center gap-2 text-sm font-medium mb-1">
               <FaLock /> Password
             </label>
+
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter password"
-              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
               required
             />
           </div>
@@ -162,7 +187,7 @@ export default function Login() {
         {/* Footer */}
         <div className="mt-6 pt-4 border-t text-center text-sm text-gray-500">
           <button
-            onClick={() => (window.location.href = "/")}
+            onClick={() => window.location.replace("/")}
             className="flex items-center gap-2 mx-auto hover:text-blue-600"
           >
             <FaArrowLeft /> Back to Student Portal
@@ -174,6 +199,7 @@ export default function Login() {
           <p className="flex items-center justify-center gap-1 mb-1">
             <FaShieldAlt /> Secure Admin Access
           </p>
+
           <p>All login attempts are monitored</p>
         </div>
       </div>

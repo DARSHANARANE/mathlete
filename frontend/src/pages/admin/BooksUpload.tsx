@@ -9,6 +9,7 @@ import type { Column } from "../../components/common/table/tablelayout";
 import DeleteModal from "../../components/common/Modal/DeleteModal";
 import BookUploadModal from "../../components/common/Modal/BookUploadModal";
 import { CREATE_BOOK, GET_BOOKS } from "../../graphql/queries";
+import { DELETE_BOOK } from "../../graphql/mutations";
 
 type Book = {
   id: string;
@@ -38,7 +39,8 @@ const BooksUpload: React.FC = () => {
 
   const [createBook] =
     useMutation(CREATE_BOOK);
-
+  const [deleteBook] =
+  useMutation(DELETE_BOOK);
   const books = data?.getBooks || [];
 
   const searchKeys: (keyof Book)[] = [
@@ -185,13 +187,27 @@ const BooksUpload: React.FC = () => {
       />
 
       {/* DELETE MODAL */}
-      <DeleteModal
-        isOpen={!!deleteId}
-        onClose={() => setDeleteId(null)}
-        onDelete={async () => {
-          setDeleteId(null);
-        }}
-      />
+ <DeleteModal
+  isOpen={!!deleteId}
+  onClose={() => setDeleteId(null)}
+  onDelete={async () => {
+    try {
+      if (!deleteId) return;
+
+      await deleteBook({
+        variables: {
+          id: deleteId,
+        },
+      });
+
+      await refetch();
+
+      setDeleteId(null);
+    } catch (error) {
+      console.error(error);
+    }
+  }}
+/>
     </div>
   );
 };

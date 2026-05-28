@@ -276,7 +276,8 @@ const typeDefs = gql`
       level: String
       price: Float!
     ): Book
-
+    
+    deleteBook(id: ID!): Boolean!
     # =====================
     # COMMON RAZORPAY ORDER
     # =====================

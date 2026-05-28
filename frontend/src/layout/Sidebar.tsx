@@ -160,27 +160,7 @@ const Sidebar: React.FC<Props> = ({
           )}
 
           {/* ORDERS */}
-          <button
-            onClick={() =>
-              setOpenOrders(!openOrders)
-            }
-            className="w-full flex items-center justify-between px-4 py-3 rounded-lg hover:bg-indigo-500 transition"
-          >
-            <div className="flex items-center gap-3">
-              <FaShoppingCart />
-              Orders
-            </div>
-
-            {openOrders ? (
-              <FaChevronDown size={12} />
-            ) : (
-              <FaChevronRight size={12} />
-            )}
-          </button>
-
-          {openOrders && (
-            <div className="ml-6 space-y-1">
-              <NavLink
+           <NavLink
                 to="/admin/orders"
                 onClick={
                   isMobile
@@ -189,24 +169,11 @@ const Sidebar: React.FC<Props> = ({
                 }
                 className={linkStyle}
               >
-                <FaShoppingCart />
-                 Paper Orders
-              </NavLink>
+             <FaShoppingCart />
+           Paper Orders
+          </NavLink>
 
-              <NavLink
-                to="/admin/book-orders"
-                onClick={
-                  isMobile
-                    ? closeSidebar
-                    : undefined
-                }
-                className={linkStyle}
-              >
-                <FaShoppingCart />
-                Book Orders
-              </NavLink>
-            </div>
-          )}
+
 
           {/* RESULTS */}
           <NavLink
