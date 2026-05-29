@@ -136,7 +136,7 @@ const Footer = () => {
                 </p>
 
                 <p className="mt-2 text-sm text-gray-300">
-                  +91 98765 43210
+                  98230 30379, 96650 06698
                 </p>
 
               </div>
@@ -148,7 +148,7 @@ const Footer = () => {
                 </p>
 
                 <p className="mt-2 text-sm text-gray-300">
-                  Thane, Maharashtra
+                  Kothrud , Pune
                 </p>
 
               </div>
