@@ -75,21 +75,21 @@ const Hero = () => {
           {/* Stats */}
           <div className="mt-14 flex flex-wrap gap-10">
             <div>
-              <h3 className="text-3xl font-black text-red-600">10k+</h3>
+              <h3 className="text-3xl font-black ">10k+</h3>
               <p className="mt-1 text-sm font-semibold text-black">
                 Students
               </p>
             </div>
 
             <div>
-              <h3 className="text-3xl font-black text-red-600">10+</h3>
+              <h3 className="text-3xl font-black ">10+</h3>
               <p className="mt-1 text-sm font-semibold text-black">
                 Years Experience
               </p>
             </div>
 
             <div>
-              <h3 className="text-3xl font-black text-red-600">100+</h3>
+              <h3 className="text-3xl font-black ">100+</h3>
               <p className="mt-1 text-sm font-semibold text-black">
                 Schools
               </p>
