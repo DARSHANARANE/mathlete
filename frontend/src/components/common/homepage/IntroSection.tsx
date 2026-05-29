@@ -104,6 +104,7 @@ export default function StatsSection() {
             }}
             className="bg-white rounded-[24px] p-5 sm:p-6 shadow-lg border border-pink-100"
           >
+            <div className="flex gap-4 items-center">
             <motion.div
               whileHover={{
                 rotate: 10,
@@ -117,6 +118,7 @@ export default function StatsSection() {
             <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-5">
               Mathlete Competition Schedule
             </h3>
+            </div>
 
             <div className="overflow-hidden rounded-2xl border border-gray-200">
               <table className="w-full text-sm sm:text-base">

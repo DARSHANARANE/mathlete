@@ -45,27 +45,27 @@ const About = () => {
                 About Mathlete
               </span>
 
-             
-                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mt-5 leading-tight">
-            Making Mathematics<br /> Easy & Fun
-          </h2>
 
-             <p className="text-gray-600 leading-8 mb-5">
-                Mathlete is a venture by EDUFIT who are active in the field of education for the past decade. 
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mt-5 leading-tight">
+                Making Mathematics<br /> Easy & Fun
+              </h2>
+
+              <p className="text-gray-600 leading-8 mb-5">
+                Mathlete is a venture by EDUFIT who are active in the field of education for the past decade.
                 EDUFIT has established  English marathon ( English language competition for school children)in Pune ,
-                 besides this they also manage their  own preschool by the name of Aussie Kids in Bhusari Colony,  Pune. </p>
+                besides this they also manage their  own preschool by the name of Aussie Kids in Bhusari Colony,  Pune. </p>
 
 
-                <p className="text-gray-600 leading-8 mb-5">EDUFIT is spearheaded by the dynamic duo Namrata Sharma and Sarita Meid, whose  passion for education and mathematics lead them to create Mathlete.
+              <p className="text-gray-600 leading-8 mb-5">EDUFIT is spearheaded by the dynamic duo Namrata Sharma and Sarita Meid, whose  passion for education and mathematics lead them to create Mathlete.
                 They and their expert team are successful in taking mathlete to 10000+ students across 100+ schools in and around Pune.
-                </p>
+              </p>
 
               <p className="text-gray-600 leading-8">
                 Through engaging workbooks and activities, students
                 practice mathematics in an enjoyable and effective way.
               </p>
             </motion.div>
-             {/* Image */}
+            {/* Image */}
             <motion.div
               initial={{ opacity: 0, x: -40 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -86,7 +86,28 @@ const About = () => {
           </div>
 
           {/* Vision & Mission */}
-          <section className="py-12 border-t border-gray-200">
+          <div className="border-t border-gray-200">
+            <section className="bg-white py-10">
+              <div className="max-w-8xl mx-auto">
+                {/* Vision */}
+                <motion.div
+                  className="bg-gray-50 rounded-3xl shadow-lg p-6 md:p-10"
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  viewport={{ once: true }}
+                >
+
+                  <p className="leading-8  text-gray-600">
+                    MATHLETE instills confidence and a can-do attitude in children. It helps them develop logic for memorizing multiplication tables and applying formulae, thereby increasing the speed of solving mathematical problems. This encourages them to practice more and more, and the more they practice, the better they become at mathematics.
+
+                    This is a humble request to join us in this cause of helping school children make their early stages in the world of mathematics stress-free and more fun-filled.
+                  </p>
+                </motion.div>
+              </div>
+            </section>
+          </div>
+          <section className="pt-6 pb-12 ">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
 
               {/* Vision */}
@@ -128,7 +149,7 @@ const About = () => {
         </div>
       </section>
       <Footer />
-       {/* Back To Top Button */}
+      {/* Back To Top Button */}
       <TopButton />
     </>
   );

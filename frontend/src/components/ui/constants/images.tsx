@@ -1,5 +1,5 @@
 import Banner from "../../../assets/banner_img.png";
-import AboutImg from "../../../assets/about-img.png";
+import AboutImg from "../../../assets/about2.png";
 
 import certificate1 from "../../../assets/certificates/certificate1.jpg";
 import certificate2 from "../../../assets/certificates/certificate2.jpg";

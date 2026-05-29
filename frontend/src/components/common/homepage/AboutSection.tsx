@@ -53,20 +53,73 @@ export default function SyllabusSection() {
       <div className="max-w-7xl mx-auto">
 
         {/* Heading */}
-        <div className="text-center mb-12">
-           
+        <div className="text-center mb-14">
           <span className="text-[#e3344a] font-semibold uppercase tracking-wider">
             Mathlete Syllabus
           </span>
 
-      
- <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mt-5 leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-900 mt-5 leading-tight">
             Portion for Level - 1 & Level - 2
           </h2>
+
           <p className="text-gray-600 mt-5 max-w-3xl mx-auto leading-8">
             Explore the syllabus designed for each class level to strengthen
             mathematical skills through practice, problem solving, and fun learning.
           </p>
+        </div>
+
+        {/* Top Info Section */}
+        <div className="grid gap-8 lg:grid-cols-2 mb-14">
+
+          {/* Class 1 to 5 */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="rounded-3xl bg-red-50 border border-red-100 p-8 shadow-sm"
+          >
+            <h3 className="text-2xl font-bold text-[#e3344a] mb-5">
+              Class 1 to Class 5
+            </h3>
+
+            <p className="text-gray-700 leading-8 mb-5">
+              MATHLETE helps children memorize mathematical tables and
+              practice them effectively through engaging exercises.
+            </p>
+
+            <p className="text-gray-700 leading-8">
+              The unique workbook of MATHLETE Level 1 contains over
+              900 practice examples. The same mathematical table is
+              presented in multiple question formats, helping children
+              improve mental flexibility and practical application of
+              mathematical knowledge.
+            </p>
+          </motion.div>
+
+          {/* Class 6 and 7 */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="rounded-3xl bg-white border border-red-100 p-8 shadow-sm"
+          >
+            <h3 className="text-2xl font-bold text-[#e3344a] mb-5">
+              Class 6 and Class 7
+            </h3>
+
+            <p className="text-gray-700 leading-8 mb-5">
+              After mastering tables in Class 5, Mathlete introduces
+              students to the world of formulae and advanced problem solving.
+            </p>
+
+            <p className="text-gray-700 leading-8">
+              The Class 6 and Class 7 workbook helps students develop
+              a strong understanding of formulae through structured
+              exercises, making learning easier and reducing confusion.
+            </p>
+          </motion.div>
         </div>
 
         {/* Cards */}

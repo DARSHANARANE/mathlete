@@ -1,30 +1,27 @@
-import heroBg from "../../../assets/main_bg.jpeg"; 
+import heroBg from "../../../assets/main_bg.jpeg";
 import UIButton from "../../ui/Button";
 import { motion } from "framer-motion";
 
 const Hero = () => {
   return (
-    <section className="relative overflow-hidden bg-[#120909]">
+    <section className="relative overflow-hidden bg-white">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
           src={heroBg}
           alt="Parents and Students"
-          className="h-full w-full object-cover  contrast-125 brightness-40"
+          className="h-full w-full object-cover contrast-110 brightness-95"
         />
 
-        {/* Red Gradient Overlay */}
-       <div className="absolute inset-0 bg-black/65" />
-<div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
+        {/* Light Overlay */}
+        <div className="absolute inset-0 bg-white/20" />
       </div>
-
-  
 
       {/* Content */}
       <div className="relative z-10 mx-auto flex min-h-[720px] max-w-7xl items-center px-6 py-20">
         <div className="max-w-2xl">
           {/* Small Tag */}
-          <div className="mb-6 inline-flex items-center rounded-full border border-red-400/30 bg-red-500/10 px-5 py-2 text-sm font-medium text-red-200 backdrop-blur-sm">
+          <div className="mb-6 inline-flex items-center rounded-full border border-black/20 bg-white/70 px-5 py-2 text-sm font-bold text-black backdrop-blur-sm">
             Trusted by Parents & Students
           </div>
 
@@ -33,59 +30,67 @@ const Hero = () => {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-5xl font-black leading-tight text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)] md:text-7xl"
+            className="text-5xl font-black leading-tight text-black md:text-7xl"
           >
-            Learn Through 
-            <br />
-            <span className="text-red-500">
-              Competition 
-            </span>
+            Learn Through Competition
+          
           </motion.h1>
-              {/* Buttons */}
+
+          {/* Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.8 }}
             className="mt-10 flex flex-wrap gap-5"
           >
-            <UIButton className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-xl shadow-xl shadow-red-900/30">
-              Practice Paper 
+            <UIButton
+              to="/papers"
+              className="rounded-xl bg-red-600 px-8 py-4 text-white shadow-lg hover:bg-red-700"
+            >
+              Practice Paper
             </UIButton>
 
-            <button className="rounded-xl border border-white/20 bg-white/10 px-8 py-4 font-medium text-white backdrop-blur-md transition hover:bg-white/20">
-               Book Purchase
-            </button>
+            <UIButton
+              to="/books"
+              variant="secondary"
+              className="rounded-xl border border-black/20 bg-white/80 px-8 py-4 font-semibold text-black backdrop-blur-md transition hover:bg-white"
+            >
+              Book Purchase
+            </UIButton>
           </motion.div>
+
           {/* Description */}
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
-            className="mt-8 max-w-xl text-lg leading-8 text-gray-300"
+            className="mt-8 max-w-xl text-lg font-medium leading-8 text-black"
           >
-            Helping students improve confidence, speed, and problem-solving
-            skills through structured learning and guided practice.
+            We are delighted to introduce MATHLETE, a competitive exam
+            purely based on elementary mathematics. Mathematics is the most
+            logical but ironically the most dreaded subject, to which there
+            is no shortcut but practice.
           </motion.p>
 
           {/* Stats */}
           <div className="mt-14 flex flex-wrap gap-10">
             <div>
-              <h3 className="text-3xl font-bold text-red-500">10k+</h3>
-              <p className="mt-1 text-sm text-gray-300">
-                Students 
+              <h3 className="text-3xl font-black text-red-600">10k+</h3>
+              <p className="mt-1 text-sm font-semibold text-black">
+                Students
               </p>
             </div>
 
             <div>
-              <h3 className="text-3xl font-bold text-red-500">10+</h3>
-              <p className="mt-1 text-sm text-gray-300">
+              <h3 className="text-3xl font-black text-red-600">10+</h3>
+              <p className="mt-1 text-sm font-semibold text-black">
                 Years Experience
               </p>
             </div>
 
             <div>
-              <h3 className="text-3xl font-bold text-red-500">100+</h3>
-              <p className="mt-1 text-sm text-gray-300">
+              <h3 className="text-3xl font-black text-red-600">100+</h3>
+              <p className="mt-1 text-sm font-semibold text-black">
                 Schools
               </p>
             </div>

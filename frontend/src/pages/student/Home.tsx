@@ -14,7 +14,6 @@ const Home = () => {
 
       <main className="min-h-screen bg-bg text-text overflow-hidden">
         <HeroSection />
-
         <AboutSection />
 
         <IntroSection />
