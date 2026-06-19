@@ -56,7 +56,7 @@ function Table<T extends { id: string | number }>({
                       <span className="text-gray-500 text-sm">
                         {col.header}
                       </span>
-                      <span className="text-sm font-medium text-right">
+                      <span className="text-sm font-medium text-right text-black">
                         {col.render
                           ? col.render(value, row)
                           : (value as React.ReactNode)}
