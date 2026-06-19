@@ -86,7 +86,7 @@ const Contact = () => {
     {
       icon: <Mail className="text-[#E3344A]" size={24} />,
       title: "Email Address",
-      value: "support@mathlete.com",
+      value: "edufit2022@gmail.com",
       bg: "bg-[#fff1f2]",
     },
     {

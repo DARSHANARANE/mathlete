@@ -23,7 +23,7 @@ export default function OrderSuccessPage() {
   const handleDownload = () => {
     const url = fileUrl
       ? fileUrl
-      : `http://localhost:5000/api/upload/payment/download/${order.id}`;
+      : `${import.meta.env.VITE_BACKEND_URL}/api/upload/payment/download/${order.id}`;
 
     window.open(url, "_blank", "noopener,noreferrer");
   };

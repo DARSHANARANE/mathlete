@@ -124,7 +124,8 @@ const Footer = () => {
                 </p>
 
                 <p className="mt-2 text-sm text-gray-300">
-                  support@mathlete.com
+                  
+                  edufit2022@gmail.com
                 </p>
 
               </div>

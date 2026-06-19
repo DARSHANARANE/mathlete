@@ -100,20 +100,6 @@ const Orders: React.FC = () => {
       header: "Created At",
       accessor: "createdAt" as keyof OrderRow,
     },
-    {
-      header: "Download",
-      accessor: "fileUrl" as keyof OrderRow,
-      render: (_value: OrderRow["fileUrl"], row: OrderRow) => (
-        <a
-          href={`http://localhost:5000/api/upload/payment/download/${row.id}`}
-          target="_blank"
-          rel="noreferrer"
-          className="text-blue-600 underline"
-        >
-          Download
-        </a>
-      ),
-    },
   ];
 
   return (

@@ -28,13 +28,16 @@ export const usePdfActions = () => {
     formData.append("level", level);
     formData.append("price", String(price));
 
-    const res = await fetch("http://localhost:5000/api/upload/pdf", {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: token ? `Bearer ${token}` : "",
-      },
-    });
+    const res = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}/api/upload/pdf`,
+      {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+      }
+    );
 
     if (!res.ok) {
       const errorText = await res.text();
@@ -48,37 +51,43 @@ export const usePdfActions = () => {
   // =========================
   // DELETE PDF
   // =========================
-  const deletePdf = async (id: string) => {
-    const res = await fetch(`http://localhost:5000/api/upload/pdf/${id}`, {
+const deletePdf = async (id: string) => {
+  const res = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}/api/upload/pdf/${id}`,
+    {
       method: "DELETE",
       headers: {
         Authorization: token ? `Bearer ${token}` : "",
       },
-    });
-
-    if (!res.ok) {
-      throw new Error("Delete failed");
     }
+  );
 
-    return true;
-  };
+  if (!res.ok) {
+    throw new Error("Delete failed");
+  }
+
+  return true;
+};
     // =========================
   // Update PDF
   // =========================
-const updatePdf = async (id: string, data: any) => {
-  const res = await fetch(`http://localhost:5000/api/upload/pdf/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: token ? `Bearer ${token}` : "",
-    },
-    body: JSON.stringify(data),
-  });
+  const updatePdf = async (id: string, data: any) => {
+    const res = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}/api/upload/pdf/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
+        body: JSON.stringify(data),
+      }
+    );
 
-  if (!res.ok) throw new Error("Update failed");
+    if (!res.ok) throw new Error("Update failed");
 
-  return res.json();
-};
+    return res.json();
+  };
  return {
   uploadPdf,
   deletePdf,

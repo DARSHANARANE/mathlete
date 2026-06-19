@@ -41,6 +41,7 @@ const awards = [
     title: "Merit Holder",
     rewards: [
       "Certificate",
+      "Medal",
     ],
   },
   {
