@@ -102,7 +102,7 @@ function Table<T extends { id: string | number }>({
                     {columns.map((col, i) => {
                       const value = row[col.accessor];
                       return (
-                        <td key={i} className="px-4 py-3 text-xs">
+                        <td key={i} className="px-4 py-3 text-xs text-black">
                           {col.render
                             ? col.render(value, row)
                             : (value as React.ReactNode)}
