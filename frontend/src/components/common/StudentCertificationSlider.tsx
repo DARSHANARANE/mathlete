@@ -10,9 +10,12 @@ import Button from "../ui/Button";
 const certificates = [
   { id: 1, image: Images.certificate1 },
   { id: 2, image: Images.certificate2 },
+  { id: 7, image: Images.certificate7 },  
   { id: 3, image: Images.certificate3 },
   { id: 4, image: Images.certificate4 },
   { id: 5, image: Images.certificate5 },
+  { id: 6, image: Images.certificate6 },
+
 ];
 
 const awards = [
@@ -20,21 +23,21 @@ const awards = [
     title: "1st Winner",
     rewards: [
       "Certificate",
-      "Medal",
+      "Trophy",
     ],
   },
   {
     title: "2nd Winner",
     rewards: [
       "Certificate",
-      "Medal",
+      "Trophy",
     ],
   },
   {
     title: "3rd Winner",
     rewards: [
       "Certificate",
-      "Medal",
+      "Trophy",
     ],
   },
   {

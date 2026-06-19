@@ -69,8 +69,8 @@ const navLink = (path: string, label: string) => {
 
         {/* CTA */}
         <div className="hidden md:block">
-          <Button variant="secondary" to="/papers">
-            Download Papers
+          <Button variant="secondary" to="/books">
+            Purchase Books
           </Button>
         </div>
       </div>
@@ -135,8 +135,8 @@ const navLink = (path: string, label: string) => {
     </Link>
 
     <div className="pt-4">
-      <Button variant="secondary" to="/papers">
-        Download Papers
+      <Button variant="secondary" to="/books">
+        Purchase Books
       </Button>
     </div>
   </div>

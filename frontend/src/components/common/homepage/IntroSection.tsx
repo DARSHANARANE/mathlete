@@ -35,7 +35,7 @@ const floating: Variants = {
 
 export default function StatsSection() {
   return (
-    <section className="relative overflow-hidden bg-white py-12 sm:py-14 px-4 sm:px-6 md:px-8 lg:px-12">
+    <section className="relative overflow-hidden bg-gradient-to-b from-rose-50 via-white to-blue-50 py-12 sm:py-14 px-4 sm:px-6 md:px-8 lg:px-12">
 
       {/* Background Blur */}
       <motion.div
@@ -102,7 +102,7 @@ export default function StatsSection() {
             whileHover={{
               y: -5,
             }}
-            className="bg-white rounded-[24px] p-5 sm:p-6 shadow-lg border border-pink-100"
+           className="bg-white/90 backdrop-blur-sm rounded-[24px] p-5 sm:p-6 shadow-xl border border-pink-200"
           >
             <div className="flex gap-4 items-center">
             <motion.div

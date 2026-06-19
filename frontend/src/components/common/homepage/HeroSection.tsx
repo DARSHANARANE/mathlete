@@ -79,7 +79,14 @@ const Hero = () => {
             but ironically the most dreaded subject, to which there is no
             shortcut but practice.
           </motion.p>
-
+           <motion.p
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+            className="mt-2 max-w-xl text-lg font-medium leading-8 text-gray-800"
+          >
+           The competition MATHLETE and its workbook helps the child to do exactly that but in a fun way. MATHLETE is conducted from class 1 to Class 7.
+          </motion.p>
           {/* Stats */}
           <div className="mt-14 flex flex-wrap gap-10">
             <div>

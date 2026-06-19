@@ -9,6 +9,8 @@ import {
   FaCheck,
   FaTimes,
   FaSpinner,
+  FaEye,
+  FaEyeSlash,
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useMutation } from "@apollo/client/react";
@@ -43,7 +45,7 @@ export default function Login() {
   const [login, { loading }] = useMutation<LoginResponse, LoginVariables>(
     LOGIN
   );
-
+  const [showPassword, setShowPassword] = useState(false);
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -155,7 +157,7 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="admin@mathlete.com"
-              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none text-black"
               required
             />
           </div>
@@ -165,14 +167,25 @@ export default function Login() {
               <FaLock /> Password
             </label>
 
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter password"
-              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password"
+                className="w-full border rounded-lg px-3 py-2 pr-10 focus:ring-2 focus:ring-blue-400 outline-none text-black"
+                required
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-gray-700"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
           </div>
 
           <button
