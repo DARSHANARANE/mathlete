@@ -17,7 +17,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   message = "Are you sure you want to delete this?",
 }) => {
   return (
-    <BaseModal
+    <BaseModal 
       isOpen={isOpen}
       onClose={onClose}
       title={title}
@@ -25,7 +25,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
         <>
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-200 rounded-lg"
+            className="px-4 py-2 bg-gray-200 rounded-lg text-black"
           >
             Cancel
           </button>

@@ -141,14 +141,14 @@ export default function Login() {
         {/* Header */}
         <div className="text-center mb-6">
           <FaUserShield className="text-5xl text-blue-600 mx-auto mb-3" />
-          <h1 className="text-2xl font-bold">Admin Login</h1>
+          <h1 className="text-2xl text-black font-bold ">Admin Login</h1>
           <p className="text-gray-500 text-sm">Access the Admin Panel</p>
         </div>
 
         {/* Form */}
         <form onSubmit={handleLogin}>
           <div className="mb-4">
-            <label className="flex items-center gap-2 text-sm font-medium mb-1">
+            <label className="flex items-center gap-2 text-sm font-medium mb-1 text-black">
               <FaUser /> Email
             </label>
 
@@ -163,7 +163,7 @@ export default function Login() {
           </div>
 
           <div className="mb-4">
-            <label className="flex items-center gap-2 text-sm font-medium mb-1">
+            <label className="flex items-center gap-2 text-sm font-medium mb-1 text-black">
               <FaLock /> Password
             </label>
 

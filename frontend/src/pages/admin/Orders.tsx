@@ -116,7 +116,7 @@ const Orders: React.FC = () => {
         />
       </div>
 
-      <div className="px-4 mb-4">
+      <div className="px-4 mb-4 text-sm text-black-600">
         {loading ? (
           <div className="bg-white rounded-2xl shadow-md p-6">
             Loading orders...

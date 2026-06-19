@@ -15,6 +15,12 @@ const AdminLayout = () => {
         return "Question Papers";
       case "/admin/orders":
         return "Orders";
+      case "/admin/contacts":
+        return "Contacts";
+      case "/admin/books":
+        return "Books Upload";
+      case "/admin/results-upload":
+        return "Results Upload";
       default:
         return "Dashboard";
     }

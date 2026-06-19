@@ -24,7 +24,7 @@ function Table<T extends { id: string | number }>({
   const isMobile = useIsMobile();
 
   return (
-    <div className="bg-white rounded-2xl shadow-md p-4 md:p-5">
+    <div className="bg-white rounded-2xl shadow-md p-4 md:p-5 text-sm text-black-600">
 
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3">

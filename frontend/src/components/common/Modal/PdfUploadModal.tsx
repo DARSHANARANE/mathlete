@@ -92,7 +92,7 @@ const PdfUploadModal: React.FC<Props> = ({
         <>
           <button
             onClick={onClose}
-            className="px-4 py-2 border rounded-md"
+            className="px-4 py-2 border rounded-md text-black"
           >
             Cancel
           </button>

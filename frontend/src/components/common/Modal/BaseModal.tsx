@@ -41,7 +41,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
       >
         {/* Header */}
         {title && (
-          <div className="mb-4">
+          <div className="mb-4 text-black">
             <h2 className="text-lg md:text-xl font-semibold">
               {title}
             </h2>
@@ -49,7 +49,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
         )}
 
         {/* Body (Scrollable) */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto text-black">
           {children}
         </div>
 
