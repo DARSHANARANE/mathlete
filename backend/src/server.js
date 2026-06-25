@@ -25,6 +25,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       process.env.FRONTEND_URL,
+      "https://www.mathlete.co.in",
     ],
     credentials: true,
   })
